@@ -3,116 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ROSE GARDEN — HOLOGRAPHIC PLAZA</title>
+    <title>THE ROSE GARDEN — FULL DIRECTORY</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --hologram-blue: #00f3ff;
             --neon-pink: #ff00ff;
-            --black-bloom: rgba(0, 0, 0, 0.92);
-            --glow: 0 0 25px rgba(0, 243, 255, 0.6);
-            --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            --black-bloom: rgba(0, 0, 0, 0.9);
+            --glow: 0 0 20px rgba(0, 243, 255, 0.5);
+            --transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
+        /* Core Architecture */
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
             background: #000; color: #fff;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             overflow-x: hidden; scroll-behavior: smooth;
         }
 
-        /* Ambient Background */
+        /* Ambient Layers */
         #bg-video {
             position: fixed; top: 50%; left: 50%;
             min-width: 100%; min-height: 100%;
             transform: translate(-50%, -50%);
-            z-index: -2; filter: brightness(0.3) contrast(1.2) blur(2px);
+            z-index: -2; filter: brightness(0.3) grayscale(0.5);
             object-fit: cover;
         }
 
         #rain-canvas {
             position: fixed; top: 0; left: 0;
-            z-index: -1; pointer-events: none; opacity: 0.4;
+            z-index: -1; pointer-events: none; opacity: 0.3;
         }
 
-        /* Navigation */
+        /* Sidebar Navigation */
         .menu-btn {
             position: fixed; top: 25px; left: 25px; z-index: 2100;
             background: rgba(0,0,0,0.7); border: 1px solid var(--hologram-blue);
             color: var(--hologram-blue); padding: 12px 18px; border-radius: 4px;
-            cursor: pointer; backdrop-filter: blur(15px); transition: var(--transition);
+            cursor: pointer; backdrop-filter: blur(10px); transition: var(--transition);
         }
-        .menu-btn:hover { box-shadow: var(--glow); transform: rotate(90deg); }
 
         .sidebar {
             position: fixed; top: 0; left: -320px; width: 300px; height: 100%;
             background: rgba(0, 0, 0, 0.98); border-right: 1px solid var(--hologram-blue);
-            z-index: 2000; transition: var(--transition); padding: 100px 30px;
-            display: flex; flex-direction: column;
+            z-index: 2000; transition: var(--transition); padding: 80px 20px;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
         .sidebar.active { left: 0; }
         .menu-link {
-            color: #fff; text-decoration: none; font-size: 0.8rem;
-            letter-spacing: 4px; text-transform: uppercase; padding: 15px;
+            color: #fff; text-decoration: none; font-size: 0.7rem;
+            letter-spacing: 3px; text-transform: uppercase; padding: 12px;
             border-bottom: 1px solid rgba(0, 243, 255, 0.1); transition: 0.3s;
         }
-        .menu-link:hover { color: var(--hologram-blue); padding-left: 20px; }
+        .menu-link:hover { color: var(--hologram-blue); background: rgba(0,243,255,0.05); }
 
-        /* Holographic Card & Video Masking */
-        .overlay { position: relative; z-index: 10; padding: 120px 20px 200px; max-width: 1300px; margin: 0 auto; text-align: center; }
-        h1 { font-size: clamp(2.5rem, 8vw, 5.5rem); letter-spacing: 20px; text-shadow: var(--glow); margin: 0; text-transform: uppercase; }
-        .subtext { color: var(--hologram-blue); letter-spacing: 12px; font-size: 0.9rem; margin-top: 20px; text-transform: uppercase; opacity: 0.8; }
+        /* Main Display */
+        .overlay { position: relative; z-index: 10; padding: 100px 20px 200px; max-width: 1400px; margin: 0 auto; text-align: center; }
+        
+        header { margin-bottom: 100px; }
+        h1 { font-size: clamp(2rem, 8vw, 4.5rem); letter-spacing: 15px; text-shadow: var(--glow); margin: 0; }
+        .subtext { color: var(--hologram-blue); letter-spacing: 10px; font-size: 0.8rem; margin-top: 15px; }
 
-        section { width: 100%; margin-bottom: 150px; scroll-margin-top: 120px; }
-        .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; }
+        section { width: 100%; margin-bottom: 120px; scroll-margin-top: 100px; }
+        section h2 { 
+            letter-spacing: 6px; color: var(--hologram-blue); 
+            margin-bottom: 40px; text-transform: uppercase; font-size: 1.2rem;
+            border-left: 4px solid var(--hologram-blue); padding-left: 15px; text-align: left;
+        }
+
+        /* Grid & Hologram Cards */
+        .icon-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 25px; width: 100%;
+        }
 
         .hologram-card {
-            aspect-ratio: 1/1.2; background: var(--black-bloom);
-            border: 1px solid rgba(0, 243, 255, 0.15); border-radius: 24px;
+            aspect-ratio: 1/1.1; background: var(--black-bloom);
+            border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 15px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-decoration: none; position: relative; overflow: hidden; transition: var(--transition);
         }
-        .hologram-card:hover { transform: translateY(-15px); border-color: #fff; box-shadow: var(--glow); }
 
-        /* THE MAGIC: Video lives inside this container masked by an SVG */
-        .video-mask-container {
-            width: 120px; height: 120px;
-            position: relative; margin-bottom: 25px;
-            /* Default Mask (Circle/Portal) */
+        .hologram-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #fff;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+        }
+
+        /* Video Mask System */
+        .video-mask {
+            width: 80px; height: 80px;
+            position: relative; margin-bottom: 15px;
             -webkit-mask-size: contain; mask-size: contain;
             -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
             -webkit-mask-position: center; mask-position: center;
+            transition: var(--transition);
         }
 
-        .masked-video-source {
+        .masked-video {
             width: 100%; height: 100%;
-            object-fit: cover;
-            filter: brightness(1.2) contrast(1.1);
+            object-fit: cover; filter: brightness(1.2);
         }
 
-        /* Specific Masks for Categories */
-        .mask-burger { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12C2 12 5 7 12 7C19 7 22 12 22 12M2 14H22M4 17H20M5 20H19"/></svg>'); }
-        .mask-cocktail { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3L12 11L19 3M5 3H19M12 11V21M7 21H17"/></svg>'); }
-        .mask-hat { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 19C5 19 6 17 6 15V10C6 6 9 3 12 3C15 3 18 6 18 10V15C18 17 19 19 22 19H2"/></svg>'); }
-        .mask-elysium { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>'); }
+        .hologram-card:hover .video-mask { filter: drop-shadow(0 0 10px var(--hologram-blue)); }
+        
+        /* Category Specific Masks (Base64 SVG) */
+        .mask-hat { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M2 19C5 19 6 17 6 15V10C6 6 9 3 12 3C15 3 18 6 18 10V15C18 17 19 19 22 19H2"/></svg>'); }
+        .mask-shirt { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M7 2L2 5V11L7 9V22H17V9L22 11V5L17 2H7Z"/></svg>'); }
+        .mask-pants { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M6 2L4 22H10L12 11L14 22H20L18 2H6Z"/></svg>'); }
+        .mask-suit { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 2L4 7V22H20V7L12 2ZM12 7L15 12H9L12 7Z"/></svg>'); }
+        .mask-dress { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 2L6 7L4 22H20L18 7L12 2Z"/></svg>'); }
+        .mask-child { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/></svg>'); }
+        .mask-travel { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M21 16V14L13 9V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V9L2 14V16L10 13.5V19L8 20.5V22L11.5 21L15 22V20.5L13 19V13.5L21 16Z"/></svg>'); }
+        .mask-finance { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>'); }
+        .mask-house { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/></svg>'); }
+        .mask-build { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>'); }
+        .mask-market { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M20 12V10H22V12H20M20 14H22V16H20V14M18 14H20V16H18V14M10 5H14V7H10V5M4 12V10H6V12H4M4 14V16H6V14H4Z"/></svg>'); }
+        .mask-food { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M11 9H9V2H7V9H5V2H3V9C3 11.12 4.66 12.84 6.75 12.97V22H9.25V12.97C11.34 12.84 13 11.12 13 9V2H11V9ZM16 6V14H18.5V22H21V2C18.24 2 16 4.24 16 6Z"/></svg>'); }
+        .mask-play { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M8 5V19L19 12L8 5Z"/></svg>'); }
+        .mask-elysium { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>'); }
 
-        .label { font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: #fff; opacity: 0.7; transition: 0.3s; }
-        .hologram-card:hover .label { opacity: 1; color: var(--hologram-blue); }
+        .label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: #fff; opacity: 0.6; text-align: center; padding: 0 10px; }
 
-        /* Control Deck (Non-Blocking) */
+        /* Control Deck */
         .control-deck {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 550px; background: rgba(0,0,0,0.8);
+            width: 80%; max-width: 500px; background: rgba(0,0,0,0.85);
             border: 1px solid var(--hologram-blue); border-radius: 40px;
-            padding: 15px 25px; display: flex; justify-content: space-around;
-            z-index: 1500; pointer-events: none; backdrop-filter: blur(20px);
+            padding: 12px 20px; display: flex; justify-content: space-around;
+            z-index: 1500; pointer-events: none; backdrop-filter: blur(15px);
         }
         .slider-group { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
-        input[type=range] { writing-mode: bt-lr; appearance: slider-vertical; height: 70px; width: 6px; cursor: pointer; }
-        .slider-label { font-size: 0.6rem; margin-top: 8px; letter-spacing: 2px; color: var(--hologram-blue); text-transform: uppercase; }
+        input[type=range] { writing-mode: bt-lr; appearance: slider-vertical; height: 60px; width: 5px; cursor: pointer; }
+        .slider-label { font-size: 0.5rem; margin-top: 5px; letter-spacing: 2px; color: var(--hologram-blue); text-transform: uppercase; }
 
-        footer { padding: 100px; opacity: 0.25; letter-spacing: 8px; font-size: 0.7rem; }
+        footer { padding: 100px; opacity: 0.2; letter-spacing: 10px; font-size: 0.6rem; }
     </style>
 </head>
 <body>
@@ -120,10 +148,20 @@
     <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
 
     <nav class="sidebar" id="sidebar">
-        <a href="#" class="menu-link" onclick="toggleSidebar()">Digital Mall Home</a>
-        <a href="#food" class="menu-link" onclick="toggleSidebar()">Food & Spirits</a>
-        <a href="#headgear" class="menu-link" onclick="toggleSidebar()">Headgear</a>
-        <a href="#elysium" class="menu-link" onclick="toggleSidebar()">Elysium Gate</a>
+        <a href="#hats" class="menu-link" onclick="toggleSidebar()">Hats & Headwear</a>
+        <a href="#shirts" class="menu-link" onclick="toggleSidebar()">T-Shirts & Graphics</a>
+        <a href="#pants" class="menu-link" onclick="toggleSidebar()">Pants & Bottoms</a>
+        <a href="#suits" class="menu-link" onclick="toggleSidebar()">Suits & Formal</a>
+        <a href="#ladies" class="menu-link" onclick="toggleSidebar()">Ladies' Fashion</a>
+        <a href="#kids" class="menu-link" onclick="toggleSidebar()">Children's Wear</a>
+        <a href="#travel" class="menu-link" onclick="toggleSidebar()">Travel & Vacations</a>
+        <a href="#fintech" class="menu-link" onclick="toggleSidebar()">Financial Services</a>
+        <a href="#realestate" class="menu-link" onclick="toggleSidebar()">Real Estate</a>
+        <a href="#builders" class="menu-link" onclick="toggleSidebar()">Website Builders</a>
+        <a href="#marketing" class="menu-link" onclick="toggleSidebar()">Digital Marketing</a>
+        <a href="#food" class="menu-link" onclick="toggleSidebar()">Food & Beverage</a>
+        <a href="#entertainment" class="menu-link" onclick="toggleSidebar()">Streaming & Ent.</a>
+        <a href="#elysium" class="menu-link" onclick="toggleSidebar()">Caskets & Elysium</a>
     </nav>
 
     <video muted loop playsinline id="bg-video">
@@ -135,77 +173,111 @@
     <div class="overlay">
         <header>
             <h1>THE ROSE GARDEN</h1>
-            <div class="subtext">VIRTUAL SHOPPING PLAZA</div>
+            <div class="subtext">GLOBAL NEXUS DIRECTORY</div>
         </header>
 
-        <section id="food">
+        <section id="hats">
+            <h2>HATS & HEADWEAR</h2>
             <div class="icon-grid">
-                <a href="https://www.ubereats.com" target="_blank" class="hologram-card">
-                    <div class="video-mask-container mask-burger">
-                        <video class="masked-video-source" muted loop playsinline autoplay>
-                            <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="label">Uber Eats</div>
+                <a href="https://www.villagehatshop.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Village Hat Shop</div>
                 </a>
-
-                <a href="https://minibardelivery.com" target="_blank" class="hologram-card">
-                    <div class="video-mask-container mask-cocktail">
-                        <video class="masked-video-source" muted loop playsinline autoplay>
-                            <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="label">Minibar</div>
+                <a href="https://hats.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Hats.com</div>
+                </a>
+                <a href="https://goorin.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Goorin Bros.</div>
                 </a>
             </div>
         </section>
 
-        <section id="headgear">
+        <section id="shirts">
+            <h2>T-SHIRTS & GRAPHICS</h2>
             <div class="icon-grid">
-                <a href="https://hats.com" target="_blank" class="hologram-card">
-                    <div class="video-mask-container mask-hat">
-                        <video class="masked-video-source" muted loop playsinline autoplay>
-                            <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="label">Hats.com</div>
+                <a href="https://threadheads.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Threadheads</div>
+                </a>
+                <a href="https://www.intotheam.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Into The AM</div>
+                </a>
+                <a href="https://www.threadless.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Threadless</div>
+                </a>
+            </div>
+        </section>
+
+        <section id="fintech">
+            <h2>FINANCIAL SERVICES</h2>
+            <div class="icon-grid">
+                <a href="https://www.wealthsimple.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-finance"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Wealthsimple</div>
+                </a>
+                <a href="https://robinhood.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-finance"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Robinhood</div>
+                </a>
+                <a href="https://www.koho.ca" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-finance"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">KOHO</div>
+                </a>
+            </div>
+        </section>
+
+        <section id="travel">
+            <h2>TRAVEL & VACATIONS</h2>
+            <div class="icon-grid">
+                <a href="https://www.booking.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-travel"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Booking.com</div>
+                </a>
+                <a href="https://www.airbnb.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-travel"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Airbnb</div>
                 </a>
             </div>
         </section>
 
         <section id="elysium">
-            <div class="icon-grid" style="grid-template-columns: 1fr;">
-                <a href="https://the-afterlife.vercel.app/" target="_blank" class="hologram-card" style="max-width: 400px; margin: 0 auto;">
-                    <div class="video-mask-container mask-elysium" style="width:160px; height:160px;">
-                        <video class="masked-video-source" muted loop playsinline autoplay>
-                            <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="label" style="color:var(--neon-pink); letter-spacing: 6px;">ENTER ELYSIUM</div>
+            <h2>CASKETS & ELYSIUM GATE</h2>
+            <div class="icon-grid">
+                <a href="https://titancasket.com" target="_blank" class="hologram-card">
+                    <div class="video-mask mask-elysium"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label">Titan Casket</div>
+                </a>
+                <a href="https://the-afterlife.vercel.app/" target="_blank" class="hologram-card" style="border-color: var(--neon-pink);">
+                    <div class="video-mask mask-elysium" style="filter: hue-rotate(280deg);"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label" style="color:var(--neon-pink)">ENTER ELYSIUM</div>
                 </a>
             </div>
         </section>
 
-        <footer>DIRECTED BY HERMES — EST 2026</footer>
+        <footer>DIRECTED BY HERMES — PROTOCOL 2026</footer>
     </div>
 
     <div class="control-deck">
         <div class="slider-group">
-            <input type="range" id="zoom-range" min="180" max="450" value="240">
-            <span class="slider-label">Zoom</span>
+            <input type="range" id="zoom-range" min="150" max="400" value="220">
+            <span class="slider-label">Scale</span>
         </div>
         <div class="slider-group">
             <input type="range" id="bloom-range" min="10" max="100" value="30">
-            <span class="slider-label">Bloom</span>
+            <span class="slider-label">Glow</span>
         </div>
         <div class="slider-group">
-            <input type="range" id="rain-range" min="0" max="100" value="40">
-            <span class="slider-label">Rain</span>
+            <input type="range" id="rain-range" min="0" max="100" value="35">
+            <span class="slider-label">Flow</span>
         </div>
     </div>
 
     <script>
-        // Matrix Rain System
+        // Rain FX
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
         let w, h, drops;
@@ -220,24 +292,23 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, w, h);
             ctx.fillStyle = '#00f3ff';
-            ctx.font = '14px monospace';
+            ctx.font = '12px monospace';
             drops.forEach((y, i) => {
-                const text = Math.random() > 0.5 ? '⚡' : '✧';
-                ctx.fillText(text, i * 20, y * 20);
+                ctx.fillText('01', i * 20, y * 20);
                 if (y * 20 > h && Math.random() > 0.98) drops[i] = 0;
                 drops[i]++;
             });
         }
         
-        let rainInterval = setInterval(drawRain, 50);
+        let rainInt = setInterval(drawRain, 45);
         initRain();
         window.onresize = initRain;
 
-        // UI Interaction
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
+        // Real-time UI updates
         document.getElementById('zoom-range').oninput = (e) => {
             document.querySelectorAll('.icon-grid').forEach(g => {
                 g.style.gridTemplateColumns = `repeat(auto-fit, minmax(${e.target.value}px, 1fr))`;
@@ -245,10 +316,9 @@
         };
 
         document.getElementById('bloom-range').oninput = (e) => {
-            document.getElementById('bg-video').style.filter = `brightness(${e.target.value / 100}) grayscale(0.4) contrast(1.2)`;
+            document.getElementById('bg-video').style.filter = `brightness(${e.target.value / 100}) grayscale(0.5)`;
         };
 
-        // Click outside sidebar to close
         document.addEventListener('click', (e) => {
             const sb = document.getElementById('sidebar');
             if(sb.classList.contains('active') && !sb.contains(e.target) && !e.target.closest('.menu-btn')) toggleSidebar();
