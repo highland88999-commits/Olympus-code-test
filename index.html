@@ -19,10 +19,9 @@
             width: 100%; height: 100%;
             background: #000; color: #fff;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden; scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
-        /* Ambient background remains static */
         #bg-video {
             position: fixed; top: 50%; left: 50%;
             min-width: 100%; min-height: 100%;
@@ -61,19 +60,18 @@
         /* Main Display Area */
         .overlay { position: relative; z-index: 10; padding: 100px 20px; max-width: 1500px; margin: 0 auto; text-align: center; }
         
-        h1 { font-size: clamp(1.8rem, 8vw, 4.5rem); letter-spacing: 15px; text-shadow: var(--glow); margin: 0; transition: 0.5s; }
+        h1 { font-size: clamp(1.8rem, 8vw, 4.5rem); letter-spacing: 15px; text-shadow: var(--glow); margin: 0; }
         .cat-title { color: var(--hologram-blue); letter-spacing: 10px; font-size: 1.2rem; margin: 40px 0; text-transform: uppercase; }
 
-        /* The World-Breakers (Olympus Slider Style) */
+        /* Multiverse Home Slider */
         .world-breaker-container {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px; margin-bottom: 50px; padding: 20px;
         }
         .world-breaker-card {
             aspect-ratio: 16/9; background: #000; border: 2px solid var(--hologram-blue);
-            border-radius: 8px; position: relative; overflow: visible; /* BORDER CROSSING */
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-decoration: none; transition: var(--transition);
+            border-radius: 8px; position: relative; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; text-decoration: none; transition: var(--transition);
         }
         .world-breaker-card:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 243, 255, 0.3); border-color: #fff; }
 
@@ -83,7 +81,7 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Grid & Standard Cards (No Border Crossing) */
+        /* Grid & Standard Cards */
         .icon-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 20px; width: 100%; overflow: hidden; 
@@ -93,7 +91,7 @@
             aspect-ratio: 1/1.1; background: var(--black-bloom);
             border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-decoration: none; position: relative; overflow: hidden; transition: var(--transition);
+            text-decoration: none; position: relative; transition: var(--transition);
         }
         .hologram-card:hover { transform: translateY(-5px); border-color: #fff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.1); }
 
@@ -106,7 +104,7 @@
         }
         .masked-video { width: 100%; height: 100%; object-fit: cover; filter: brightness(1.2); }
 
-        /* Mask Assets */
+        /* SVG Masks */
         .mask-hat { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 19C5 19 6 17 6 15V10C6 6 9 3 12 3C15 3 18 6 18 10V15C18 17 19 19 22 19H2"/></svg>'); }
         .mask-shirt { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2L2 5V11L7 9V22H17V9L22 11V5L17 2H7Z"/></svg>'); }
         .mask-pants { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2L4 22H10L12 11L14 22H20L18 2H6Z"/></svg>'); }
@@ -188,61 +186,32 @@
             </div>
         </section>
 
-        <section id="hats" class="content-section">
-            <div class="icon-grid" id="grid-hats"></div>
-        </section>
-
-        <section id="shirts" class="content-section">
-            <div class="icon-grid" id="grid-shirts"></div>
-        </section>
-
-        <section id="pants" class="content-section">
-            <div class="icon-grid" id="grid-pants"></div>
-        </section>
-
-        <section id="suits" class="content-section">
-            <div class="icon-grid" id="grid-suits"></div>
-        </section>
-
-        <section id="ladies" class="content-section">
-            <div class="icon-grid" id="grid-ladies"></div>
-        </section>
-
-        <section id="kids" class="content-section">
-            <div class="icon-grid" id="grid-kids"></div>
-        </section>
-
-        <section id="travel" class="content-section">
-            <div class="icon-grid" id="grid-travel"></div>
-        </section>
-
-        <section id="fintech" class="content-section">
-            <div class="icon-grid" id="grid-fintech"></div>
-        </section>
-
-        <section id="realestate" class="content-section">
-            <div class="icon-grid" id="grid-realestate"></div>
-        </section>
-
-        <section id="builders" class="content-section">
-            <div class="icon-grid" id="grid-builders"></div>
-        </section>
-
-        <section id="marketing" class="content-section">
-            <div class="icon-grid" id="grid-marketing"></div>
-        </section>
-
-        <section id="food" class="content-section">
-            <div class="icon-grid" id="grid-food"></div>
-        </section>
-
-        <section id="entertainment" class="content-section">
-            <div class="icon-grid" id="grid-entertainment"></div>
-        </section>
-
         <section id="funeral" class="content-section">
-            <div class="icon-grid" id="grid-funeral"></div>
+            <div class="icon-grid" style="grid-template-columns: 1fr; max-width: 400px; margin: 0 auto;">
+                <a href="https://the-afterlife.vercel.app/" target="_blank" class="hologram-card" style="border-color: var(--neon-pink); border-width: 2px;">
+                    <div class="video-mask mask-gate" style="width:120px; height:120px; filter: hue-rotate(300deg);">
+                        <video class="masked-video" muted loop playsinline autoplay>
+                            <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="label" style="color: var(--neon-pink); font-size: 1rem; letter-spacing: 5px;">ENTER ELYSIUM</div>
+                </a>
+            </div>
         </section>
+
+        <section id="hats" class="content-section"><div class="icon-grid" id="grid-hats"></div></section>
+        <section id="shirts" class="content-section"><div class="icon-grid" id="grid-shirts"></div></section>
+        <section id="pants" class="content-section"><div class="icon-grid" id="grid-pants"></div></section>
+        <section id="suits" class="content-section"><div class="icon-grid" id="grid-suits"></div></section>
+        <section id="ladies" class="content-section"><div class="icon-grid" id="grid-ladies"></div></section>
+        <section id="kids" class="content-section"><div class="icon-grid" id="grid-kids"></div></section>
+        <section id="travel" class="content-section"><div class="icon-grid" id="grid-travel"></div></section>
+        <section id="fintech" class="content-section"><div class="icon-grid" id="grid-fintech"></div></section>
+        <section id="realestate" class="content-section"><div class="icon-grid" id="grid-realestate"></div></section>
+        <section id="builders" class="content-section"><div class="icon-grid" id="grid-builders"></div></section>
+        <section id="marketing" class="content-section"><div class="icon-grid" id="grid-marketing"></div></section>
+        <section id="food" class="content-section"><div class="icon-grid" id="grid-food"></div></section>
+        <section id="entertainment" class="content-section"><div class="icon-grid" id="grid-entertainment"></div></section>
 
         <footer>ESTABLISHED BY MERLIN — YEAR 2026</footer>
     </div>
@@ -315,27 +284,18 @@
             travel: [
                 {n: "Booking.com", u: "https://www.booking.com", m: "mask-travel"},
                 {n: "Expedia", u: "https://www.expedia.com", m: "mask-travel"},
-                {n: "Google Travel", u: "https://www.google.com/travel", m: "mask-travel"},
+                {n: "Airbnb", u: "https://www.airbnb.com", m: "mask-travel"},
                 {n: "Kayak", u: "https://www.kayak.com", m: "mask-travel"},
                 {n: "Skyscanner", u: "https://www.skyscanner.com", m: "mask-travel"},
-                {n: "Hotels.com", u: "https://www.hotels.com", m: "mask-travel"},
-                {n: "Airbnb", u: "https://www.airbnb.com", m: "mask-travel"},
-                {n: "Rentalcars.com", u: "https://www.rentalcars.com", m: "mask-travel"},
-                {n: "Priceline", u: "https://www.priceline.com", m: "mask-travel"},
-                {n: "Air Canada Vacations", u: "https://vacations.aircanada.com", m: "mask-travel"}
+                {n: "Priceline", u: "https://www.priceline.com", m: "mask-travel"}
             ],
             fintech: [
                 {n: "SoFi", u: "https://www.sofi.com", m: "mask-fintech"},
+                {n: "Wealthsimple", u: "https://www.wealthsimple.com", m: "mask-fintech"},
                 {n: "Chime", u: "https://www.chime.com", m: "mask-fintech"},
                 {n: "Ally Bank", u: "https://www.ally.com", m: "mask-fintech"},
-                {n: "Discover", u: "https://www.discover.com", m: "mask-fintech"},
                 {n: "EQ Bank", u: "https://www.eqbank.ca", m: "mask-fintech"},
-                {n: "Capital One", u: "https://www.capitalone.com", m: "mask-fintech"},
-                {n: "Amex", u: "https://www.americanexpress.com", m: "mask-fintech"},
-                {n: "Wealthsimple", u: "https://www.wealthsimple.com", m: "mask-fintech"},
-                {n: "Fidelity", u: "https://www.fidelity.com", m: "mask-fintech"},
                 {n: "Robinhood", u: "https://robinhood.com", m: "mask-fintech"},
-                {n: "YNAB", u: "https://www.ynab.com", m: "mask-fintech"},
                 {n: "Rocket Money", u: "https://www.rocketmoney.com", m: "mask-fintech"},
                 {n: "KOHO", u: "https://www.koho.ca", m: "mask-fintech"}
             ],
@@ -343,59 +303,31 @@
                 {n: "Zillow", u: "https://www.zillow.com", m: "mask-house"},
                 {n: "Realtor.com", u: "https://www.realtor.com", m: "mask-house"},
                 {n: "Redfin", u: "https://www.redfin.com", m: "mask-house"},
-                {n: "Realtor.ca", u: "https://www.realtor.ca", m: "mask-house"},
-                {n: "HouseSigma", u: "https://housesigma.com", m: "mask-house"},
-                {n: "Apartments.com", u: "https://www.apartments.com", m: "mask-house"},
-                {n: "Homes.com", u: "https://www.homes.com", m: "mask-house"},
-                {n: "Foreclosure.com", u: "https://www.foreclosure.com", m: "mask-house"}
+                {n: "Apartments.com", u: "https://www.apartments.com", m: "mask-house"}
             ],
             builders: [
                 {n: "Wix", u: "https://www.wix.com", m: "mask-builder"},
                 {n: "Squarespace", u: "https://www.squarespace.com", m: "mask-builder"},
                 {n: "Shopify", u: "https://www.shopify.com", m: "mask-builder"},
                 {n: "Webflow", u: "https://webflow.com", m: "mask-builder"},
-                {n: "Stripe", u: "https://stripe.com", m: "mask-builder"},
-                {n: "LegalZoom", u: "https://www.legalzoom.com", m: "mask-builder"},
-                {n: "Canva", u: "https://www.canva.com", m: "mask-builder"},
-                {n: "Framer", u: "https://www.framer.com", m: "mask-builder"},
-                {n: "Fiverr", u: "https://www.fiverr.com", m: "mask-builder"},
-                {n: "Upwork", u: "https://www.upwork.com", m: "mask-builder"}
+                {n: "Canva", u: "https://www.canva.com", m: "mask-builder"}
             ],
             marketing: [
                 {n: "HubSpot", u: "https://www.hubspot.com", m: "mask-market"},
-                {n: "ActiveCampaign", u: "https://www.activecampaign.com", m: "mask-market"},
-                {n: "HighLevel", u: "https://www.gohighlevel.com", m: "mask-market"},
                 {n: "SEMrush", u: "https://www.semrush.com", m: "mask-market"},
-                {n: "Ahrefs", u: "https://ahrefs.com", m: "mask-market"},
                 {n: "Mailchimp", u: "https://mailchimp.com", m: "mask-market"},
-                {n: "ChatGPT", u: "https://chat.openai.com", m: "mask-market"},
-                {n: "Gemini", u: "https://gemini.google.com", m: "mask-market"}
+                {n: "ChatGPT", u: "https://chat.openai.com", m: "mask-market"}
             ],
             food: [
                 {n: "Uber Eats", u: "https://www.ubereats.com", m: "mask-food"},
                 {n: "DoorDash", u: "https://www.doordash.com", m: "mask-food"},
-                {n: "SkipTheDishes", u: "https://www.skipthedishes.com", m: "mask-food"},
-                {n: "HelloFresh", u: "https://www.hellofresh.com", m: "mask-food"},
-                {n: "Minibar", u: "https://minibardelivery.com", m: "mask-food"},
-                {n: "Drizly", u: "https://drizly.com", m: "mask-food"},
-                {n: "Winc", u: "https://www.winc.com", m: "mask-food"}
+                {n: "HelloFresh", u: "https://www.hellofresh.com", m: "mask-food"}
             ],
             entertainment: [
                 {n: "Netflix", u: "https://www.netflix.com", m: "mask-play"},
                 {n: "Disney+", u: "https://www.disneyplus.com", m: "mask-play"},
-                {n: "Hulu", u: "https://www.hulu.com", m: "mask-play"},
-                {n: "Prime Video", u: "https://www.primevideo.com", m: "mask-play"},
                 {n: "Spotify", u: "https://www.spotify.com", m: "mask-play"},
-                {n: "Apple Music", u: "https://www.apple.com/apple-music", m: "mask-play"},
-                {n: "Xbox Game Pass", u: "https://www.xbox.com/gamepass", m: "mask-play"},
-                {n: "PlayStation Plus", u: "https://www.playstation.com/ps-plus", m: "mask-play"}
-            ],
-            funeral: [
-                {n: "Titan Casket", u: "https://titancasket.com", m: "mask-gate"},
-                {n: "Trusted Caskets", u: "https://trustedcaskets.com", m: "mask-gate"},
-                {n: "Costco Funeral", u: "https://www.costco.ca/caskets.html", m: "mask-gate"},
-                {n: "Casket Depot", u: "https://casketdepot.ca", m: "mask-gate"},
-                {n: "Haven Casket", u: "https://www.havencasket.com", m: "mask-gate"}
+                {n: "Apple Music", u: "https://www.apple.com/apple-music", m: "mask-play"}
             ]
         };
 
@@ -418,8 +350,18 @@
 
         function showSection(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById('cat-indicator').innerText = id === 'home' ? 'GHOST PROTOCOL' : id.replace(/([A-Z])/g, ' $1');
+            const target = document.getElementById(id);
+            if(target) target.classList.add('active');
+            
+            const indicator = document.getElementById('cat-indicator');
+            if (id === 'home') {
+                indicator.innerText = 'GHOST PROTOCOL';
+            } else if (id === 'funeral') {
+                indicator.innerText = 'ELYSIUM GATE';
+            } else {
+                indicator.innerText = id.replace(/([A-Z])/g, ' $1').toUpperCase();
+            }
+            
             toggleSidebar();
             window.scrollTo(0,0);
         }
@@ -428,7 +370,7 @@
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Rain FX
+        // Ambient Rain
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
         let w, h, drops;
