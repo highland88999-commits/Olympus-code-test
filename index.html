@@ -3,387 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ROSE GARDEN — GHOST PROTOCOL</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>OLYMPUS | ONLINE SHOPPING MALL</title>
     <style>
         :root {
-            --hologram-blue: #00f3ff;
-            --neon-pink: #ff00ff;
-            --black-bloom: rgba(0, 0, 0, 0.94);
-            --glow: 0 0 25px rgba(0, 243, 255, 0.6);
-            --transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            --neon-cyan: #00f2ff;
+            --neon-purple: #bc13fe;
+            --black-bloom: #050505;
+            --grid-border: rgba(188, 19, 254, 0.25);
+            --glass-bg: rgba(20, 20, 25, 0.6);
+            --glass-hover: rgba(188, 19, 254, 0.15);
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
         }
 
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            background: #000; color: #fff;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        #bg-video {
-            position: fixed; top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
-            transform: translate(-50%, -50%);
-            z-index: -2; filter: brightness(0.2) grayscale(0.8);
-            object-fit: cover;
+        body {
+            background-color: var(--black-bloom);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        #rain-canvas {
-            position: fixed; top: 0; left: 0;
-            z-index: -1; pointer-events: none; opacity: 0.3;
+        /* Custom Scrollbar for the Cyberpunk feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--black-bloom);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--grid-border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-purple);
         }
 
-        /* Sidebar Navigation */
-        .menu-btn {
-            position: fixed; top: 25px; left: 25px; z-index: 2100;
-            background: rgba(0,0,0,0.8); border: 1px solid var(--hologram-blue);
-            color: var(--hologram-blue); padding: 12px 18px; border-radius: 4px;
-            cursor: pointer; backdrop-filter: blur(15px); transition: var(--transition);
-        }
-
+        /* --- SIDEBAR NAVIGATION --- */
         .sidebar {
-            position: fixed; top: 0; left: -320px; width: 300px; height: 100%;
-            background: rgba(0, 0, 0, 0.98); border-right: 1px solid var(--hologram-blue);
-            z-index: 2000; transition: var(--transition); padding: 80px 20px;
-            display: flex; flex-direction: column; overflow-y: auto;
+            width: 280px;
+            background: rgba(0, 0, 0, 0.85);
+            border-right: 1px solid var(--grid-border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
         }
-        .sidebar.active { left: 0; }
+
+        .brand-header {
+            padding: 0 25px 30px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--neon-cyan);
+            border-bottom: 1px solid var(--grid-border);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+        }
+
         .menu-link {
-            color: #fff; text-decoration: none; font-size: 0.7rem;
-            letter-spacing: 3px; text-transform: uppercase; padding: 15px;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.05); cursor: pointer;
+            padding: 15px 25px;
+            text-decoration: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .menu-link:hover { color: var(--hologram-blue); background: rgba(0,243,255,0.05); }
 
-        /* Main Display Area */
-        .overlay { position: relative; z-index: 10; padding: 100px 20px; max-width: 1500px; margin: 0 auto; text-align: center; }
-        
-        h1 { font-size: clamp(1.8rem, 8vw, 4.5rem); letter-spacing: 15px; text-shadow: var(--glow); margin: 0; }
-        .cat-title { color: var(--hologram-blue); letter-spacing: 10px; font-size: 1.2rem; margin: 40px 0; text-transform: uppercase; }
-
-        /* Multiverse Home Slider */
-        .world-breaker-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px; margin-bottom: 50px; padding: 20px;
+        .menu-link:hover, .menu-link.active {
+            color: var(--neon-cyan);
+            background: linear-gradient(90deg, var(--glass-hover) 0%, transparent 100%);
+            padding-left: 35px;
+            border-left: 4px solid var(--neon-cyan);
         }
-        .world-breaker-card {
-            aspect-ratio: 16/9; background: #000; border: 2px solid var(--hologram-blue);
-            border-radius: 8px; position: relative; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; text-decoration: none; transition: var(--transition);
+
+        /* --- MAIN VIEWPORT --- */
+        .viewport {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
         }
-        .world-breaker-card:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 243, 255, 0.3); border-color: #fff; }
 
-        /* Section Handling */
-        .content-section { display: none; width: 100%; animation: fadeIn 0.6s ease forwards; }
-        .content-section.active { display: block; }
+        /* --- TOP SEARCH NAV --- */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(5, 5, 5, 0.9);
+            border-bottom: 1px solid var(--grid-border);
+            backdrop-filter: blur(5px);
+            z-index: 5;
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .search-container {
+            position: relative;
+            width: 450px;
+        }
 
-        /* Grid & Standard Cards */
+        #mallSearch {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--grid-border);
+            padding: 14px 20px;
+            border-radius: 6px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        #mallSearch:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        #mallSearch::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .system-status {
+            color: var(--neon-purple);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(188, 19, 254, 0.5);
+        }
+
+        /* --- CONTENT AREA & GRID --- */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+
         .icon-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 20px; width: 100%; overflow: hidden; 
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 25px;
+            position: relative;
+            min-height: 200px;
         }
 
-        .hologram-card {
-            aspect-ratio: 1/1.1; background: var(--black-bloom);
-            border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-decoration: none; position: relative; transition: var(--transition);
+        .grid-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--grid-border);
+            padding: 30px 15px;
+            text-align: center;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: var(--text-main);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .hologram-card:hover { transform: translateY(-5px); border-color: #fff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.1); }
 
-        /* Video Mask System */
-        .video-mask {
-            width: 70px; height: 70px; margin-bottom: 12px;
-            -webkit-mask-size: contain; mask-size: contain;
-            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-            -webkit-mask-position: center; mask-position: center;
+        .grid-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-25deg);
+            transition: 0.5s;
         }
-        .masked-video { width: 100%; height: 100%; object-fit: cover; filter: brightness(1.2); }
 
-        /* SVG Masks */
-        .mask-hat { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 19C5 19 6 17 6 15V10C6 6 9 3 12 3C15 3 18 6 18 10V15C18 17 19 19 22 19H2"/></svg>'); }
-        .mask-shirt { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2L2 5V11L7 9V22H17V9L22 11V5L17 2H7Z"/></svg>'); }
-        .mask-pants { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2L4 22H10L12 11L14 22H20L18 2H6Z"/></svg>'); }
-        .mask-suit { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L4 7V22H20V7L12 2ZM12 7L15 12H9L12 7Z"/></svg>'); }
-        .mask-dress { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L6 7L4 22H20L18 7L12 2Z"/></svg>'); }
-        .mask-child { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/></svg>'); }
-        .mask-travel { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16V14L13 9V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V9L2 14V16L10 13.5V19L8 20.5V22L11.5 21L15 22V20.5L13 19V13.5L21 16Z"/></svg>'); }
-        .mask-fintech { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>'); }
-        .mask-house { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/></svg>'); }
-        .mask-builder { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>'); }
-        .mask-market { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16.5C21 16.88 20.79 17.21 20.47 17.38L12.57 21.82C12.41 21.94 12.21 22 12 22C11.79 22 11.59 21.94 11.43 21.82L3.53 17.38C3.21 17.21 3 16.88 3 16.5V7.5C3 7.12 3.21 6.79 3.53 6.62L11.43 2.18C11.59 2.06 11.79 2 12 2C12.21 2 12.41 2.06 12.57 2.18L20.47 6.62C20.79 6.79 21 7.12 21 7.5V16.5Z"/></svg>'); }
-        .mask-food { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9H9V2H7V9H5V2H3V9C3 11.12 4.66 12.84 6.75 12.97V22H9.25V12.97C11.34 12.84 13 11.12 13 9V2H11V9ZM16 6V14H18.5V22H21V2C18.24 2 16 4.24 16 6Z"/></svg>'); }
-        .mask-play { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 5V19L19 12L8 5Z"/></svg>'); }
-        .mask-gate { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>'); }
-
-        .label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: #fff; opacity: 0.6; text-align: center; }
-
-        /* Controls */
-        .control-deck {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 80%; max-width: 450px; background: rgba(0,0,0,0.85);
-            border: 1px solid var(--hologram-blue); border-radius: 40px;
-            padding: 10px 20px; display: flex; justify-content: space-around;
-            z-index: 1500; pointer-events: none; backdrop-filter: blur(15px);
+        .grid-item:hover::before {
+            left: 200%;
         }
-        .slider-group { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
-        input[type=range] { appearance: none; height: 50px; width: 4px; background: rgba(0,243,255,0.2); cursor: pointer; writing-mode: bt-lr; }
-        .slider-label { font-size: 0.5rem; margin-top: 5px; color: var(--hologram-blue); text-transform: uppercase; }
 
-        footer { padding: 50px; opacity: 0.1; letter-spacing: 10px; font-size: 0.5rem; text-align: center; }
+        .grid-item:hover {
+            background: var(--glass-hover);
+            border-color: var(--neon-purple);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(188, 19, 254, 0.3) inset;
+            color: white;
+        }
+
+        .icon-box {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+            transition: 0.3s;
+        }
+
+        .grid-item:hover .icon-box {
+            transform: scale(1.1);
+        }
+
+        .item-name {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Global Sweep Animation */
+        @keyframes sweep {
+            0% { transform: translateX(-150%) skewX(-25deg); }
+            100% { transform: translateX(300%) skewX(-25deg); }
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0; left: 0; width: 30%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(0, 242, 255, 0.03), transparent);
+            pointer-events: none;
+            animation: sweep 2.5s infinite linear;
+            z-index: 0;
+        }
+
+        /* Background Grid Lines */
+        .bg-grid {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(188, 19, 254, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(188, 19, 254, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
-    <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-
-    <nav class="sidebar" id="sidebar">
-        <a class="menu-link" onclick="showSection('home')">Home / Multiverse</a>
-        <a class="menu-link" onclick="showSection('hats')">Hats & Headwear</a>
-        <a class="menu-link" onclick="showSection('shirts')">T-Shirts & Graphics</a>
-        <a class="menu-link" onclick="showSection('pants')">Pants & Bottoms</a>
-        <a class="menu-link" onclick="showSection('suits')">Suits & Formal</a>
-        <a class="menu-link" onclick="showSection('ladies')">Ladies' Fashion</a>
-        <a class="menu-link" onclick="showSection('kids')">Children's Wear</a>
-        <a class="menu-link" onclick="showSection('travel')">Travel & Vacations</a>
-        <a class="menu-link" onclick="showSection('fintech')">Financial Services</a>
-        <a class="menu-link" onclick="showSection('realestate')">Real Estate</a>
-        <a class="menu-link" onclick="showSection('builders')">Website Builders</a>
-        <a class="menu-link" onclick="showSection('marketing')">Digital Marketing</a>
-        <a class="menu-link" onclick="showSection('food')">Food & Beverage</a>
-        <a class="menu-link" onclick="showSection('entertainment')">Streaming & Ent.</a>
-        <a class="menu-link" onclick="showSection('funeral')">Elysium Gate</a>
+    <nav class="sidebar">
+        <div class="brand-header">OLYMPUS MALL</div>
+        <a class="menu-link active" onclick="renderCategory('ai_saas', this)">AI & SaaS <span>〉</span></a>
+        <a class="menu-link" onclick="renderCategory('web3indie', this)">Web3 Indie <span>〉</span></a>
+        <a class="menu-link" onclick="renderCategory('housingRentals', this)">Housing Rentals <span>〉</span></a>
+        <a class="menu-link" onclick="renderCategory('vehicleRentals', this)">Vehicle Rentals <span>〉</span></a>
+        <a class="menu-link" onclick="renderCategory('vehiclePurchase', this)">Vehicle Sales <span>〉</span></a>
+        <a class="menu-link" onclick="renderCategory('web3jobs', this)">Web3 Jobs <span>〉</span></a>
+        <a class="menu-link" onclick="renderCategory('globaljobs', this)">Global Jobs <span>〉</span></a>
+        <a class="menu-link" onclick="renderCategory('privacy', this)">Privacy Shield <span>〉</span></a>
     </nav>
 
-    <video muted loop playsinline id="bg-video">
-        <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-    </video>
-
-    <canvas id="rain-canvas"></canvas>
-
-    <div class="overlay">
-        <h1 id="main-header">THE ROSE GARDEN</h1>
-        <div class="cat-title" id="cat-indicator">GHOST PROTOCOL</div>
-
-        <section id="home" class="content-section active">
-            <div class="world-breaker-container">
-                <a href="https://olympus-lac.vercel.app/" target="_blank" class="world-breaker-card">
-                    <div class="video-mask mask-gate" style="width:100px; height:100px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label" style="font-size:0.9rem; letter-spacing:6px;">OLYMPUS</div>
-                </a>
-                <a href="https://architect-artemis.vercel.app/" target="_blank" class="world-breaker-card">
-                    <div class="video-mask mask-builder" style="width:100px; height:100px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label" style="font-size:0.9rem; letter-spacing:6px;">ARTEMIS</div>
-                </a>
-                <a href="https://space-falcon.emergent.host/" target="_blank" class="world-breaker-card">
-                    <div class="video-mask mask-travel" style="width:100px; height:100px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label" style="font-size:0.9rem; letter-spacing:6px;">SPACE FALCON</div>
-                </a>
+    <div class="viewport">
+        <div class="bg-grid"></div>
+        
+        <header class="top-nav">
+            <div class="search-container">
+                <input type="text" id="mallSearch" placeholder="Initialize global search override..." onkeyup="searchMall()">
             </div>
-        </section>
+            <div class="system-status" id="clock">SYSTEM ONLINE: CALIBRATING...</div>
+        </header>
 
-        <section id="funeral" class="content-section">
-            <div class="icon-grid" style="grid-template-columns: 1fr; max-width: 400px; margin: 0 auto;">
-                <a href="https://the-afterlife.vercel.app/" target="_blank" class="hologram-card" style="border-color: var(--neon-pink); border-width: 2px;">
-                    <div class="video-mask mask-gate" style="width:120px; height:120px; filter: hue-rotate(300deg);">
-                        <video class="masked-video" muted loop playsinline autoplay>
-                            <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="label" style="color: var(--neon-pink); font-size: 1rem; letter-spacing: 5px;">ENTER ELYSIUM</div>
-                </a>
-            </div>
-        </section>
-
-        <section id="hats" class="content-section"><div class="icon-grid" id="grid-hats"></div></section>
-        <section id="shirts" class="content-section"><div class="icon-grid" id="grid-shirts"></div></section>
-        <section id="pants" class="content-section"><div class="icon-grid" id="grid-pants"></div></section>
-        <section id="suits" class="content-section"><div class="icon-grid" id="grid-suits"></div></section>
-        <section id="ladies" class="content-section"><div class="icon-grid" id="grid-ladies"></div></section>
-        <section id="kids" class="content-section"><div class="icon-grid" id="grid-kids"></div></section>
-        <section id="travel" class="content-section"><div class="icon-grid" id="grid-travel"></div></section>
-        <section id="fintech" class="content-section"><div class="icon-grid" id="grid-fintech"></div></section>
-        <section id="realestate" class="content-section"><div class="icon-grid" id="grid-realestate"></div></section>
-        <section id="builders" class="content-section"><div class="icon-grid" id="grid-builders"></div></section>
-        <section id="marketing" class="content-section"><div class="icon-grid" id="grid-marketing"></div></section>
-        <section id="food" class="content-section"><div class="icon-grid" id="grid-food"></div></section>
-        <section id="entertainment" class="content-section"><div class="icon-grid" id="grid-entertainment"></div></section>
-
-        <footer>ESTABLISHED BY MERLIN — YEAR 2026</footer>
-    </div>
-
-    <div class="control-deck">
-        <div class="slider-group"><input type="range" id="zoom-range" min="150" max="400" value="210"><span class="slider-label">Scale</span></div>
-        <div class="slider-group"><input type="range" id="bloom-range" min="5" max="100" value="20"><span class="slider-label">Bloom</span></div>
+        <main class="main-content">
+            <div id="sectionHeading" class="section-title">Department: AI & SAAS</div>
+            <div class="icon-grid" id="mallGrid">
+                <div class="scan-line"></div>
+                </div>
+        </main>
     </div>
 
     <script>
-        const linkData = {
-            hats: [
-                {n: "Village Hat Shop", u: "https://www.villagehatshop.com", m: "mask-hat"},
-                {n: "Hats.com", u: "https://hats.com", m: "mask-hat"},
-                {n: "Goorin Bros.", u: "https://goorin.com", m: "mask-hat"},
-                {n: "Chapel Hats", u: "https://www.chapelhats.com", m: "mask-hat"},
-                {n: "Lids", u: "https://www.lids.com", m: "mask-hat"},
-                {n: "Hat Club", u: "https://www.hatclub.com", m: "mask-hat"},
-                {n: "Hat Heaven", u: "https://hatheaven.com", m: "mask-hat"},
-                {n: "New Era Cap", u: "https://www.neweracap.com", m: "mask-hat"}
+        // --- MASTER DATA OBJECT ---
+        const mallData = {
+            ai_saas: [
+                {n: "Midjourney", u: "https://www.midjourney.com", i: "🎨"},
+                {n: "Claude", u: "https://claude.ai", i: "🧠"},
+                {n: "Perplexity", u: "https://www.perplexity.ai", i: "🔍"},
+                {n: "Grok", u: "https://grok.x.ai", i: "🤖"},
+                {n: "Cursor", u: "https://cursor.sh", i: "💻"},
+                {n: "RunwayML", u: "https://runwayml.com", i: "🎬"},
+                {n: "Notion AI", u: "https://www.notion.so/product/ai", i: "📝"}
             ],
-            shirts: [
-                {n: "Amazon", u: "https://www.amazon.com", m: "mask-shirt"},
-                {n: "Uniqlo", u: "https://www.uniqlo.com", m: "mask-shirt"},
-                {n: "Threadheads", u: "https://threadheads.com", m: "mask-shirt"},
-                {n: "Printful", u: "https://www.printful.com", m: "mask-shirt"},
-                {n: "Custom Ink", u: "https://www.customink.com", m: "mask-shirt"},
-                {n: "TeePublic", u: "https://www.teepublic.com", m: "mask-shirt"},
-                {n: "Into The AM", u: "https://www.intotheam.com", m: "mask-shirt"},
-                {n: "Urban Outfitters", u: "https://www.urbanoutfitters.com", m: "mask-shirt"},
-                {n: "Etsy", u: "https://www.etsy.com", m: "mask-shirt"},
-                {n: "Threadless", u: "https://www.threadless.com", m: "mask-shirt"}
+            web3indie: [
+                {n: "Lenster", u: "https://lenster.xyz", i: "🌿"},
+                {n: "Mirror", u: "https://mirror.xyz", i: "🪞"},
+                {n: "Phantom", u: "https://phantom.app", i: "👻"},
+                {n: "MetaMask", u: "https://metamask.io", i: "🦊"},
+                {n: "Gitcoin", u: "https://gitcoin.co", i: "🪙"},
+                {n: "Sanctum", u: "https://sanctum.so", i: "🛡️"},
+                {n: "Parcl", u: "https://parcl.co", i: "🏙️"}
             ],
-            pants: [
-                {n: "Uniqlo", u: "https://www.uniqlo.com", m: "mask-pants"},
-                {n: "ASOS", u: "https://www.asos.com", m: "mask-pants"},
-                {n: "Everlane", u: "https://www.everlane.com", m: "mask-pants"},
-                {n: "Levi’s", u: "https://www.levi.com", m: "mask-pants"},
-                {n: "Lululemon", u: "https://shop.lululemon.com", m: "mask-pants"},
-                {n: "Bonobos", u: "https://bonobos.com", m: "mask-pants"},
-                {n: "Abercrombie", u: "https://www.abercrombie.com", m: "mask-pants"},
-                {n: "Zara", u: "https://www.zara.com", m: "mask-pants"}
+            housingRentals: [
+                {n: "Zillow", u: "https://www.zillow.com/rentals", i: "🏠"},
+                {n: "Apartments.com", u: "https://www.apartments.com", i: "🏢"},
+                {n: "Zumper", u: "https://www.zumper.com", i: "📍"},
+                {n: "Airbnb", u: "https://www.airbnb.com", i: "✈️"},
+                {n: "Vrbo", u: "https://www.vrbo.com", i: "🏖️"},
+                {n: "Furnished Finder", u: "https://www.furnishedfinder.com", i: "🛋️"}
             ],
-            suits: [
-                {n: "SuitShop", u: "https://suitshop.com", m: "mask-suit"},
-                {n: "Spier & Mackay", u: "https://www.spierandmackay.com", m: "mask-suit"},
-                {n: "Indochino", u: "https://www.indochino.com", m: "mask-suit"},
-                {n: "SuitSupply", u: "https://suitsupply.com", m: "mask-suit"},
-                {n: "Brooks Brothers", u: "https://www.brooksbrothers.com", m: "mask-suit"},
-                {n: "Jos. A. Bank", u: "https://www.josbank.com", m: "mask-suit"}
+            vehicleRentals: [
+                {n: "DiscoverCars", u: "https://www.discovercars.com", i: "🚗"},
+                {n: "Turo", u: "https://turo.com", i: "🔑"},
+                {n: "Sixt", u: "https://www.sixt.com", i: "🏎️"},
+                {n: "Zipcar", u: "https://www.zipcar.com", i: "⏱️"},
+                {n: "AutoSlash", u: "https://www.autoslash.com", i: "📉"},
+                {n: "Rentalcars", u: "https://www.rentalcars.com", i: "🌐"}
             ],
-            ladies: [
-                {n: "ASOS", u: "https://www.asos.com", m: "mask-dress"},
-                {n: "Anthropologie", u: "https://www.anthropologie.com", m: "mask-dress"},
-                {n: "Mango", u: "https://shop.mango.com", m: "mask-dress"},
-                {n: "Zara", u: "https://www.zara.com", m: "mask-dress"},
-                {n: "Everlane", u: "https://www.everlane.com", m: "mask-dress"},
-                {n: "Nordstrom", u: "https://www.nordstrom.com", m: "mask-dress"},
-                {n: "Reformation", u: "https://www.thereformation.com", m: "mask-dress"},
-                {n: "Aritzia", u: "https://www.aritzia.com", m: "mask-dress"}
+            vehiclePurchase: [
+                {n: "Cars.com", u: "https://www.cars.com", i: "🚘"},
+                {n: "AutoTempest", u: "https://www.autotempest.com", i: "🌪️"},
+                {n: "Carvana", u: "https://www.carvana.com", i: "🏗️"},
+                {n: "KBB", u: "https://www.kbb.com", i: "📘"},
+                {n: "Bring a Trailer", u: "https://bringatrailer.com", i: "🏁"},
+                {n: "eBay Motors", u: "https://www.ebay.com/motors", i: "📦"}
             ],
-            kids: [
-                {n: "Children's Place", u: "https://www.childrensplace.com", m: "mask-child"},
-                {n: "H&M Kids", u: "https://www2.hm.com/en_us/kids.html", m: "mask-child"},
-                {n: "Gap Kids", u: "https://www.gap.com/gap-kids", m: "mask-child"},
-                {n: "Carter's", u: "https://www.cartersoshkosh.ca", m: "mask-child"},
-                {n: "Uniqlo Kids", u: "https://www.uniqlo.com", m: "mask-child"},
-                {n: "Hanna Andersson", u: "https://www.hannaandersson.com", m: "mask-child"}
+            web3jobs: [
+                {n: "Web3 Career", u: "https://web3.career/", i: "🔗"},
+                {n: "CryptoJobsList", u: "https://cryptojobslist.com/", i: "📈"},
+                {n: "Remote3", u: "https://remote3.co/", i: "🌍"},
+                {n: "Calyptus", u: "https://www.calyptus.co/", i: "🎮"}
             ],
-            travel: [
-                {n: "Booking.com", u: "https://www.booking.com", m: "mask-travel"},
-                {n: "Expedia", u: "https://www.expedia.com", m: "mask-travel"},
-                {n: "Airbnb", u: "https://www.airbnb.com", m: "mask-travel"},
-                {n: "Kayak", u: "https://www.kayak.com", m: "mask-travel"},
-                {n: "Skyscanner", u: "https://www.skyscanner.com", m: "mask-travel"},
-                {n: "Priceline", u: "https://www.priceline.com", m: "mask-travel"}
+            globaljobs: [
+                {n: "Indeed", u: "https://www.indeed.com", i: "💼"},
+                {n: "LinkedIn", u: "https://www.linkedin.com/jobs/", i: "🤝"},
+                {n: "Glassdoor", u: "https://www.glassdoor.com", i: "🏢"},
+                {n: "Wellfound", u: "https://wellfound.com", i: "🚀"},
+                {n: "FlexJobs", u: "https://www.flexjobs.com", i: "💻"}
             ],
-            fintech: [
-                {n: "SoFi", u: "https://www.sofi.com", m: "mask-fintech"},
-                {n: "Wealthsimple", u: "https://www.wealthsimple.com", m: "mask-fintech"},
-                {n: "Chime", u: "https://www.chime.com", m: "mask-fintech"},
-                {n: "Ally Bank", u: "https://www.ally.com", m: "mask-fintech"},
-                {n: "EQ Bank", u: "https://www.eqbank.ca", m: "mask-fintech"},
-                {n: "Robinhood", u: "https://robinhood.com", m: "mask-fintech"},
-                {n: "Rocket Money", u: "https://www.rocketmoney.com", m: "mask-fintech"},
-                {n: "KOHO", u: "https://www.koho.ca", m: "mask-fintech"}
-            ],
-            realestate: [
-                {n: "Zillow", u: "https://www.zillow.com", m: "mask-house"},
-                {n: "Realtor.com", u: "https://www.realtor.com", m: "mask-house"},
-                {n: "Redfin", u: "https://www.redfin.com", m: "mask-house"},
-                {n: "Apartments.com", u: "https://www.apartments.com", m: "mask-house"}
-            ],
-            builders: [
-                {n: "Wix", u: "https://www.wix.com", m: "mask-builder"},
-                {n: "Squarespace", u: "https://www.squarespace.com", m: "mask-builder"},
-                {n: "Shopify", u: "https://www.shopify.com", m: "mask-builder"},
-                {n: "Webflow", u: "https://webflow.com", m: "mask-builder"},
-                {n: "Canva", u: "https://www.canva.com", m: "mask-builder"}
-            ],
-            marketing: [
-                {n: "HubSpot", u: "https://www.hubspot.com", m: "mask-market"},
-                {n: "SEMrush", u: "https://www.semrush.com", m: "mask-market"},
-                {n: "Mailchimp", u: "https://mailchimp.com", m: "mask-market"},
-                {n: "ChatGPT", u: "https://chat.openai.com", m: "mask-market"}
-            ],
-            food: [
-                {n: "Uber Eats", u: "https://www.ubereats.com", m: "mask-food"},
-                {n: "DoorDash", u: "https://www.doordash.com", m: "mask-food"},
-                {n: "HelloFresh", u: "https://www.hellofresh.com", m: "mask-food"}
-            ],
-            entertainment: [
-                {n: "Netflix", u: "https://www.netflix.com", m: "mask-play"},
-                {n: "Disney+", u: "https://www.disneyplus.com", m: "mask-play"},
-                {n: "Spotify", u: "https://www.spotify.com", m: "mask-play"},
-                {n: "Apple Music", u: "https://www.apple.com/apple-music", m: "mask-play"}
+            privacy: [
+                {n: "NordVPN", u: "https://nordvpn.com", i: "🛡️"},
+                {n: "ProtonVPN", u: "https://protonvpn.com", i: "⚛️"},
+                {n: "Mullvad", u: "https://mullvad.net", i: "🔒"},
+                {n: "TorGuard", u: "https://torguard.net", i: "🥷"}
             ]
         };
 
-        // Populate grids
-        Object.keys(linkData).forEach(cat => {
-            const grid = document.getElementById(`grid-${cat}`);
-            if(!grid) return;
-            linkData[cat].forEach(site => {
-                grid.innerHTML += `
-                    <a href="${site.u}" target="_blank" class="hologram-card">
-                        <div class="video-mask ${site.m}">
-                            <video class="masked-video" muted loop playsinline autoplay>
-                                <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                        <div class="label">${site.n}</div>
-                    </a>`;
-            });
-        });
+        // --- RENDER LOGIC ---
+        let currentCategory = 'ai_saas';
 
-        function showSection(id) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(id);
-            if(target) target.classList.add('active');
+        function renderCategory(cat, element = null) {
+            currentCategory = cat;
+            const grid = document.getElementById('mallGrid');
+            const title = document.getElementById('sectionHeading');
             
-            const indicator = document.getElementById('cat-indicator');
-            if (id === 'home') {
-                indicator.innerText = 'GHOST PROTOCOL';
-            } else if (id === 'funeral') {
-                indicator.innerText = 'ELYSIUM GATE';
-            } else {
-                indicator.innerText = id.replace(/([A-Z])/g, ' $1').toUpperCase();
+            // Handle Active Sidebar State
+            if (element) {
+                document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
+                element.classList.add('active');
             }
+
+            // Format Title dynamically based on key
+            const formattedTitle = cat.replace(/([A-Z])/g, ' $1').toUpperCase();
+            title.innerText = `DEPARTMENT: ${formattedTitle}`;
             
-            toggleSidebar();
-            window.scrollTo(0,0);
+            // Clear grid and maintain the scan line
+            grid.innerHTML = '<div class="scan-line"></div>';
+
+            // Inject the cards
+            mallData[cat].forEach(item => {
+                grid.innerHTML += buildCard(item);
+            });
+            
+            // Clear search bar if navigating via sidebar
+            document.getElementById('mallSearch').value = '';
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+        // --- GLOBAL SEARCH ENGINE ---
+        function searchMall() {
+            const query = document.getElementById('mallSearch').value.toLowerCase();
+            const grid = document.getElementById('mallGrid');
+            const title = document.getElementById('sectionHeading');
+            
+            if (query.length > 0) {
+                title.innerText = "OVERRIDE: GLOBAL SEARCH RESULTS";
+                grid.innerHTML = '<div class="scan-line"></div>';
+                
+                // Unhighlight sidebar
+                document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
+
+                let found = false;
+                Object.keys(mallData).forEach(cat => {
+                    mallData[cat].forEach(item => {
+                        if (item.n.toLowerCase().includes(query)) {
+                            grid.innerHTML += buildCard(item);
+                            found = true;
+                        }
+                    });
+                });
+
+                if(!found) {
+                    grid.innerHTML += `<div style="color: var(--neon-purple); padding: 20px; font-weight: bold;">[!] NO MATCHES FOUND IN DATABASE.</div>`;
+                }
+
+            } else {
+                // If search is empty, revert to the last clicked category
+                const activeSidebarElement = Array.from(document.querySelectorAll('.menu-link'))
+                    .find(el => el.getAttribute('onclick').includes(currentCategory));
+                
+                renderCategory(currentCategory, activeSidebarElement);
+            }
         }
 
-        // Ambient Rain
-        const canvas = document.getElementById('rain-canvas');
-        const ctx = canvas.getContext('2d');
-        let w, h, drops;
-        function initRain() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; drops = Array(Math.floor(w/20)).fill(1); }
-        function drawRain() { ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.fillRect(0,0,w,h); ctx.fillStyle = '#00f3ff'; ctx.font = '12px monospace'; drops.forEach((y, i) => { ctx.fillText('✧', i*20, y*20); if(y*20 > h && Math.random() > 0.98) drops[i]=0; drops[i]++; }); }
-        setInterval(drawRain, 50); initRain(); window.onresize = initRain;
+        // HTML string builder for grid items
+        function buildCard(item) {
+            return `
+                <a href="${item.u}" target="_blank" class="grid-item">
+                    <span class="icon-box">${item.i}</span>
+                    <span class="item-name">${item.n}</span>
+                </a>`;
+        }
 
-        // UI Controls
-        document.getElementById('zoom-range').oninput = (e) => {
-            document.querySelectorAll('.icon-grid').forEach(g => g.style.gridTemplateColumns = `repeat(auto-fit, minmax(${e.target.value}px, 1fr))`);
-        };
-        document.getElementById('bloom-range').oninput = (e) => {
-            document.getElementById('bg-video').style.filter = `brightness(${e.target.value/100}) grayscale(0.8)`;
+        // --- REALTIME CLOCK SYSTEM ---
+        function updateClock() {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0];
+            document.getElementById('clock').innerText = `SYSTEM ONLINE: ${dateStr} [${timeStr}]`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- SYSTEM INIT ---
+        window.onload = () => {
+            const firstNavElement = document.querySelector('.menu-link');
+            renderCategory('ai_saas', firstNavElement);
         };
     </script>
 </body>
