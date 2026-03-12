@@ -8,349 +8,423 @@
     <style>
         :root {
             --hologram-blue: #00f3ff;
-            --black-bloom: rgba(0, 0, 0, 0.88);
-            --glow: 0 0 30px rgba(0, 243, 255, 0.4);
+            --neon-pink: #ff00ff;
+            --black-bloom: rgba(0, 0, 0, 0.85);
+            --glow: 0 0 20px rgba(0, 243, 255, 0.4);
+            --transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
+        /* Base Architecture */
         body, html {
-            margin: 0; padding: 0;
-            width: 100%; min-height: 100%;
-            overflow-y: auto;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             background: #000;
             color: #fff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
+        /* Background Layers */
         #bg-video {
-            position: fixed; top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
             transform: translate(-50%, -50%);
             z-index: -2;
-            filter: brightness(0.45) grayscale(0.25);
+            filter: brightness(0.4) grayscale(0.3);
             object-fit: cover;
         }
 
         #rain-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1; pointer-events: none; opacity: 0.65;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.6;
         }
 
-        .overlay {
-            position: relative; z-index: 10;
-            padding: 60px 20px 140px;
-            max-width: 1400px; margin: 0 auto;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        header { text-align: center; margin-bottom: 60px; }
-        h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            letter-spacing: 12px; text-transform: uppercase;
-            margin: 0; text-shadow: var(--glow);
-        }
-        .subtext {
-            color: var(--hologram-blue); font-size: 1.1rem;
-            letter-spacing: 6px; text-transform: uppercase;
-            margin-top: 12px;
-        }
-
-        section { width: 100%; margin-bottom: 100px; }
-        section h2 {
-            font-size: 1.8rem; letter-spacing: 4px;
-            text-align: center; margin-bottom: 40px;
+        /* Sidebar Navigation */
+        .menu-btn {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 2100;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--hologram-blue);
             color: var(--hologram-blue);
+            padding: 12px 18px;
+            font-size: 1.4rem;
+            border-radius: 4px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: var(--transition);
         }
 
+        .menu-btn:hover {
+            background: var(--hologram-blue);
+            color: #000;
+            box-shadow: var(--glow);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            border-right: 1px solid var(--hologram-blue);
+            z-index: 2000;
+            transition: var(--transition);
+            padding: 100px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            backdrop-filter: blur(20px);
+        }
+
+        .sidebar.active { left: 0; }
+
+        .menu-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            transition: 0.3s;
+        }
+
+        .menu-link:hover {
+            color: var(--hologram-blue);
+            padding-left: 20px;
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        /* Main Content Overlay */
+        .overlay {
+            position: relative;
+            z-index: 10;
+            padding: 80px 20px 200px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header { margin-bottom: 80px; text-align: center; }
+        h1 { 
+            font-size: clamp(2rem, 8vw, 5rem); 
+            letter-spacing: 15px; 
+            text-shadow: var(--glow); 
+            margin: 0;
+        }
+        .subtext { 
+            color: var(--hologram-blue); 
+            letter-spacing: 8px; 
+            font-size: 1rem; 
+            margin-top: 15px;
+        }
+
+        section { width: 100%; margin-bottom: 120px; }
+        section h2 { 
+            text-align: center; 
+            letter-spacing: 6px; 
+            color: var(--hologram-blue); 
+            margin-bottom: 50px;
+        }
+
+        /* The Grid & Cards */
         .icon-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 28px; width: 100%;
+            gap: 30px;
+            width: 100%;
         }
 
         .hologram-card {
-            aspect-ratio: 4/4.2;
+            aspect-ratio: 4/4.5;
             background: var(--black-bloom);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 243, 255, 0.25);
-            border-radius: 18px;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative; overflow: hidden;
-            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
         }
 
         .hologram-card:hover {
-            transform: scale(1.06) translateY(-8px);
+            transform: translateY(-10px) scale(1.03);
             border-color: #fff;
-            box-shadow: 0 0 45px rgba(0, 243, 255, 0.35);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.2);
         }
 
         .video-mask {
-            position: absolute; top: 0; left: 0;
+            position: absolute;
             width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
-            z-index: 1; overflow: hidden;
+            opacity: 0; transition: 0.4s;
         }
+
+        .hologram-card.playing .video-mask { opacity: 0.8; }
 
         .masked-video {
-            width: 92%; height: 92%;
-            object-fit: cover; opacity: 0;
-            filter: brightness(1.05) contrast(1.1);
-            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="%23fff"/></svg>');
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="%23fff"/></svg>');
-            transition: opacity 0.4s;
+            width: 90%; height: 90%;
+            object-fit: cover;
+            clip-path: circle(45%);
         }
 
-        .hologram-card.playing .masked-video { opacity: 0.92; }
+        .icon-wrapper { font-size: 4rem; color: #fff; margin-bottom: 15px; z-index: 2; }
+        .label { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; z-index: 2; text-align: center; padding: 0 10px; }
 
-        .icon-wrapper {
-            position: relative; z-index: 2;
-            font-size: 4.8rem; color: #fff;
-            filter: drop-shadow(0 0 18px var(--hologram-blue));
-            margin-bottom: 12px;
-            transition: all 0.3s;
+        /* The Slider Ribbon (Non-Blocking) */
+        .control-deck {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 700px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--hologram-blue);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            overflow-x: auto;
+            gap: 40px;
+            z-index: 1500;
+            backdrop-filter: blur(15px);
+            pointer-events: none; /* Allows scrolling through the deck */
+            scrollbar-width: none;
         }
 
-        .label {
-            position: relative; z-index: 2;
-            color: #fff; font-size: 0.95rem;
-            letter-spacing: 2.5px; text-transform: uppercase;
-            text-align: center; opacity: 0.9;
+        .control-deck::-webkit-scrollbar { display: none; }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+            pointer-events: auto; /* Re-enables interaction for the sliders only */
+        }
+
+        input[type=range].vertical-slider {
+            writing-mode: bt-lr; 
+            appearance: slider-vertical;
+            width: 10px;
+            height: 100px;
+            cursor: crosshair;
+        }
+
+        .slider-label {
+            font-size: 0.65rem;
+            margin-top: 12px;
+            letter-spacing: 2px;
+            color: var(--hologram-blue);
+            text-transform: uppercase;
         }
 
         footer {
-            position: relative; z-index: 10;
-            text-align: center; padding: 40px 20px 70px;
-            font-size: 0.85rem; letter-spacing: 3px;
-            color: rgba(255,255,255,0.6);
-            border-top: 1px solid rgba(0, 243, 255, 0.15);
+            text-align: center;
+            padding: 60px;
+            letter-spacing: 5px;
+            opacity: 0.4;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* === NEW: Slider styles (from previous suggestion) === */
-        .slider-container {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 20px;
-            padding: 20px 0;
-            scrollbar-width: thin;
-            scrollbar-color: var(--hologram-blue) transparent;
-        }
+        /* Anchor point padding */
+        section { scroll-margin-top: 100px; }
 
-        .slider-container::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .slider-container::-webkit-scrollbar-thumb {
-            background: var(--hologram-blue);
-            border-radius: 10px;
-        }
-
-        .slider-page {
-            flex: 0 0 100%;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            scroll-snap-align: start;
-        }
-
-        @media (max-width: 900px) {
-            .slider-page {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(5, 1fr);
-            }
-        }
-
-        /* Make the afterlife card a bit more prominent */
-        .afterlife-hero {
-            max-width: 420px;
-            margin: 0 auto;
-            grid-column: 1 / -1; /* span full width if alone */
-        }
     </style>
 </head>
 <body>
 
+    <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+
+    <nav class="sidebar" id="sidebar">
+        <a href="#" class="menu-link" onclick="toggleSidebar()">Main Frame</a>
+        <a href="#featured" class="menu-link" onclick="toggleSidebar()">Featured Brand</a>
+        <a href="#food" class="menu-link" onclick="toggleSidebar()">Food & Beverage</a>
+        <a href="#hats" class="menu-link" onclick="toggleSidebar()">Hats & Headwear</a>
+        <a href="#shirts" class="menu-link" onclick="toggleSidebar()">Graphics & Shirts</a>
+        <a href="#pants" class="menu-link" onclick="toggleSidebar()">Pants & Bottoms</a>
+        <a href="#afterlife" class="menu-link" onclick="toggleSidebar()">Elysium Gate</a>
+    </nav>
+
     <video muted loop playsinline id="bg-video">
-        <source src="https://github.com/highland88999-commits/Hermes-Landing/blob/main/media/grok_video_2026-03-11-17-05-08.mp4?raw=true" type="video/mp4">
+        <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
     </video>
+
     <canvas id="rain-canvas"></canvas>
 
     <div class="overlay">
-
         <header>
             <h1>THE ROSE GARDEN</h1>
             <div class="subtext">ONLINE SHOPPING MALL</div>
         </header>
 
-        <!-- OLYMPUS — FIRST CARD USERS SEE -->
-        <section>
-            <h2>FEATURED BRAND</h2>
-            <div class="icon-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-                <a href="https://olympus-lac.vercel.app/" class="hologram-card" data-href="https://olympus-lac.vercel.app/" target="_blank" style="max-width: 380px; margin: 0 auto;">
-                    <div class="video-mask">
-                        <video muted loop playsinline class="masked-video" poster="https://picsum.photos/id/1015/300/300">
-                            <source src="https://github.com/highland88999-commits/Hermes-Landing/blob/main/media/grok_video_2026-03-11-17-05-08.mp4?raw=true" type="video/mp4">
-                        </video>
-                    </div>
+        <section id="featured">
+            <h2>FEATURED EXPERIENCE</h2>
+            <div class="icon-grid" style="grid-template-columns: 1fr;">
+                <a href="https://olympus-lac.vercel.app/" class="hologram-card" style="max-width: 500px; margin: 0 auto; aspect-ratio: 16/9;">
+                    <div class="video-mask"><video muted loop playsinline class="masked-video"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
                     <div class="icon-wrapper"><i class="fa-solid fa-crown"></i></div>
-                    <div class="label">OLYMPUS — ENTER THE EXPERIENCE</div>
+                    <div class="label">OLYMPUS — THE PROTOCOL</div>
                 </a>
             </div>
         </section>
 
-        <!-- FOOD & BEVERAGE -->
-        <section>
-            <h2>FOOD &amp; BEVERAGE</h2>
+        <section id="food">
+            <h2>RESTAURANT ROW</h2>
             <div class="icon-grid">
-                <!-- ... (your existing food cards here - kept short for brevity) ... -->
-                <a href="https://www.ubereats.com" class="hologram-card" ... >Uber Eats</a>
-                <!-- ... more ... -->
-            </div>
-        </section>
-
-        <!-- HATS & HEADWEAR -->
-        <section>
-            <h2>HATS &amp; HEADWEAR</h2>
-            <div class="icon-grid">
-                <!-- ... your hats cards ... -->
-            </div>
-        </section>
-
-        <!-- T-SHIRTS & GRAPHICS -->
-        <section>
-            <h2>T-SHIRTS &amp; GRAPHICS</h2>
-            <div class="icon-grid">
-                <!-- ... your t-shirts cards ... -->
-            </div>
-        </section>
-
-        <!-- PANTS & BOTTOMS -->
-        <section>
-            <h2>PANTS &amp; BOTTOMS</h2>
-            <div class="icon-grid">
-                <!-- ... pants cards ... -->
-            </div>
-        </section>
-
-        <!-- SUITS & FORMAL -->
-        <section>
-            <h2>SUITS &amp; FORMAL</h2>
-            <div class="icon-grid">
-                <!-- ... suits cards ... -->
-            </div>
-        </section>
-
-        <!-- LADIES’ WEAR -->
-        <section>
-            <h2>LADIES’ WEAR &amp; FASHION</h2>
-            <div class="icon-grid">
-                <!-- ... ladies wear cards ... -->
-            </div>
-        </section>
-
-        <!-- CHILDREN’S WEAR -->
-        <section>
-            <h2>CHILDREN’S WEAR</h2>
-            <div class="icon-grid">
-                <!-- ... children cards ... -->
-            </div>
-        </section>
-
-        <!-- === NEW SECTION ADDED AT THE VERY END === -->
-        <section>
-            <h2>AFTERLIFE — ELYSIUM GATE</h2>
-            <div class="icon-grid afterlife-hero">
-                <a href="https://the-afterlife.vercel.app/" class="hologram-card" data-href="https://the-afterlife.vercel.app/" target="_blank">
-                    <div class="video-mask">
-                        <video muted loop playsinline class="masked-video" poster="https://picsum.photos/id/237/400/400"> <!-- dark ethereal poster suggestion -->
-                            <source src="https://github.com/highland88999-commits/Hermes-Landing/blob/main/media/grok_video_2026-03-11-17-05-08.mp4?raw=true" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="icon-wrapper"><i class="fa-solid fa-door-open"></i> 🌌</div>
-                    <div class="label">ENTER ELYSIUM<br>THE AFTERLIFE AWAITS</div>
+                <a href="https://www.ubereats.com" target="_blank" class="hologram-card">
+                    <div class="video-mask"><video muted loop playsinline class="masked-video"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="icon-wrapper"><i class="fa-solid fa-utensils"></i></div><div class="label">Uber Eats</div>
+                </a>
+                <a href="https://www.doordash.com" target="_blank" class="hologram-card">
+                    <div class="video-mask"><video muted loop playsinline class="masked-video"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="icon-wrapper"><i class="fa-solid fa-burger"></i></div><div class="label">DoorDash</div>
+                </a>
+                <a href="https://www.skipthedishes.com" target="_blank" class="hologram-card">
+                    <div class="video-mask"><video muted loop playsinline class="masked-video"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="icon-wrapper"><i class="fa-solid fa-pizza-slice"></i></div><div class="label">SkipTheDishes</div>
                 </a>
             </div>
         </section>
 
+        <section id="hats">
+            <h2>HEADWEAR COMMAND</h2>
+            <div class="icon-grid">
+                <a href="https://www.villagehatshop.com" target="_blank" class="hologram-card">
+                    <div class="video-mask"><video muted loop playsinline class="masked-video"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="icon-wrapper"><i class="fa-solid fa-hat-cowboy"></i></div><div class="label">Village Hat Shop</div>
+                </a>
+                <a href="https://hats.com" target="_blank" class="hologram-card">
+                    <div class="video-mask"><video muted loop playsinline class="masked-video"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="icon-wrapper"><i class="fa-solid fa-hat-wizard"></i></div><div class="label">Hats.com</div>
+                </a>
+            </div>
+        </section>
+
+        <section id="afterlife">
+            <h2>THE TERMINAL</h2>
+            <div class="icon-grid" style="grid-template-columns: 1fr;">
+                <a href="https://the-afterlife.vercel.app/" target="_blank" class="hologram-card" style="max-width: 400px; margin: 0 auto; border-color: var(--neon-pink);">
+                    <div class="video-mask"><video muted loop playsinline class="masked-video"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="icon-wrapper" style="color: var(--neon-pink);"><i class="fa-solid fa-door-open"></i></div>
+                    <div class="label">ELYSIUM GATE</div>
+                </a>
+            </div>
+        </section>
+
+        <footer>ESTABLISHED 2026 — BROUGHT TO YOU BY HERMES</footer>
     </div>
 
-    <footer>BROUGHT TO YOU BY HERMES</footer>
+    <div class="control-deck">
+        <div class="slider-group">
+            <input type="range" class="vertical-slider" id="rain-ctrl" min="5" max="100" value="35">
+            <span class="slider-label">Flux</span>
+        </div>
+        <div class="slider-group">
+            <input type="range" class="vertical-slider" id="bloom-ctrl" min="10" max="100" value="40">
+            <span class="slider-label">Bloom</span>
+        </div>
+        <div class="slider-group">
+            <input type="range" class="vertical-slider" id="zoom-ctrl" min="160" max="350" value="210">
+            <span class="slider-label">Scale</span>
+        </div>
+        <div class="slider-group">
+            <input type="range" class="vertical-slider" id="speed-ctrl" min="50" max="200" value="100">
+            <span class="slider-label">Speed</span>
+        </div>
+    </div>
 
     <script>
-        // Cyberpunk colorful digital rain with category symbols
+        // Sidebar Logic
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Rain Logic
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
         let width = canvas.width = window.innerWidth;
         let height = canvas.height = window.innerHeight;
-        const symbols = ['👕','👗','🧥','👖','👟','🧢','👔','🧦','🍔','🍷','✈️','💰','🏠','💻','📣','🎥','👑','🏃','👜','🥾','🏊','❤️','🛏️','👖','👗','👶','🍕','💳','🏡','🛒','📱','📈','🎬'];
-        const fontSize = 14;
+        const symbols = ['0','1',' rose ',' garden ',' nexus ',' vortex '];
+        let fontSize = 14;
         let drops = Array(Math.floor(width / fontSize)).fill(1);
-        const colors = ['#00f3ff','#ff00ff','#00ff00','#ffff00','#ff9900','#9900ff','#00ffff'];
 
         function drawRain() {
-            ctx.fillStyle = 'rgba(0,0,0,0.08)';
+            ctx.fillStyle = 'rgba(0,0,0,0.1)';
             ctx.fillRect(0,0,width,height);
-            for (let i = 0; i < drops.length; i++) {
-                ctx.fillStyle = colors[Math.floor(Math.random()*colors.length)];
-                ctx.font = `${fontSize}px monospace`;
+            ctx.fillStyle = '#00f3ff';
+            ctx.font = fontSize + 'px monospace';
+            for(let i=0; i<drops.length; i++) {
                 const text = symbols[Math.floor(Math.random()*symbols.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                if(drops[i]*fontSize > height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
-        setInterval(drawRain, 35);
+        let rainTicker = setInterval(drawRain, 35);
 
-        // Interaction logic
-        let globalEngaged = false;
+        // Control Deck Listeners
+        document.getElementById('rain-ctrl').addEventListener('input', (e) => {
+            clearInterval(rainTicker);
+            rainTicker = setInterval(drawRain, 110 - e.target.value);
+        });
 
-        function engageAllVideos() {
-            document.querySelectorAll('.masked-video').forEach(v => v.play().catch(() => {}));
-        }
+        document.getElementById('bloom-ctrl').addEventListener('input', (e) => {
+            document.getElementById('bg-video').style.filter = `brightness(${e.target.value/100}) grayscale(0.3)`;
+        });
 
-        document.body.addEventListener('click', () => {
-            if (!globalEngaged) {
-                globalEngaged = true;
-                engageAllVideos();
-            }
-        }, { once: true });
-
-        document.querySelectorAll('.hologram-card').forEach(card => {
-            const video = card.querySelector('.masked-video');
-            let clickedOnce = false;
-
-            card.addEventListener('click', function(e) {
-                if (!globalEngaged) {
-                    globalEngaged = true;
-                    engageAllVideos();
-                }
-
-                if (!clickedOnce) {
-                    video.play().catch(() => {});
-                    card.classList.add('playing');
-                    clickedOnce = true;
-                    e.preventDefault();
-                } else {
-                    window.open(card.getAttribute('data-href'), '_blank');
-                }
+        document.getElementById('zoom-ctrl').addEventListener('input', (e) => {
+            document.querySelectorAll('.icon-grid').forEach(g => {
+                g.style.gridTemplateColumns = `repeat(auto-fit, minmax(${e.target.value}px, 1fr))`;
             });
         });
 
+        // Hover & Engagement
+        document.querySelectorAll('.hologram-card').forEach(card => {
+            const vid = card.querySelector('video');
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('playing');
+                vid.play().catch(()=>{});
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('playing');
+                vid.pause();
+            });
+        });
+
+        // Responsive handling
         window.addEventListener('resize', () => {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             drops = Array(Math.floor(width / fontSize)).fill(1);
         });
 
-        // === Optional: Add slider chunking logic if you want to apply sliders later ===
-        // (Currently not applied to the new section since it has only 1 card)
-        // You can uncomment and adapt the previous slider JS when you add more cards to sections.
+        // Close sidebar on outside click
+        document.addEventListener('click', (e) => {
+            const sb = document.getElementById('sidebar');
+            const btn = document.querySelector('.menu-btn');
+            if(sb.classList.contains('active') && !sb.contains(e.target) && !btn.contains(e.target)) toggleSidebar();
+        });
     </script>
 </body>
 </html>
