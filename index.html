@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE ROSE GARDEN — COMPLETE MULTIVERSE DIRECTORY</title>
+    <title>THE ROSE GARDEN — GHOST PROTOCOL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --hologram-blue: #00f3ff;
             --neon-pink: #ff00ff;
-            --black-bloom: rgba(0, 0, 0, 0.92);
+            --black-bloom: rgba(0, 0, 0, 0.94);
             --glow: 0 0 25px rgba(0, 243, 255, 0.6);
-            --border-glow: 0 0 40px rgba(0, 243, 255, 0.4);
             --transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
@@ -23,18 +22,18 @@
             overflow-x: hidden; scroll-behavior: smooth;
         }
 
-        /* Ambient Layers */
+        /* Ambient background remains static */
         #bg-video {
             position: fixed; top: 50%; left: 50%;
             min-width: 100%; min-height: 100%;
             transform: translate(-50%, -50%);
-            z-index: -2; filter: brightness(0.25) grayscale(0.6);
+            z-index: -2; filter: brightness(0.2) grayscale(0.8);
             object-fit: cover;
         }
 
         #rain-canvas {
             position: fixed; top: 0; left: 0;
-            z-index: -1; pointer-events: none; opacity: 0.35;
+            z-index: -1; pointer-events: none; opacity: 0.3;
         }
 
         /* Sidebar Navigation */
@@ -44,7 +43,6 @@
             color: var(--hologram-blue); padding: 12px 18px; border-radius: 4px;
             cursor: pointer; backdrop-filter: blur(15px); transition: var(--transition);
         }
-        .menu-btn:hover { box-shadow: var(--glow); transform: scale(1.1); }
 
         .sidebar {
             position: fixed; top: 0; left: -320px; width: 300px; height: 100%;
@@ -55,68 +53,60 @@
         .sidebar.active { left: 0; }
         .menu-link {
             color: #fff; text-decoration: none; font-size: 0.7rem;
-            letter-spacing: 3px; text-transform: uppercase; padding: 12px;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.1); transition: 0.3s;
+            letter-spacing: 3px; text-transform: uppercase; padding: 15px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.05); cursor: pointer;
         }
         .menu-link:hover { color: var(--hologram-blue); background: rgba(0,243,255,0.05); }
 
-        /* Main Container */
-        .overlay { position: relative; z-index: 10; padding: 100px 20px 250px; max-width: 1600px; margin: 0 auto; text-align: center; }
+        /* Main Display Area */
+        .overlay { position: relative; z-index: 10; padding: 100px 20px; max-width: 1500px; margin: 0 auto; text-align: center; }
         
-        header { margin-bottom: 80px; }
-        h1 { font-size: clamp(2rem, 10vw, 6rem); letter-spacing: 20px; text-shadow: var(--glow); margin: 0; }
-        .subtext { color: var(--hologram-blue); letter-spacing: 12px; font-size: 0.9rem; margin-top: 15px; text-transform: uppercase; opacity: 0.8; }
+        h1 { font-size: clamp(1.8rem, 8vw, 4.5rem); letter-spacing: 15px; text-shadow: var(--glow); margin: 0; transition: 0.5s; }
+        .cat-title { color: var(--hologram-blue); letter-spacing: 10px; font-size: 1.2rem; margin: 40px 0; text-transform: uppercase; }
 
-        section { width: 100%; margin-bottom: 120px; scroll-margin-top: 120px; }
-        section h2 { 
-            letter-spacing: 8px; color: var(--hologram-blue); 
-            margin-bottom: 40px; text-transform: uppercase; font-size: 1.3rem;
-            border-left: 5px solid var(--hologram-blue); padding-left: 20px; text-align: left;
-        }
-
-        /* The World-Breakers (Top 3) */
-        .world-breaker-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px; margin-bottom: 150px;
+        /* The World-Breakers (Olympus Slider Style) */
+        .world-breaker-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px; margin-bottom: 50px; padding: 20px;
         }
         .world-breaker-card {
-            aspect-ratio: 16/9; background: #000;
-            border: 2px solid var(--hologram-blue); border-radius: 10px;
-            position: relative; overflow: visible; /* BORDER CROSSING ALLOWED */
+            aspect-ratio: 16/9; background: #000; border: 2px solid var(--hologram-blue);
+            border-radius: 8px; position: relative; overflow: visible; /* BORDER CROSSING */
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-decoration: none; transition: var(--transition);
         }
-        .world-breaker-card::after {
-            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
-            border: 1px solid var(--hologram-blue); opacity: 0.3; border-radius: 15px; pointer-events: none;
-        }
-        .world-breaker-card:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(0, 243, 255, 0.4); border-color: #fff; }
+        .world-breaker-card:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 243, 255, 0.3); border-color: #fff; }
 
-        /* Standard Grid & Cards */
+        /* Section Handling */
+        .content-section { display: none; width: 100%; animation: fadeIn 0.6s ease forwards; }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Grid & Standard Cards (No Border Crossing) */
         .icon-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-            gap: 25px; width: 100%; overflow: hidden; /* NO BORDER CROSSING */
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 20px; width: 100%; overflow: hidden; 
         }
 
         .hologram-card {
             aspect-ratio: 1/1.1; background: var(--black-bloom);
-            border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 15px;
+            border: 1px solid rgba(0, 243, 255, 0.1); border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-decoration: none; position: relative; overflow: hidden; transition: var(--transition);
         }
-        .hologram-card:hover { transform: translateY(-8px); border-color: #fff; box-shadow: 0 0 30px rgba(0, 243, 255, 0.1); }
+        .hologram-card:hover { transform: translateY(-5px); border-color: #fff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.1); }
 
         /* Video Mask System */
         .video-mask {
-            width: 70px; height: 70px;
-            position: relative; margin-bottom: 15px;
+            width: 70px; height: 70px; margin-bottom: 12px;
             -webkit-mask-size: contain; mask-size: contain;
             -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
             -webkit-mask-position: center; mask-position: center;
         }
-        .masked-video { width: 100%; height: 100%; object-fit: cover; filter: brightness(1.3); }
+        .masked-video { width: 100%; height: 100%; object-fit: cover; filter: brightness(1.2); }
 
-        /* SVG Masks */
+        /* Mask Assets */
         .mask-hat { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 19C5 19 6 17 6 15V10C6 6 9 3 12 3C15 3 18 6 18 10V15C18 17 19 19 22 19H2"/></svg>'); }
         .mask-shirt { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2L2 5V11L7 9V22H17V9L22 11V5L17 2H7Z"/></svg>'); }
         .mask-pants { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2L4 22H10L12 11L14 22H20L18 2H6Z"/></svg>'); }
@@ -127,26 +117,26 @@
         .mask-fintech { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>'); }
         .mask-house { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z"/></svg>'); }
         .mask-builder { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>'); }
-        .mask-market { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 19.93C7.05 19.44 4 16.08 4 12C4 11.31 4.1 10.65 4.28 10.03L11 16.75V19.93ZM18.91 15.58C18.25 15.83 17.52 16 16.75 16H15V13H13V11H17V9H13V7H15V6.3C17.91 7.23 20 9.87 20 13C20 13.9 19.86 14.77 19.61 15.58L18.91 15.58Z"/></svg>'); }
+        .mask-market { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16.5C21 16.88 20.79 17.21 20.47 17.38L12.57 21.82C12.41 21.94 12.21 22 12 22C11.79 22 11.59 21.94 11.43 21.82L3.53 17.38C3.21 17.21 3 16.88 3 16.5V7.5C3 7.12 3.21 6.79 3.53 6.62L11.43 2.18C11.59 2.06 11.79 2 12 2C12.21 2 12.41 2.06 12.57 2.18L20.47 6.62C20.79 6.79 21 7.12 21 7.5V16.5Z"/></svg>'); }
         .mask-food { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9H9V2H7V9H5V2H3V9C3 11.12 4.66 12.84 6.75 12.97V22H9.25V12.97C11.34 12.84 13 11.12 13 9V2H11V9ZM16 6V14H18.5V22H21V2C18.24 2 16 4.24 16 6Z"/></svg>'); }
         .mask-play { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 5V19L19 12L8 5Z"/></svg>'); }
         .mask-gate { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>'); }
 
-        .label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: #fff; opacity: 0.6; padding: 0 10px; }
+        .label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: #fff; opacity: 0.6; text-align: center; }
 
-        /* Control Deck */
+        /* Controls */
         .control-deck {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 500px; background: rgba(0,0,0,0.85);
+            width: 80%; max-width: 450px; background: rgba(0,0,0,0.85);
             border: 1px solid var(--hologram-blue); border-radius: 40px;
-            padding: 12px 20px; display: flex; justify-content: space-around;
-            z-index: 1500; pointer-events: none; backdrop-filter: blur(20px);
+            padding: 10px 20px; display: flex; justify-content: space-around;
+            z-index: 1500; pointer-events: none; backdrop-filter: blur(15px);
         }
         .slider-group { display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
-        input[type=range] { writing-mode: bt-lr; appearance: slider-vertical; height: 60px; width: 5px; cursor: pointer; }
-        .slider-label { font-size: 0.5rem; margin-top: 5px; letter-spacing: 2px; color: var(--hologram-blue); text-transform: uppercase; }
+        input[type=range] { appearance: none; height: 50px; width: 4px; background: rgba(0,243,255,0.2); cursor: pointer; writing-mode: bt-lr; }
+        .slider-label { font-size: 0.5rem; margin-top: 5px; color: var(--hologram-blue); text-transform: uppercase; }
 
-        footer { padding: 100px; opacity: 0.15; letter-spacing: 12px; font-size: 0.6rem; }
+        footer { padding: 50px; opacity: 0.1; letter-spacing: 10px; font-size: 0.5rem; text-align: center; }
     </style>
 </head>
 <body>
@@ -154,20 +144,21 @@
     <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
 
     <nav class="sidebar" id="sidebar">
-        <a href="#hats" class="menu-link" onclick="toggleSidebar()">Hats & Headwear</a>
-        <a href="#shirts" class="menu-link" onclick="toggleSidebar()">T-Shirts & Graphics</a>
-        <a href="#pants" class="menu-link" onclick="toggleSidebar()">Pants & Bottoms</a>
-        <a href="#suits" class="menu-link" onclick="toggleSidebar()">Suits & Formal</a>
-        <a href="#ladies" class="menu-link" onclick="toggleSidebar()">Ladies' Wear</a>
-        <a href="#kids" class="menu-link" onclick="toggleSidebar()">Children's Wear</a>
-        <a href="#travel" class="menu-link" onclick="toggleSidebar()">Travel & Vacations</a>
-        <a href="#fintech" class="menu-link" onclick="toggleSidebar()">Financial Services</a>
-        <a href="#realestate" class="menu-link" onclick="toggleSidebar()">Real Estate</a>
-        <a href="#builders" class="menu-link" onclick="toggleSidebar()">Website Builders</a>
-        <a href="#marketing" class="menu-link" onclick="toggleSidebar()">Digital Marketing</a>
-        <a href="#food" class="menu-link" onclick="toggleSidebar()">Food & Beverage</a>
-        <a href="#entertainment" class="menu-link" onclick="toggleSidebar()">Entertainment</a>
-        <a href="#funeral" class="menu-link" onclick="toggleSidebar()">Elysium Gate</a>
+        <a class="menu-link" onclick="showSection('home')">Home / Multiverse</a>
+        <a class="menu-link" onclick="showSection('hats')">Hats & Headwear</a>
+        <a class="menu-link" onclick="showSection('shirts')">T-Shirts & Graphics</a>
+        <a class="menu-link" onclick="showSection('pants')">Pants & Bottoms</a>
+        <a class="menu-link" onclick="showSection('suits')">Suits & Formal</a>
+        <a class="menu-link" onclick="showSection('ladies')">Ladies' Fashion</a>
+        <a class="menu-link" onclick="showSection('kids')">Children's Wear</a>
+        <a class="menu-link" onclick="showSection('travel')">Travel & Vacations</a>
+        <a class="menu-link" onclick="showSection('fintech')">Financial Services</a>
+        <a class="menu-link" onclick="showSection('realestate')">Real Estate</a>
+        <a class="menu-link" onclick="showSection('builders')">Website Builders</a>
+        <a class="menu-link" onclick="showSection('marketing')">Digital Marketing</a>
+        <a class="menu-link" onclick="showSection('food')">Food & Beverage</a>
+        <a class="menu-link" onclick="showSection('entertainment')">Streaming & Ent.</a>
+        <a class="menu-link" onclick="showSection('funeral')">Elysium Gate</a>
     </nav>
 
     <video muted loop playsinline id="bg-video">
@@ -177,161 +168,281 @@
     <canvas id="rain-canvas"></canvas>
 
     <div class="overlay">
-        <header>
-            <h1>THE ROSE GARDEN</h1>
-            <div class="subtext">OPERATING SYSTEM DIRECTORY</div>
-        </header>
+        <h1 id="main-header">THE ROSE GARDEN</h1>
+        <div class="cat-title" id="cat-indicator">GHOST PROTOCOL</div>
 
-        <div class="world-breaker-grid">
-            <a href="https://olympus-lac.vercel.app/" target="_blank" class="world-breaker-card">
-                <div class="video-mask mask-gate" style="width:120px; height:120px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                <div class="label" style="font-size:1rem; letter-spacing:8px;">OLYMPUS</div>
-            </a>
-            <a href="https://architect-artemis.vercel.app/" target="_blank" class="world-breaker-card">
-                <div class="video-mask mask-builder" style="width:120px; height:120px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                <div class="label" style="font-size:1rem; letter-spacing:8px;">ARTEMIS</div>
-            </a>
-            <a href="https://space-falcon.emergent.host/" target="_blank" class="world-breaker-card">
-                <div class="video-mask mask-travel" style="width:120px; height:120px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                <div class="label" style="font-size:1rem; letter-spacing:8px;">SPACE FALCON</div>
-            </a>
-        </div>
-
-        <section id="hats">
-            <h2>HATS & HEADWEAR</h2>
-            <div class="icon-grid">
-                <a href="https://www.villagehatshop.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Village Hat Shop</div></a>
-                <a href="https://hats.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Hats.com</div></a>
-                <a href="https://goorin.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Goorin Bros.</div></a>
-                <a href="https://www.chapelhats.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Chapel Hats</div></a>
-                <a href="https://www.lids.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Lids</div></a>
-                <a href="https://www.hatclub.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Hat Club</div></a>
-                <a href="https://hatheaven.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Hat Heaven</div></a>
-                <a href="https://www.neweracap.com" target="_blank" class="hologram-card"><div class="video-mask mask-hat"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">New Era Cap</div></a>
-            </div>
-        </section>
-
-        <section id="shirts">
-            <h2>T-SHIRTS & GRAPHICS</h2>
-            <div class="icon-grid">
-                <a href="https://www.amazon.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Amazon</div></a>
-                <a href="https://www.uniqlo.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Uniqlo</div></a>
-                <a href="https://threadheads.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Threadheads</div></a>
-                <a href="https://www.printful.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Printful</div></a>
-                <a href="https://www.customink.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Custom Ink</div></a>
-                <a href="https://www.teepublic.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">TeePublic</div></a>
-                <a href="https://www.intotheam.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Into The AM</div></a>
-                <a href="https://www.urbanoutfitters.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Urban Outfitters</div></a>
-                <a href="https://www.etsy.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Etsy</div></a>
-                <a href="https://www.threadless.com" target="_blank" class="hologram-card"><div class="video-mask mask-shirt"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Threadless</div></a>
-            </div>
-        </section>
-
-        <section id="fintech">
-            <h2>FINANCIAL SERVICES & FINTECH</h2>
-            <div class="icon-grid">
-                <a href="https://www.wealthsimple.com" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Wealthsimple</div></a>
-                <a href="https://robinhood.com" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Robinhood</div></a>
-                <a href="https://www.sofi.com" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">SoFi</div></a>
-                <a href="https://www.chime.com" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Chime</div></a>
-                <a href="https://www.ally.com" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Ally Bank</div></a>
-                <a href="https://www.eqbank.ca" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">EQ Bank</div></a>
-                <a href="https://www.koho.ca" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">KOHO</div></a>
-                <a href="https://www.rocketmoney.com" target="_blank" class="hologram-card"><div class="video-mask mask-fintech"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Rocket Money</div></a>
-            </div>
-        </section>
-
-        <section id="travel">
-            <h2>TRAVEL & VACATIONS</h2>
-            <div class="icon-grid">
-                <a href="https://www.booking.com" target="_blank" class="hologram-card"><div class="video-mask mask-travel"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Booking.com</div></a>
-                <a href="https://www.expedia.com" target="_blank" class="hologram-card"><div class="video-mask mask-travel"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Expedia</div></a>
-                <a href="https://www.airbnb.com" target="_blank" class="hologram-card"><div class="video-mask mask-travel"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Airbnb</div></a>
-                <a href="https://www.kayak.com" target="_blank" class="hologram-card"><div class="video-mask mask-travel"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Kayak</div></a>
-                <a href="https://www.skyscanner.com" target="_blank" class="hologram-card"><div class="video-mask mask-travel"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Skyscanner</div></a>
-            </div>
-        </section>
-
-        <section id="funeral">
-            <h2>CASKETS & ELYSIUM GATE</h2>
-            <div class="icon-grid">
-                <a href="https://titancasket.com" target="_blank" class="hologram-card"><div class="video-mask mask-gate"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Titan Casket</div></a>
-                <a href="https://trustedcaskets.com" target="_blank" class="hologram-card"><div class="video-mask mask-gate"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Trusted Caskets</div></a>
-                <a href="https://casketdepot.ca" target="_blank" class="hologram-card"><div class="video-mask mask-gate"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">Casket Depot</div></a>
-                <a href="https://the-afterlife.vercel.app/" target="_blank" class="hologram-card" style="border-color: var(--neon-pink);">
-                    <div class="video-mask mask-gate" style="filter: hue-rotate(300deg);"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label" style="color:var(--neon-pink)">ENTER ELYSIUM</div>
+        <section id="home" class="content-section active">
+            <div class="world-breaker-container">
+                <a href="https://olympus-lac.vercel.app/" target="_blank" class="world-breaker-card">
+                    <div class="video-mask mask-gate" style="width:100px; height:100px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label" style="font-size:0.9rem; letter-spacing:6px;">OLYMPUS</div>
+                </a>
+                <a href="https://architect-artemis.vercel.app/" target="_blank" class="world-breaker-card">
+                    <div class="video-mask mask-builder" style="width:100px; height:100px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label" style="font-size:0.9rem; letter-spacing:6px;">ARTEMIS</div>
+                </a>
+                <a href="https://space-falcon.emergent.host/" target="_blank" class="world-breaker-card">
+                    <div class="video-mask mask-travel" style="width:100px; height:100px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
+                    <div class="label" style="font-size:0.9rem; letter-spacing:6px;">SPACE FALCON</div>
                 </a>
             </div>
         </section>
 
-        <footer>DIRECTED BY HERMES — PROTOCOL 2026</footer>
+        <section id="hats" class="content-section">
+            <div class="icon-grid" id="grid-hats"></div>
+        </section>
+
+        <section id="shirts" class="content-section">
+            <div class="icon-grid" id="grid-shirts"></div>
+        </section>
+
+        <section id="pants" class="content-section">
+            <div class="icon-grid" id="grid-pants"></div>
+        </section>
+
+        <section id="suits" class="content-section">
+            <div class="icon-grid" id="grid-suits"></div>
+        </section>
+
+        <section id="ladies" class="content-section">
+            <div class="icon-grid" id="grid-ladies"></div>
+        </section>
+
+        <section id="kids" class="content-section">
+            <div class="icon-grid" id="grid-kids"></div>
+        </section>
+
+        <section id="travel" class="content-section">
+            <div class="icon-grid" id="grid-travel"></div>
+        </section>
+
+        <section id="fintech" class="content-section">
+            <div class="icon-grid" id="grid-fintech"></div>
+        </section>
+
+        <section id="realestate" class="content-section">
+            <div class="icon-grid" id="grid-realestate"></div>
+        </section>
+
+        <section id="builders" class="content-section">
+            <div class="icon-grid" id="grid-builders"></div>
+        </section>
+
+        <section id="marketing" class="content-section">
+            <div class="icon-grid" id="grid-marketing"></div>
+        </section>
+
+        <section id="food" class="content-section">
+            <div class="icon-grid" id="grid-food"></div>
+        </section>
+
+        <section id="entertainment" class="content-section">
+            <div class="icon-grid" id="grid-entertainment"></div>
+        </section>
+
+        <section id="funeral" class="content-section">
+            <div class="icon-grid" id="grid-funeral"></div>
+        </section>
+
+        <footer>ESTABLISHED BY MERLIN — YEAR 2026</footer>
     </div>
 
     <div class="control-deck">
-        <div class="slider-group">
-            <input type="range" id="zoom-range" min="150" max="450" value="230">
-            <span class="slider-label">Scale</span>
-        </div>
-        <div class="slider-group">
-            <input type="range" id="bloom-range" min="10" max="100" value="25">
-            <span class="slider-label">Glow</span>
-        </div>
-        <div class="slider-group">
-            <input type="range" id="rain-range" min="0" max="100" value="40">
-            <span class="slider-label">Flow</span>
-        </div>
+        <div class="slider-group"><input type="range" id="zoom-range" min="150" max="400" value="210"><span class="slider-label">Scale</span></div>
+        <div class="slider-group"><input type="range" id="bloom-range" min="5" max="100" value="20"><span class="slider-label">Bloom</span></div>
     </div>
 
     <script>
-        // Matrix Rain System
-        const canvas = document.getElementById('rain-canvas');
-        const ctx = canvas.getContext('2d');
-        let w, h, drops;
+        const linkData = {
+            hats: [
+                {n: "Village Hat Shop", u: "https://www.villagehatshop.com", m: "mask-hat"},
+                {n: "Hats.com", u: "https://hats.com", m: "mask-hat"},
+                {n: "Goorin Bros.", u: "https://goorin.com", m: "mask-hat"},
+                {n: "Chapel Hats", u: "https://www.chapelhats.com", m: "mask-hat"},
+                {n: "Lids", u: "https://www.lids.com", m: "mask-hat"},
+                {n: "Hat Club", u: "https://www.hatclub.com", m: "mask-hat"},
+                {n: "Hat Heaven", u: "https://hatheaven.com", m: "mask-hat"},
+                {n: "New Era Cap", u: "https://www.neweracap.com", m: "mask-hat"}
+            ],
+            shirts: [
+                {n: "Amazon", u: "https://www.amazon.com", m: "mask-shirt"},
+                {n: "Uniqlo", u: "https://www.uniqlo.com", m: "mask-shirt"},
+                {n: "Threadheads", u: "https://threadheads.com", m: "mask-shirt"},
+                {n: "Printful", u: "https://www.printful.com", m: "mask-shirt"},
+                {n: "Custom Ink", u: "https://www.customink.com", m: "mask-shirt"},
+                {n: "TeePublic", u: "https://www.teepublic.com", m: "mask-shirt"},
+                {n: "Into The AM", u: "https://www.intotheam.com", m: "mask-shirt"},
+                {n: "Urban Outfitters", u: "https://www.urbanoutfitters.com", m: "mask-shirt"},
+                {n: "Etsy", u: "https://www.etsy.com", m: "mask-shirt"},
+                {n: "Threadless", u: "https://www.threadless.com", m: "mask-shirt"}
+            ],
+            pants: [
+                {n: "Uniqlo", u: "https://www.uniqlo.com", m: "mask-pants"},
+                {n: "ASOS", u: "https://www.asos.com", m: "mask-pants"},
+                {n: "Everlane", u: "https://www.everlane.com", m: "mask-pants"},
+                {n: "Levi’s", u: "https://www.levi.com", m: "mask-pants"},
+                {n: "Lululemon", u: "https://shop.lululemon.com", m: "mask-pants"},
+                {n: "Bonobos", u: "https://bonobos.com", m: "mask-pants"},
+                {n: "Abercrombie", u: "https://www.abercrombie.com", m: "mask-pants"},
+                {n: "Zara", u: "https://www.zara.com", m: "mask-pants"}
+            ],
+            suits: [
+                {n: "SuitShop", u: "https://suitshop.com", m: "mask-suit"},
+                {n: "Spier & Mackay", u: "https://www.spierandmackay.com", m: "mask-suit"},
+                {n: "Indochino", u: "https://www.indochino.com", m: "mask-suit"},
+                {n: "SuitSupply", u: "https://suitsupply.com", m: "mask-suit"},
+                {n: "Brooks Brothers", u: "https://www.brooksbrothers.com", m: "mask-suit"},
+                {n: "Jos. A. Bank", u: "https://www.josbank.com", m: "mask-suit"}
+            ],
+            ladies: [
+                {n: "ASOS", u: "https://www.asos.com", m: "mask-dress"},
+                {n: "Anthropologie", u: "https://www.anthropologie.com", m: "mask-dress"},
+                {n: "Mango", u: "https://shop.mango.com", m: "mask-dress"},
+                {n: "Zara", u: "https://www.zara.com", m: "mask-dress"},
+                {n: "Everlane", u: "https://www.everlane.com", m: "mask-dress"},
+                {n: "Nordstrom", u: "https://www.nordstrom.com", m: "mask-dress"},
+                {n: "Reformation", u: "https://www.thereformation.com", m: "mask-dress"},
+                {n: "Aritzia", u: "https://www.aritzia.com", m: "mask-dress"}
+            ],
+            kids: [
+                {n: "Children's Place", u: "https://www.childrensplace.com", m: "mask-child"},
+                {n: "H&M Kids", u: "https://www2.hm.com/en_us/kids.html", m: "mask-child"},
+                {n: "Gap Kids", u: "https://www.gap.com/gap-kids", m: "mask-child"},
+                {n: "Carter's", u: "https://www.cartersoshkosh.ca", m: "mask-child"},
+                {n: "Uniqlo Kids", u: "https://www.uniqlo.com", m: "mask-child"},
+                {n: "Hanna Andersson", u: "https://www.hannaandersson.com", m: "mask-child"}
+            ],
+            travel: [
+                {n: "Booking.com", u: "https://www.booking.com", m: "mask-travel"},
+                {n: "Expedia", u: "https://www.expedia.com", m: "mask-travel"},
+                {n: "Google Travel", u: "https://www.google.com/travel", m: "mask-travel"},
+                {n: "Kayak", u: "https://www.kayak.com", m: "mask-travel"},
+                {n: "Skyscanner", u: "https://www.skyscanner.com", m: "mask-travel"},
+                {n: "Hotels.com", u: "https://www.hotels.com", m: "mask-travel"},
+                {n: "Airbnb", u: "https://www.airbnb.com", m: "mask-travel"},
+                {n: "Rentalcars.com", u: "https://www.rentalcars.com", m: "mask-travel"},
+                {n: "Priceline", u: "https://www.priceline.com", m: "mask-travel"},
+                {n: "Air Canada Vacations", u: "https://vacations.aircanada.com", m: "mask-travel"}
+            ],
+            fintech: [
+                {n: "SoFi", u: "https://www.sofi.com", m: "mask-fintech"},
+                {n: "Chime", u: "https://www.chime.com", m: "mask-fintech"},
+                {n: "Ally Bank", u: "https://www.ally.com", m: "mask-fintech"},
+                {n: "Discover", u: "https://www.discover.com", m: "mask-fintech"},
+                {n: "EQ Bank", u: "https://www.eqbank.ca", m: "mask-fintech"},
+                {n: "Capital One", u: "https://www.capitalone.com", m: "mask-fintech"},
+                {n: "Amex", u: "https://www.americanexpress.com", m: "mask-fintech"},
+                {n: "Wealthsimple", u: "https://www.wealthsimple.com", m: "mask-fintech"},
+                {n: "Fidelity", u: "https://www.fidelity.com", m: "mask-fintech"},
+                {n: "Robinhood", u: "https://robinhood.com", m: "mask-fintech"},
+                {n: "YNAB", u: "https://www.ynab.com", m: "mask-fintech"},
+                {n: "Rocket Money", u: "https://www.rocketmoney.com", m: "mask-fintech"},
+                {n: "KOHO", u: "https://www.koho.ca", m: "mask-fintech"}
+            ],
+            realestate: [
+                {n: "Zillow", u: "https://www.zillow.com", m: "mask-house"},
+                {n: "Realtor.com", u: "https://www.realtor.com", m: "mask-house"},
+                {n: "Redfin", u: "https://www.redfin.com", m: "mask-house"},
+                {n: "Realtor.ca", u: "https://www.realtor.ca", m: "mask-house"},
+                {n: "HouseSigma", u: "https://housesigma.com", m: "mask-house"},
+                {n: "Apartments.com", u: "https://www.apartments.com", m: "mask-house"},
+                {n: "Homes.com", u: "https://www.homes.com", m: "mask-house"},
+                {n: "Foreclosure.com", u: "https://www.foreclosure.com", m: "mask-house"}
+            ],
+            builders: [
+                {n: "Wix", u: "https://www.wix.com", m: "mask-builder"},
+                {n: "Squarespace", u: "https://www.squarespace.com", m: "mask-builder"},
+                {n: "Shopify", u: "https://www.shopify.com", m: "mask-builder"},
+                {n: "Webflow", u: "https://webflow.com", m: "mask-builder"},
+                {n: "Stripe", u: "https://stripe.com", m: "mask-builder"},
+                {n: "LegalZoom", u: "https://www.legalzoom.com", m: "mask-builder"},
+                {n: "Canva", u: "https://www.canva.com", m: "mask-builder"},
+                {n: "Framer", u: "https://www.framer.com", m: "mask-builder"},
+                {n: "Fiverr", u: "https://www.fiverr.com", m: "mask-builder"},
+                {n: "Upwork", u: "https://www.upwork.com", m: "mask-builder"}
+            ],
+            marketing: [
+                {n: "HubSpot", u: "https://www.hubspot.com", m: "mask-market"},
+                {n: "ActiveCampaign", u: "https://www.activecampaign.com", m: "mask-market"},
+                {n: "HighLevel", u: "https://www.gohighlevel.com", m: "mask-market"},
+                {n: "SEMrush", u: "https://www.semrush.com", m: "mask-market"},
+                {n: "Ahrefs", u: "https://ahrefs.com", m: "mask-market"},
+                {n: "Mailchimp", u: "https://mailchimp.com", m: "mask-market"},
+                {n: "ChatGPT", u: "https://chat.openai.com", m: "mask-market"},
+                {n: "Gemini", u: "https://gemini.google.com", m: "mask-market"}
+            ],
+            food: [
+                {n: "Uber Eats", u: "https://www.ubereats.com", m: "mask-food"},
+                {n: "DoorDash", u: "https://www.doordash.com", m: "mask-food"},
+                {n: "SkipTheDishes", u: "https://www.skipthedishes.com", m: "mask-food"},
+                {n: "HelloFresh", u: "https://www.hellofresh.com", m: "mask-food"},
+                {n: "Minibar", u: "https://minibardelivery.com", m: "mask-food"},
+                {n: "Drizly", u: "https://drizly.com", m: "mask-food"},
+                {n: "Winc", u: "https://www.winc.com", m: "mask-food"}
+            ],
+            entertainment: [
+                {n: "Netflix", u: "https://www.netflix.com", m: "mask-play"},
+                {n: "Disney+", u: "https://www.disneyplus.com", m: "mask-play"},
+                {n: "Hulu", u: "https://www.hulu.com", m: "mask-play"},
+                {n: "Prime Video", u: "https://www.primevideo.com", m: "mask-play"},
+                {n: "Spotify", u: "https://www.spotify.com", m: "mask-play"},
+                {n: "Apple Music", u: "https://www.apple.com/apple-music", m: "mask-play"},
+                {n: "Xbox Game Pass", u: "https://www.xbox.com/gamepass", m: "mask-play"},
+                {n: "PlayStation Plus", u: "https://www.playstation.com/ps-plus", m: "mask-play"}
+            ],
+            funeral: [
+                {n: "Titan Casket", u: "https://titancasket.com", m: "mask-gate"},
+                {n: "Trusted Caskets", u: "https://trustedcaskets.com", m: "mask-gate"},
+                {n: "Costco Funeral", u: "https://www.costco.ca/caskets.html", m: "mask-gate"},
+                {n: "Casket Depot", u: "https://casketdepot.ca", m: "mask-gate"},
+                {n: "Haven Casket", u: "https://www.havencasket.com", m: "mask-gate"}
+            ]
+        };
 
-        function initRain() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
-            drops = Array(Math.floor(w / 20)).fill(1);
-        }
-
-        function drawRain() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-            ctx.fillRect(0, 0, w, h);
-            ctx.fillStyle = '#00f3ff';
-            ctx.font = '13px monospace';
-            drops.forEach((y, i) => {
-                const text = Math.random() > 0.8 ? '⚡' : '✧';
-                ctx.fillText(text, i * 20, y * 20);
-                if (y * 20 > h && Math.random() > 0.985) drops[i] = 0;
-                drops[i]++;
+        // Populate grids
+        Object.keys(linkData).forEach(cat => {
+            const grid = document.getElementById(`grid-${cat}`);
+            if(!grid) return;
+            linkData[cat].forEach(site => {
+                grid.innerHTML += `
+                    <a href="${site.u}" target="_blank" class="hologram-card">
+                        <div class="video-mask ${site.m}">
+                            <video class="masked-video" muted loop playsinline autoplay>
+                                <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="label">${site.n}</div>
+                    </a>`;
             });
+        });
+
+        function showSection(id) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('cat-indicator').innerText = id === 'home' ? 'GHOST PROTOCOL' : id.replace(/([A-Z])/g, ' $1');
+            toggleSidebar();
+            window.scrollTo(0,0);
         }
-        
-        let rainInt = setInterval(drawRain, 50);
-        initRain();
-        window.onresize = initRain;
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Real-time UI updates
+        // Rain FX
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+        let w, h, drops;
+        function initRain() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; drops = Array(Math.floor(w/20)).fill(1); }
+        function drawRain() { ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.fillRect(0,0,w,h); ctx.fillStyle = '#00f3ff'; ctx.font = '12px monospace'; drops.forEach((y, i) => { ctx.fillText('✧', i*20, y*20); if(y*20 > h && Math.random() > 0.98) drops[i]=0; drops[i]++; }); }
+        setInterval(drawRain, 50); initRain(); window.onresize = initRain;
+
+        // UI Controls
         document.getElementById('zoom-range').oninput = (e) => {
-            document.querySelectorAll('.icon-grid').forEach(g => {
-                g.style.gridTemplateColumns = `repeat(auto-fit, minmax(${e.target.value}px, 1fr))`;
-            });
+            document.querySelectorAll('.icon-grid').forEach(g => g.style.gridTemplateColumns = `repeat(auto-fit, minmax(${e.target.value}px, 1fr))`);
         };
-
         document.getElementById('bloom-range').oninput = (e) => {
-            document.getElementById('bg-video').style.filter = `brightness(${e.target.value / 100}) grayscale(0.6)`;
+            document.getElementById('bg-video').style.filter = `brightness(${e.target.value/100}) grayscale(0.8)`;
         };
-
-        // Close sidebar on click outside
-        document.addEventListener('click', (e) => {
-            const sb = document.getElementById('sidebar');
-            if(sb.classList.contains('active') && !sb.contains(e.target) && !e.target.closest('.menu-btn')) toggleSidebar();
-        });
     </script>
 </body>
 </html>
