@@ -2,330 +2,355 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elysium Odyssey — Nexus Vortex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE ROSE GARDEN — ONLINE SHOPPING MALL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=EB+Garamond:wght@400;500&display=swap');
-
         :root {
-            --gold: #c5a059;
-            --cyan: #00f3ff;
+            --hologram-blue: #00f3ff;
+            --black-bloom: rgba(0, 0, 0, 0.88);
+            --glow: 0 0 30px rgba(0, 243, 255, 0.4);
         }
 
         body, html {
             margin: 0; padding: 0;
-            width: 100vw; height: 100vh;
+            width: 100%; min-height: 100%;
+            overflow-y: auto;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: #000;
             color: #fff;
-            font-family: 'EB Garamond', serif;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            scroll-behavior: smooth;
         }
 
-        /* 1. START SHIELD */
-        #gatekeeper {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 5000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: opacity 0.8s ease;
+        #bg-video {
+            position: fixed; top: 50%; left: 50%;
+            min-width: 100%; min-height: 100%;
+            transform: translate(-50%, -50%);
+            z-index: -2;
+            filter: brightness(0.45) grayscale(0.25);
+            object-fit: cover;
         }
 
-        #gatekeeper h1 {
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            letter-spacing: 5px;
-            padding: 20px;
-            border: 1px solid var(--gold);
-            text-align: center;
-        }
-
-        /* 2. BACKGROUND GRID */
-        #elysium-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 1;
+        #rain-canvas {
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            opacity: 0;
-            transition: opacity 2s ease-in;
-            pointer-events: none;
+            z-index: -1; pointer-events: none; opacity: 0.65;
         }
 
-        /* 3. INTRO STAGE */
-        #intro-stage {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: #000;
-            transition: opacity 1s ease;
+        .overlay {
+            position: relative; z-index: 10;
+            padding: 60px 20px 140px;
+            max-width: 1400px; margin: 0 auto;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        #top-section {
-            height: 60vh;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            overflow: hidden;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
+        header { text-align: center; margin-bottom: 60px; }
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            letter-spacing: 12px; text-transform: uppercase;
+            margin: 0; text-shadow: var(--glow);
+        }
+        .subtext {
+            color: var(--hologram-blue); font-size: 1.1rem;
+            letter-spacing: 6px; text-transform: uppercase;
+            margin-top: 12px;
         }
 
-        #anubis-media { width: 100%; height: 100%; object-fit: contain; }
-
-        #bottom-section {
-            height: 40vh;
-            width: 100%;
-            background: #050505;
-            border-top: 2px solid var(--gold);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            cursor: pointer;
+        section { width: 100%; margin-bottom: 100px; }
+        section h2 {
+            font-size: 1.8rem; letter-spacing: 4px;
+            text-align: center; margin-bottom: 40px;
+            color: var(--hologram-blue);
         }
 
-        #dialogue-frame {
-            width: 100%;
-            max-width: 500px;
-            min-height: 140px;
-            border: 1px solid rgba(197, 160, 89, 0.4);
-            padding: 20px;
-            position: relative;
-            background: rgba(255, 255, 255, 0.02);
-            box-sizing: border-box;
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 28px; width: 100%;
         }
 
-        #text-content { font-size: 1.3rem; line-height: 1.4; color: #efefef; margin: 0; }
-
-        /* 4. CATALOG PORTAL */
-        #catalog-portal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 20;
-            display: none;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            scrollbar-width: none;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        .vertical-track {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 45vh 0;
-            gap: 30px;
-        }
-
-        .casket-card {
-            flex: 0 0 240px;
-            width: 85%;
-            max-width: 340px;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(197, 160, 89, 0.25);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .hologram-card {
+            aspect-ratio: 4/4.2;
+            background: var(--black-bloom);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            border-radius: 18px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             text-decoration: none;
-            scroll-snap-align: center;
-            transition: 0.4s ease;
-            opacity: 0.3;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden;
+            cursor: pointer;
         }
 
-        .casket-card.active {
-            opacity: 1;
-            border-color: var(--cyan);
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
-            transform: scale(1.05);
+        .hologram-card:hover {
+            transform: scale(1.06) translateY(-8px);
+            border-color: #fff;
+            box-shadow: 0 0 45px rgba(0, 243, 255, 0.35);
         }
 
-        .icon-box { font-size: 2.5rem; color: var(--gold); margin-bottom: 12px; }
-        .casket-card.active .icon-box { color: var(--cyan); }
-        .label { font-family: 'Cinzel', serif; color: #fff; letter-spacing: 2px; font-size: 0.85rem; text-align: center; padding: 0 10px; }
+        .video-mask {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1; overflow: hidden;
+        }
 
-        #catalog-portal::-webkit-scrollbar { display: none; }
+        .masked-video {
+            width: 92%; height: 92%;
+            object-fit: cover; opacity: 0;
+            filter: brightness(1.05) contrast(1.1);
+            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="%23fff"/></svg>');
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" fill="%23fff"/></svg>');
+            transition: opacity 0.4s;
+        }
+
+        .hologram-card.playing .masked-video { opacity: 0.92; }
+
+        .icon-wrapper {
+            position: relative; z-index: 2;
+            font-size: 4.8rem; color: #fff;
+            filter: drop-shadow(0 0 18px var(--hologram-blue));
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .label {
+            position: relative; z-index: 2;
+            color: #fff; font-size: 0.95rem;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            text-align: center; opacity: 0.9;
+        }
+
+        footer {
+            position: relative; z-index: 10;
+            text-align: center; padding: 40px 20px 70px;
+            font-size: 0.85rem; letter-spacing: 3px;
+            color: rgba(255,255,255,0.6);
+            border-top: 1px solid rgba(0, 243, 255, 0.15);
+        }
+
+        /* === NEW: Slider styles (from previous suggestion) === */
+        .slider-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 20px 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--hologram-blue) transparent;
+        }
+
+        .slider-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .slider-container::-webkit-scrollbar-thumb {
+            background: var(--hologram-blue);
+            border-radius: 10px;
+        }
+
+        .slider-page {
+            flex: 0 0 100%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            scroll-snap-align: start;
+        }
+
+        @media (max-width: 900px) {
+            .slider-page {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(5, 1fr);
+            }
+        }
+
+        /* Make the afterlife card a bit more prominent */
+        .afterlife-hero {
+            max-width: 420px;
+            margin: 0 auto;
+            grid-column: 1 / -1; /* span full width if alone */
+        }
     </style>
 </head>
 <body>
 
-    <div id="gatekeeper" onclick="startExperience()">
-        <h1>ENTER ELYSIUM</h1>
-    </div>
+    <video muted loop playsinline id="bg-video">
+        <source src="https://github.com/highland88999-commits/Hermes-Landing/blob/main/media/grok_video_2026-03-11-17-05-08.mp4?raw=true" type="video/mp4">
+    </video>
+    <canvas id="rain-canvas"></canvas>
 
-    <canvas id="elysium-canvas"></canvas>
+    <div class="overlay">
 
-    <div id="intro-stage">
-        <div id="top-section">
-            <video id="anubis-media" playsinline>
-                <source src="https://files.catbox.moe/znctv1.mp4" type="video/mp4">
-            </video>
-        </div>
-        <div id="bottom-section" onclick="handleDialogueClick()">
-            <div id="dialogue-frame">
-                <p id="text-content"></p>
-                <div style="position:absolute; bottom:10px; right:15px; font-family:'Cinzel'; font-size:0.6rem; color:var(--gold);">TAP TO CONTINUE</div>
+        <header>
+            <h1>THE ROSE GARDEN</h1>
+            <div class="subtext">ONLINE SHOPPING MALL</div>
+        </header>
+
+        <!-- OLYMPUS — FIRST CARD USERS SEE -->
+        <section>
+            <h2>FEATURED BRAND</h2>
+            <div class="icon-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <a href="https://olympus-lac.vercel.app/" class="hologram-card" data-href="https://olympus-lac.vercel.app/" target="_blank" style="max-width: 380px; margin: 0 auto;">
+                    <div class="video-mask">
+                        <video muted loop playsinline class="masked-video" poster="https://picsum.photos/id/1015/300/300">
+                            <source src="https://github.com/highland88999-commits/Hermes-Landing/blob/main/media/grok_video_2026-03-11-17-05-08.mp4?raw=true" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="icon-wrapper"><i class="fa-solid fa-crown"></i></div>
+                    <div class="label">OLYMPUS — ENTER THE EXPERIENCE</div>
+                </a>
             </div>
-        </div>
+        </section>
+
+        <!-- FOOD & BEVERAGE -->
+        <section>
+            <h2>FOOD &amp; BEVERAGE</h2>
+            <div class="icon-grid">
+                <!-- ... (your existing food cards here - kept short for brevity) ... -->
+                <a href="https://www.ubereats.com" class="hologram-card" ... >Uber Eats</a>
+                <!-- ... more ... -->
+            </div>
+        </section>
+
+        <!-- HATS & HEADWEAR -->
+        <section>
+            <h2>HATS &amp; HEADWEAR</h2>
+            <div class="icon-grid">
+                <!-- ... your hats cards ... -->
+            </div>
+        </section>
+
+        <!-- T-SHIRTS & GRAPHICS -->
+        <section>
+            <h2>T-SHIRTS &amp; GRAPHICS</h2>
+            <div class="icon-grid">
+                <!-- ... your t-shirts cards ... -->
+            </div>
+        </section>
+
+        <!-- PANTS & BOTTOMS -->
+        <section>
+            <h2>PANTS &amp; BOTTOMS</h2>
+            <div class="icon-grid">
+                <!-- ... pants cards ... -->
+            </div>
+        </section>
+
+        <!-- SUITS & FORMAL -->
+        <section>
+            <h2>SUITS &amp; FORMAL</h2>
+            <div class="icon-grid">
+                <!-- ... suits cards ... -->
+            </div>
+        </section>
+
+        <!-- LADIES’ WEAR -->
+        <section>
+            <h2>LADIES’ WEAR &amp; FASHION</h2>
+            <div class="icon-grid">
+                <!-- ... ladies wear cards ... -->
+            </div>
+        </section>
+
+        <!-- CHILDREN’S WEAR -->
+        <section>
+            <h2>CHILDREN’S WEAR</h2>
+            <div class="icon-grid">
+                <!-- ... children cards ... -->
+            </div>
+        </section>
+
+        <!-- === NEW SECTION ADDED AT THE VERY END === -->
+        <section>
+            <h2>AFTERLIFE — ELYSIUM GATE</h2>
+            <div class="icon-grid afterlife-hero">
+                <a href="https://the-afterlife.vercel.app/" class="hologram-card" data-href="https://the-afterlife.vercel.app/" target="_blank">
+                    <div class="video-mask">
+                        <video muted loop playsinline class="masked-video" poster="https://picsum.photos/id/237/400/400"> <!-- dark ethereal poster suggestion -->
+                            <source src="https://github.com/highland88999-commits/Hermes-Landing/blob/main/media/grok_video_2026-03-11-17-05-08.mp4?raw=true" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="icon-wrapper"><i class="fa-solid fa-door-open"></i> 🌌</div>
+                    <div class="label">ENTER ELYSIUM<br>THE AFTERLIFE AWAITS</div>
+                </a>
+            </div>
+        </section>
+
     </div>
 
-    <div id="catalog-portal">
-        <div class="vertical-track" id="card-list"></div>
-    </div>
+    <footer>BROUGHT TO YOU BY HERMES</footer>
 
-    <script type="module">
-        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+    <script>
+        // Cyberpunk colorful digital rain with category symbols
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        const symbols = ['👕','👗','🧥','👖','👟','🧢','👔','🧦','🍔','🍷','✈️','💰','🏠','💻','📣','🎥','👑','🏃','👜','🥾','🏊','❤️','🛏️','👖','👗','👶','🍕','💳','🏡','🛒','📱','📈','🎬'];
+        const fontSize = 14;
+        let drops = Array(Math.floor(width / fontSize)).fill(1);
+        const colors = ['#00f3ff','#ff00ff','#00ff00','#ffff00','#ff9900','#9900ff','#00ffff'];
 
-        // --- Three.js setup ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('elysium-canvas'), antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        const grid = new THREE.GridHelper(100, 40, 0x00f3ff, 0x050505);
-        grid.position.y = -2;
-        scene.add(grid);
-        camera.position.z = 10; camera.position.y = 1;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            grid.position.z += 0.04;
-            if(grid.position.z > 2.5) grid.position.z = 0;
-            renderer.render(scene, camera);
+        function drawRain() {
+            ctx.fillStyle = 'rgba(0,0,0,0.08)';
+            ctx.fillRect(0,0,width,height);
+            for (let i = 0; i < drops.length; i++) {
+                ctx.fillStyle = colors[Math.floor(Math.random()*colors.length)];
+                ctx.font = `${fontSize}px monospace`;
+                const text = symbols[Math.floor(Math.random()*symbols.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
         }
-        animate();
+        setInterval(drawRain, 35);
 
-        // --- Core Logic & Audio Sync ---
-        const video = document.getElementById('anubis-media');
-        
-        // AUTO-TRANSITION & STOP MUSIC ON END
-        video.onended = () => {
-            video.pause();
-            video.src = ""; // Hard cut to audio source
-            video.load();
-            exitIntro(); 
-        };
+        // Interaction logic
+        let globalEngaged = false;
 
-        const script = [
-            "Hi, I'm <span style='color:#c5a059'>Anubis</span>!",
-            "Welcome to the afterlife.",
-            "Here you can purchase caskets.",
-            "\"Funerals are a never dying industry.\"",
-            "\"You can pick your perma-bed below.\"",
-            "We recommend memory foam linings...",
-            "The market is open. Make your selection."
-        ];
+        function engageAllVideos() {
+            document.querySelectorAll('.masked-video').forEach(v => v.play().catch(() => {}));
+        }
 
-        let lineIndex = 0;
-        let isTyping = false;
+        document.body.addEventListener('click', () => {
+            if (!globalEngaged) {
+                globalEngaged = true;
+                engageAllVideos();
+            }
+        }, { once: true });
 
-        function typeWriter(text, element) {
-            isTyping = true;
-            element.innerHTML = "";
-            let i = 0;
-            function type() {
-                if (i < text.length) {
-                    if (text.charAt(i) === '<') {
-                        let tag = text.substring(i, text.indexOf('>', i) + 1);
-                        element.innerHTML += tag;
-                        i += tag.length;
-                    } else {
-                        element.innerHTML += text.charAt(i);
-                        i++;
-                    }
-                    setTimeout(type, 20);
-                } else {
-                    isTyping = false;
+        document.querySelectorAll('.hologram-card').forEach(card => {
+            const video = card.querySelector('.masked-video');
+            let clickedOnce = false;
+
+            card.addEventListener('click', function(e) {
+                if (!globalEngaged) {
+                    globalEngaged = true;
+                    engageAllVideos();
                 }
-            }
-            type();
-        }
 
-        window.handleDialogueClick = () => {
-            if (isTyping) return;
-            if (lineIndex < script.length) {
-                typeWriter(script[lineIndex], document.getElementById('text-content'));
-                lineIndex++;
-            } else {
-                exitIntro();
-            }
-        };
-
-        function exitIntro() {
-            // Kill audio completely
-            video.muted = true;
-            video.pause();
-
-            document.getElementById('intro-stage').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('intro-stage').style.display = 'none';
-                document.getElementById('elysium-canvas').style.opacity = '1';
-                document.getElementById('catalog-portal').style.display = 'block';
-                setTimeout(() => document.getElementById('catalog-portal').style.opacity = '1', 100);
-                updateCards();
-            }, 1000);
-        }
-
-        window.startExperience = () => {
-            document.getElementById('gatekeeper').style.opacity = '0';
-            setTimeout(() => document.getElementById('gatekeeper').style.display = 'none', 800);
-            video.muted = false;
-            video.play();
-            handleDialogueClick();
-        };
-
-        // --- Store Catalog ---
-        const stores = [
-            { n: "Titan Casket", u: "https://titancasket.com", i: "fa-box-open" },
-            { n: "Costco Caskets", u: "https://www.costco.com/funeral-caskets.html", i: "fa-cart-shopping" },
-            { n: "Trusted Caskets", u: "https://trustedcaskets.com", i: "fa-cross" },
-            { n: "Walmart Funeral", u: "https://www.walmart.com/cp/caskets/1090407", i: "fa-store" },
-            { n: "Overnight Caskets", u: "https://overnightcaskets.com", i: "fa-truck-fast" },
-            { n: "Casket Depot", u: "https://casketdepot.ca", i: "fa-vault" },
-            { n: "Skyline Caskets", u: "https://skylinecaskets.com", i: "fa-cloud" },
-            { n: "Eternal Caskets", u: "https://eternalcaskets.com", i: "fa-infinity" },
-            { n: "Best Price Caskets", u: "https://bestpricecaskets.com", i: "fa-tag" },
-            { n: "Fast Caskets", u: "https://fastcaskets.com", i: "fa-bolt" }
-        ];
-
-        const list = document.getElementById('card-list');
-        stores.forEach(s => {
-            const a = document.createElement('a');
-            a.className = 'casket-card';
-            a.href = s.u; a.target = "_blank";
-            a.innerHTML = `<div class="icon-box"><i class="fa-solid ${s.i}"></i></div><div class="label">${s.n.toUpperCase()}</div>`;
-            list.appendChild(a);
-        });
-
-        function updateCards() {
-            const cards = document.querySelectorAll('.casket-card');
-            cards.forEach(c => {
-                const r = c.getBoundingClientRect();
-                const m = r.top + r.height / 2;
-                const d = Math.abs(m - window.innerHeight / 2);
-                c.classList.toggle('active', d < 120);
+                if (!clickedOnce) {
+                    video.play().catch(() => {});
+                    card.classList.add('playing');
+                    clickedOnce = true;
+                    e.preventDefault();
+                } else {
+                    window.open(card.getAttribute('data-href'), '_blank');
+                }
             });
-        }
-        document.getElementById('catalog-portal').addEventListener('scroll', updateCards);
+        });
 
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            drops = Array(Math.floor(width / fontSize)).fill(1);
         });
+
+        // === Optional: Add slider chunking logic if you want to apply sliders later ===
+        // (Currently not applied to the new section since it has only 1 card)
+        // You can uncomment and adapt the previous slider JS when you add more cards to sections.
     </script>
 </body>
 </html>
