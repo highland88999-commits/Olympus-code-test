@@ -3,43 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS VORTEX | OLYMPUS MASTER</title>
+    <title>OLYMPUS | MULTIVERSE MASTER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --neon-cyan: #00ffff;
             --neon-purple: #bc13fe;
             --black-bloom: #050505;
-            --glow: 0 0 20px rgba(0,255,255,0.3);
-            --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            --glow: 0 0 20px rgba(0,255,255,0.4);
+            --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background: var(--black-bloom); font-family: 'Segoe UI', sans-serif; color: #fff; }
 
-        /* GALAXY ENGINE */
+        /* GALAXY CANVAS */
         canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
 
-        /* UI MASTER WRAPPER (Toggled) */
-        .ui-wrapper { opacity: 1; transition: var(--transition); pointer-events: all; }
-        .ui-hidden { opacity: 0; pointer-events: none; }
+        /* UI MASTER TOGGLE */
+        .ui-master { opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; }
+        .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(10px); }
 
-        /* NAVIGATION & SEARCH */
+        /* TOP NAVIGATION */
+        .nav-header {
+            position: fixed; top: 0; left: 0; right: 0; padding: 20px;
+            display: flex; align-items: center; gap: 15px; z-index: 3000;
+        }
+
         .menu-btn {
-            position: fixed; top: 20px; left: 20px; z-index: 3000;
-            width: 50px; height: 50px; background: rgba(0,0,0,0.7);
+            width: 50px; height: 50px; background: rgba(0,0,0,0.8);
             border: 1.5px solid var(--neon-cyan); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: var(--neon-cyan); font-size: 1.2rem; cursor: pointer;
-            box-shadow: var(--glow); transition: 0.3s;
+            color: var(--neon-cyan); font-size: 1.2rem; cursor: pointer; box-shadow: var(--glow);
         }
 
-        .search-wrap {
-            position: fixed; top: 20px; left: 85px; right: 20px; z-index: 3000;
-            max-width: 450px; /* Prevents run-off */
-        }
+        .search-container { flex-grow: 1; max-width: 500px; }
         #mallSearch {
-            width: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
-            border: 1.5px solid rgba(0,255,255,0.4); padding: 12px 20px;
+            width: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
+            border: 1.5px solid rgba(0,255,255,0.3); padding: 12px 25px;
             border-radius: 30px; color: #fff; outline: none; box-shadow: var(--glow);
             font-size: 0.9rem; box-sizing: border-box;
         }
@@ -47,94 +47,90 @@
         /* SIDEBAR */
         .sidebar {
             position: fixed; top: 0; left: -320px; width: 300px; height: 100%;
-            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(25px);
+            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px);
             border-right: 1px solid var(--neon-cyan); z-index: 4000;
-            transition: var(--transition); padding-top: 100px;
+            transition: var(--transition); padding-top: 100px; overflow-y: auto;
         }
         .sidebar.active { left: 0; }
         .menu-link {
-            padding: 15px 30px; display: block; color: #888; text-decoration: none;
-            text-transform: uppercase; letter-spacing: 2px; font-size: 0.75rem;
-            border-bottom: 1px solid rgba(188, 19, 254, 0.1); transition: 0.3s;
+            padding: 18px 30px; display: block; color: #888; text-decoration: none;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem;
+            border-bottom: 1px solid rgba(0,255,255,0.05); transition: 0.3s;
         }
         .menu-link:hover { color: var(--neon-cyan); background: rgba(0,255,255,0.05); padding-left: 40px; }
 
         /* MALL VIEWPORT */
         .viewport {
-            position: fixed; inset: 0; z-index: 2; overflow-y: auto;
+            position: fixed; inset: 0; overflow-y: auto;
             padding: 120px 20px 100px; display: flex; flex-direction: column; align-items: center;
-            scrollbar-width: none;
+            scrollbar-width: none; z-index: 2;
         }
         .viewport::-webkit-scrollbar { display: none; }
 
-        .cat-title {
-            color: var(--neon-cyan); letter-spacing: 10px; font-weight: 900;
-            text-transform: uppercase; margin-bottom: 50px; text-shadow: var(--glow);
-            text-align: center;
+        .cat-banner {
+            color: var(--neon-cyan); letter-spacing: 12px; font-weight: 900;
+            text-transform: uppercase; margin-bottom: 60px; text-shadow: var(--glow);
+            text-align: center; font-size: 1.4rem;
         }
 
         .icon-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px; width: 100%; max-width: 1300px;
+            gap: 25px; width: 100%; max-width: 1400px;
         }
 
-        /* HOLO-CARD AESTHETIC */
+        /* HOLOGRAM CARDS */
         .hologram-card {
-            background: rgba(20, 20, 25, 0.6); backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,255,255,0.2); border-radius: 12px;
+            background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,255,255,0.15); border-radius: 15px;
             text-decoration: none; overflow: hidden; transition: 0.4s;
-            animation: float 5s ease-in-out infinite;
+            display: flex; flex-direction: column;
         }
         .hologram-card:hover {
-            transform: translateY(-8px) scale(1.03);
-            border-color: var(--neon-cyan); box-shadow: 0 0 30px rgba(0,255,255,0.4);
+            transform: translateY(-10px); border-color: var(--neon-cyan);
+            box-shadow: 0 0 40px rgba(0,255,255,0.5);
         }
-        .video-box { width: 100%; height: 120px; background: #000; overflow: hidden; }
-        .masked-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        .video-box { width: 100%; height: 130px; background: #000; position: relative; }
+        .masked-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: hue-rotate(10deg); }
         .label {
-            padding: 12px; color: #fff; font-size: 0.7rem; text-align: center;
-            letter-spacing: 1px; text-transform: uppercase; font-weight: 600;
+            padding: 15px; color: #fff; font-size: 0.7rem; text-align: center;
+            letter-spacing: 2px; text-transform: uppercase; font-weight: bold;
         }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
-        /* OBSERVATION MODE TOAST */
-        #obs-toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,255,255,0.1); color: var(--neon-cyan);
-            padding: 10px 20px; border-radius: 20px; font-size: 0.6rem;
-            letter-spacing: 2px; z-index: 5000; pointer-events: none;
-            opacity: 0.5; text-transform: uppercase;
+        #obs-hint {
+            position: fixed; bottom: 20px; width: 100%; text-align: center;
+            color: rgba(0,255,255,0.4); font-size: 0.6rem; letter-spacing: 3px;
+            text-transform: uppercase; pointer-events: none; z-index: 5000;
         }
     </style>
 </head>
 <body>
 
-    <div id="obs-toast">Click background to toggle Observation Mode</div>
+    <div id="obs-hint">Click background to de-rez interface</div>
 
     <canvas id="galaxy-canvas"></canvas>
 
-    <div id="ui-container" class="ui-wrapper">
-        <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-        
-        <div class="search-wrap">
-            <input type="text" id="mallSearch" placeholder="ACCESSING GLOBAL DATABASE..." onkeyup="searchMall()">
-        </div>
+    <div id="ui-master" class="ui-master">
+        <header class="nav-header">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <div class="search-container">
+                <input type="text" id="mallSearch" placeholder="INITIALIZING GLOBAL OVERRIDE..." onkeyup="searchMall()">
+            </div>
+        </header>
 
         <nav class="sidebar" id="sidebar">
-            <a class="menu-link" onclick="showSection('home')">Multiverse Core</a>
-            <a class="menu-link" onclick="showSection('clothing')">Elite Apparel</a>
-            <a class="menu-link" onclick="showSection('fintech')">Global Finance</a>
-            <a class="menu-link" onclick="showSection('travel')">Travel & Space</a>
-            <a class="menu-link" onclick="showSection('logistics')">Food & Logistics</a>
-            <a class="menu-link" onclick="showSection('web')">Builders & Dev</a>
-            <a class="menu-link" onclick="showSection('media')">Media & Stream</a>
+            <a class="menu-link" onclick="showSection('core')">Multiverse Core</a>
+            <a class="menu-link" onclick="showSection('tech')">The Tech Stack</a>
+            <a class="menu-link" onclick="showSection('leisure')">Leisure & Canada</a>
+            <a class="menu-link" onclick="showSection('food')">Global Food Ops</a>
+            <a class="menu-link" onclick="showSection('travel')">Global Atlas</a>
+            <a class="menu-link" onclick="showSection('apparel')">Elite Apparel</a>
+            <a class="menu-link" onclick="showSection('finance')">Crypto & Fintech</a>
         </nav>
 
-        <div class="viewport">
-            <div class="cat-title" id="cat-indicator">Olympus Core</div>
+        <main class="viewport" id="viewport">
+            <div class="cat-banner" id="cat-indicator">Olympus Core</div>
             <div class="icon-grid" id="mallGrid"></div>
-        </div>
+        </main>
     </div>
 
     <script type="importmap">
@@ -145,58 +141,46 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 10000);
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 1, 10000);
         const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
         renderer.setSize(window.innerWidth, window.innerHeight);
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.5;
+        controls.autoRotateSpeed = 0.3;
 
-        // STAR FIELD
-        const starCount = 15000;
-        const starGeo = new THREE.BufferGeometry();
-        const starPos = new Float32Array(starCount * 3);
-        for(let i=0; i<starCount*3; i++) starPos[i] = (Math.random() - 0.5) * 5000;
-        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color: 0xffffff, size: 1.2, transparent: true, opacity: 0.8});
-        scene.add(new THREE.Points(starGeo, starMat));
+        // STAR SYSTEM
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 20000; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000));
+        }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const material = new THREE.PointsMaterial({ color: 0x00ffff, size: 1.5, transparent: true, opacity: 0.8 });
+        scene.add(new THREE.Points(geometry, material));
 
-        // NEBULA / PLANETS
-        const createPlanet = (radius, dist, color, speed) => {
-            const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 32, 32), new THREE.MeshStandardMaterial({color: color, emissive: color, emissiveIntensity: 0.5}));
-            const pivot = new THREE.Object3D();
-            pivot.add(mesh);
-            mesh.position.x = dist;
-            scene.add(pivot);
-            return { pivot, speed };
-        };
+        // CENTER VORTEX
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(40, 32, 32), new THREE.MeshStandardMaterial({color: 0xbc13fe, emissive: 0xbc13fe, emissiveIntensity: 2}));
+        scene.add(sun);
+        
+        const light = new THREE.PointLight(0x00ffff, 3, 3000);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x111111));
 
-        const objects = [
-            createPlanet(15, 200, 0x00ffff, 0.005), // Cyan
-            createPlanet(25, 450, 0xbc13fe, 0.002), // Purple
-            createPlanet(10, 600, 0x3366dd, 0.008)  // Blue
-        ];
-
-        scene.add(new THREE.AmbientLight(0x222222));
-        const pointLight = new THREE.PointLight(0x00ffff, 2, 2000);
-        scene.add(pointLight);
-
-        camera.position.z = 800;
+        camera.position.z = 1000;
 
         function animate() {
             requestAnimationFrame(animate);
-            objects.forEach(o => o.pivot.rotation.y += o.speed);
             controls.update();
             renderer.render(scene, camera);
         }
         animate();
 
-        // TOGGLE VISIBILITY ON BACKGROUND CLICK
-        window.addEventListener('mousedown', (e) => {
+        // OBS MODE TOGGLE
+        window.addEventListener('click', (e) => {
             if(e.target.tagName === 'CANVAS') {
-                document.getElementById('ui-container').classList.toggle('ui-hidden');
+                document.getElementById('ui-master').classList.toggle('ui-hidden');
             }
         });
 
@@ -208,67 +192,64 @@
     </script>
 
     <script>
-        // FULLY POPULATED DATABASE
         const linkData = {
-            home: [
+            core: [
                 {n: "Olympus Core", u: "https://nexusvortex.ca"},
                 {n: "Artemis OS", u: "https://artemis-os.vercel.app/"},
+                {n: "The Flying Dutchman", u: "https://the-flying-dutchman.vercel.app/"},
                 {n: "Nexus Symbiote", u: "https://nexus-symbiote.onrender.com/"},
-                {n: "Enter Elysium", u: "https://the-afterlife.vercel.app/"},
-                {n: "Space Falcon", u: "https://space-falcon.emergent.host/"}
+                {n: "Enter Elysium", u: "https://the-afterlife.vercel.app/"}
             ],
-            clothing: [
-                {n: "Shein", u: "https://www.shein.com"},
-                {n: "Nike", u: "https://www.nike.com"},
-                {n: "Adidas", u: "https://www.adidas.com"},
-                {n: "Zara", u: "https://www.zara.com"},
-                {n: "H&M", u: "https://www2.hm.com"},
-                {n: "ASOS", u: "https://www.asos.com"},
-                {n: "Lululemon", u: "https://shop.lululemon.com"},
-                {n: "Under Armour", u: "https://www.underarmour.com"}
+            tech: [
+                {n: "Google Workspace", u: "https://workspace.google.com"},
+                {n: "Microsoft 365", u: "https://www.office.com"},
+                {n: "Apple iCloud", u: "https://www.icloud.com"},
+                {n: "Azure Portal", u: "https://portal.azure.com"},
+                {n: "Google Cloud", u: "https://console.cloud.google.com"},
+                {n: "Apple Music", u: "https://music.apple.com"},
+                {n: "GitHub Enterprise", u: "https://github.com"},
+                {n: "Vercel Deployment", u: "https://vercel.com"},
+                {n: "OpenAI Dashboard", u: "https://platform.openai.com"}
             ],
-            fintech: [
-                {n: "BlockDAG", u: "https://blockdag.network"},
-                {n: "Binance", u: "https://www.binance.com"},
-                {n: "Coinbase", u: "https://www.coinbase.com"},
-                {n: "Wealthsimple", u: "https://www.wealthsimple.com"},
-                {n: "PayPal", u: "https://www.paypal.com"},
-                {n: "Stripe", u: "https://stripe.com"},
-                {n: "MetaMask", u: "https://metamask.io"},
-                {n: "Kraken", u: "https://www.kraken.com"}
+            leisure: [
+                {n: "Cineplex Canada", u: "https://www.cineplex.com"},
+                {n: "Banff National Park", u: "https://www.pc.gc.ca/en/pn-np/ab/banff"},
+                {n: "CN Tower", u: "https://www.cntower.ca"},
+                {n: "Canada's Wonderland", u: "https://www.canadaswonderland.com"},
+                {n: "West Edmonton Mall", u: "https://www.wem.ca"},
+                {n: "AllTrails Canada", u: "https://www.alltrails.com/canada"},
+                {n: "Trans Canada Trail", u: "https://tctrail.ca"}
             ],
-            logistics: [
-                {n: "Instacart", u: "https://www.instacart.com"},
-                {n: "DoorDash", u: "https://www.doordash.com"},
+            food: [
+                {n: "Instacart Global", u: "https://www.instacart.com"},
                 {n: "SkipTheDishes", u: "https://www.skipthedishes.com"},
-                {n: "HelloFresh", u: "https://www.hellofresh.com"},
-                {n: "Grubhub", u: "https://www.grubhub.com"},
+                {n: "HelloFresh International", u: "https://www.hellofresh.com"},
+                {n: "Wolt Global", u: "https://wolt.com"},
+                {n: "Deliveroo", u: "https://deliveroo.co.uk"},
                 {n: "Uber Eats", u: "https://www.ubereats.com"},
-                {n: "Walmart Grocery", u: "https://www.walmart.ca/en/grocery"}
+                {n: "Grubhub", u: "https://www.grubhub.com"}
             ],
             travel: [
-                {n: "Expedia", u: "https://www.expedia.com"},
-                {n: "Airbnb", u: "https://www.airbnb.com"},
-                {n: "Booking.com", u: "https://www.booking.com"},
-                {n: "SpaceX", u: "https://www.spacex.com"},
-                {n: "Kayak", u: "https://www.kayak.com"},
-                {n: "Skyscanner", u: "https://www.skyscanner.net"}
+                {n: "Global Atlas (1000+)", u: "https://www.atlasobscura.com"},
+                {n: "Expedia Elite", u: "https://www.expedia.ca"},
+                {n: "Airbnb Luxe", u: "https://www.airbnb.com/luxe"},
+                {n: "Lonely Planet", u: "https://www.lonelyplanet.com"},
+                {n: "Skyscanner", u: "https://www.skyscanner.ca"},
+                {n: "SpaceX Starship", u: "https://www.spacex.com/vehicles/starship/"}
             ],
-            web: [
-                {n: "Vercel", u: "https://vercel.com"},
-                {n: "GitHub", u: "https://github.com"},
-                {n: "Wix", u: "https://www.wix.com"},
-                {n: "Squarespace", u: "https://www.squarespace.com"},
-                {n: "Three.js Journey", u: "https://threejs-journey.com"},
-                {n: "Render", u: "https://render.com"}
+            apparel: [
+                {n: "Shein Official", u: "https://www.shein.com"},
+                {n: "Nike Tech", u: "https://www.nike.com"},
+                {n: "Adidas Originals", u: "https://www.adidas.ca"},
+                {n: "Lululemon", u: "https://shop.lululemon.com"},
+                {n: "ASOS Global", u: "https://www.asos.com"}
             ],
-            media: [
-                {n: "Netflix", u: "https://www.netflix.com"},
-                {n: "Disney+", u: "https://www.disneyplus.com"},
-                {n: "Twitch", u: "https://www.twitch.tv"},
-                {n: "YouTube", u: "https://www.youtube.com"},
-                {n: "Spotify", u: "https://www.spotify.com"},
-                {n: "Apple TV+", u: "https://tv.apple.com"}
+            finance: [
+                {n: "BlockDAG Network", u: "https://blockdag.network"},
+                {n: "Binance Global", u: "https://www.binance.com"},
+                {n: "Wealthsimple", u: "https://www.wealthsimple.com"},
+                {n: "Coinbase Exchange", u: "https://www.coinbase.com"},
+                {n: "Stripe Dashboard", u: "https://dashboard.stripe.com"}
             ]
         };
 
@@ -288,7 +269,7 @@
                     <div class="label">${item.n}</div>
                 </a>`;
             });
-            if(window.innerWidth < 1000) toggleSidebar();
+            if(window.innerWidth < 1100) toggleSidebar();
         }
 
         function searchMall() {
@@ -296,7 +277,7 @@
             const grid = document.getElementById('mallGrid');
             const indicator = document.getElementById('cat-indicator');
             if(query.length > 0) {
-                indicator.innerText = "Search Results";
+                indicator.innerText = "Global Search Override";
                 grid.innerHTML = '';
                 Object.values(linkData).flat().forEach(item => {
                     if(item.n.toLowerCase().includes(query)) {
@@ -308,13 +289,13 @@
                     }
                 });
             } else {
-                showSection('home');
+                showSection('core');
             }
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
 
-        window.onload = () => showSection('home');
+        window.onload = () => showSection('core');
     </script>
 </body>
 </html>
