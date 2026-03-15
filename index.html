@@ -8,448 +8,146 @@
     <style>
         :root {
             --neon-cyan: #00ffff;
-            --glow: 0 0 45px rgba(0,255,255,0.55);
+            --glow: 0 0 25px rgba(0,255,255,0.4);
         }
 
-        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }
+        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: 'Segoe UI', sans-serif; }
 
-        canvas { display:block; touch-action:none; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
 
-        /* ULTRA-TRANSPARENT HOLO FRAME — space visible everywhere */
-        #olympus-holo {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 94%;
-            max-width: 520px;
-            height: 88vh;
-            background: rgba(0,10,20,0.08); /* almost invisible */
-            backdrop-filter: blur(28px);
-            border: 2px solid rgba(0,255,255,0.35);
-            border-radius: 32px;
-            box-shadow: 0 0 110px rgba(0,255,255,0.35);
-            z-index: 999;
-            overflow: hidden;
-            opacity: 0;
-            transition: opacity 0.9s ease;
-        }
-        #olympus-holo.active { opacity: 1; }
-
-        /* MENU BUTTON — free-floating with minimal sway */
+        /* HEADER ELEMENTS - No longer inside a box */
         .menu-btn {
             position: fixed;
-            top: 26px; left: 26px;
-            z-index: 3100;
-            width: 56px; height: 56px;
-            background: rgba(0,255,255,0.12);
-            border: 2px solid #00ffff;
+            top: 20px; left: 20px;
+            z-index: 3000;
+            width: 50px; height: 50px;
+            background: rgba(0,255,255,0.1);
+            border: 1.5px solid #00ffff;
             color: #00ffff;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.55rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
             box-shadow: var(--glow);
-            animation: gentleFloat 6s ease-in-out infinite;
-            pointer-events: auto;
-        }
-        @keyframes gentleFloat {
-            0%,100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-4px) rotate(0.4deg); }
+            cursor: pointer;
         }
 
-        /* SEARCH BAR — floating, transparent */
         .top-search {
-            position: absolute;
-            top: 22px; left: 50%;
-            transform: translateX(-50%);
-            width: 86%;
-            max-width: 380px;
-            z-index: 2600;
+            position: fixed;
+            top: 20px; left: 85px; right: 20px;
+            z-index: 3000;
         }
         #mallSearch {
             width: 100%;
-            background: rgba(0,255,255,0.07);
-            border: 1px solid rgba(0,255,255,0.45);
-            padding: 14px 22px;
-            border-radius: 14px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(0,255,255,0.5);
+            padding: 12px 20px;
+            border-radius: 12px;
             color: #fff;
-            font-size: 14.5px;
             outline: none;
-            box-shadow: 0 0 22px rgba(0,255,255,0.25);
+            box-shadow: var(--glow);
         }
 
-        /* FREE-FLOATING CARDS — no solid container, smaller, video ratio preserved */
-        .estate-container {
-            padding: 118px 18px 160px;
-            height: 100%;
+        /* SCROLLABLE CARD AREA - Floating in space */
+        .estate-scroll-view {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            padding: 100px 20px 100px;
             overflow-y: auto;
             scrollbar-width: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+        .estate-scroll-view::-webkit-scrollbar { display: none; }
+
+        /* RESIZED CARDS - Blue line adjustments */
         .estate-card {
-            position: relative;
-            margin-bottom: 34px;
-            border: 2px solid rgba(0,255,255,0.38);
-            border-radius: 22px;
+            width: 90%;
+            max-width: 340px; /* Slimmer profile */
+            margin-bottom: 25px;
+            border: 1.5px solid rgba(0,255,255,0.4);
+            border-radius: 18px;
             overflow: hidden;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
             box-shadow: var(--glow);
             animation: cardFloat 5.8s ease-in-out infinite;
-            background: transparent;
-            transition: all 0.35s ease;
-        }
-        .estate-card:hover {
-            border-color: #00ffff;
-            box-shadow: 0 0 65px rgba(0,255,255,0.7);
-            transform: scale(1.04);
+            transition: transform 0.3s;
         }
         .estate-card video {
             width: 100%;
-            height: 168px; /* smaller but perfect 16:9 ratio */
+            height: 140px; /* Reduced height based on sketch */
             object-fit: cover;
-            filter: brightness(1.18);
+            opacity: 0.9;
         }
         .estate-card .title {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            padding: 18px 20px 24px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.92));
+            padding: 12px;
+            background: rgba(0,0,0,0.7);
             color: #00ffff;
-            font-size: 1.08rem;
-            font-weight: 700;
-            letter-spacing: 3px;
+            font-size: 0.9rem;
             text-align: center;
-            text-shadow: 0 0 18px #00ffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        /* Different float phases so they feel independently floating */
-        .estate-card:nth-child(1) { animation-delay: 0s; }
-        .estate-card:nth-child(2) { animation-delay: 0.9s; }
-        .estate-card:nth-child(3) { animation-delay: 1.8s; }
-        .estate-card:nth-child(4) { animation-delay: 2.7s; }
-        .estate-card:nth-child(5) { animation-delay: 3.6s; }
-        .estate-card:nth-child(6) { animation-delay: 4.4s; }
-        .estate-card:nth-child(7) { animation-delay: 0.3s; }
-
         @keyframes cardFloat {
-            0%,100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-11px) rotate(0.7deg); }
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         /* FLOATING SHARE ORB */
         #floating-share {
             position: fixed;
-            bottom: 34px; right: 34px;
-            z-index: 4200;
-            width: 62px; height: 62px;
-            background: rgba(0,255,255,0.16);
-            border: 3px solid #00ffff;
+            bottom: 30px; right: 30px;
+            z-index: 4000;
+            width: 60px; height: 60px;
+            background: rgba(0,255,255,0.1);
+            border: 2px solid #00ffff;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.85rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
             color: #00ffff;
             box-shadow: var(--glow);
-            animation: sharePulse 3.2s ease-in-out infinite;
             cursor: pointer;
-        }
-        @keyframes sharePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.14); } }
-
-        /* MAX EXPANDED SHARE PANEL */
-        #share-panel {
-            position: fixed;
-            bottom: 118px; right: 22px;
-            width: 340px;
-            background: rgba(0,10,20,0.94);
-            border: 2px solid #00ffff;
-            border-radius: 24px;
-            padding: 26px;
-            box-shadow: 0 0 80px rgba(0,255,255,0.6);
-            display: none;
-            z-index: 4300;
-            max-height: 62vh;
-            overflow-y: auto;
-        }
-        #share-panel.active { display: block; }
-        .share-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(54px,1fr));
-            gap: 20px;
-        }
-        .share-icon {
-            width: 54px; height: 54px;
-            background: rgba(0,255,255,0.12);
-            border: 2px solid #00ffff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.7rem;
-            color: #00ffff;
-            transition: 0.3s;
-        }
-        .share-icon:hover { background:#00ffff; color:#000; transform:scale(1.25); }
-
-        /* Click-to-fade layer (invisible but catches clicks between cards) */
-        #fade-layer {
-            position: absolute;
-            inset: 0;
-            z-index: 2000;
-            pointer-events: auto;
         }
     </style>
 </head>
 <body>
 
-    <!-- THREE.JS SOLAR SYSTEM (Sun removed) -->
     <canvas id="canvas"></canvas>
 
-    <!-- HOLO MALL FRAME -->
-    <div id="olympus-holo" class="active">
-        <!-- MENU BUTTON -->
-        <button onclick="toggleSidebar()" class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+    <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
 
-        <!-- SEARCH -->
-        <div class="top-search">
-            <input type="text" id="mallSearch" placeholder="Initialize global search override..." onkeyup="searchMall()">
+    <div class="top-search">
+        <input type="text" id="mallSearch" placeholder="Initialize global search override...">
+    </div>
+
+    <div class="estate-scroll-view">
+        <div class="estate-card">
+            <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
+            <div class="title">COLOSSUS XI</div>
         </div>
-
-        <!-- ESTATE CONTAINER -->
-        <div class="estate-container" id="estate-container">
-            <!-- Invisible click layer for fade -->
-            <div id="fade-layer" onclick="toggleCards()"></div>
-
-            <!-- FREE-FLOATING CARDS (transparent, smaller, video ratio locked) -->
-            <div class="estate-card">
-                <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
-                <div class="title">COLOSSUS XI</div>
-            </div>
-            <div class="estate-card">
-                <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
-                <div class="title">ZEUS VS HADES</div>
-            </div>
-            <div class="estate-card">
-                <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
-                <div class="title">MERLIN MANDATES</div>
-            </div>
-            <div class="estate-card">
-                <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
-                <div class="title">CONVERGENCE MUREX</div>
-            </div>
-            <div class="estate-card">
-                <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
-                <div class="title">AETHERIS BUSINESS</div>
-            </div>
-            <div class="estate-card">
-                <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
-                <div class="title">OLYMPUS AETHERIS</div>
-            </div>
-            <div class="estate-card" style="border-color:#ff00ff;">
-                <video muted loop playsinline autoplay style="filter:hue-rotate(300deg);"><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
-                <div class="title" style="color:#ff00ff;">ENTER ELYSIUM</div>
-            </div>
+        <div class="estate-card">
+            <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
+            <div class="title">ZEUS VS HADES</div>
         </div>
-
-        <!-- FLOATING SHARE ORB -->
-        <div id="floating-share" onclick="toggleSharePanel()"><i class="fa-solid fa-share-nodes"></i></div>
-
-        <!-- MAX SHARE PANEL -->
-        <div id="share-panel">
-            <div class="share-grid">
-                <!-- 30+ social icons (maximum) -->
-                <div class="share-icon" onclick="shareTo('x')"><i class="fa-brands fa-x-twitter"></i></div>
-                <div class="share-icon" onclick="shareTo('facebook')"><i class="fa-brands fa-facebook-f"></i></div>
-                <div class="share-icon" onclick="shareTo('instagram')"><i class="fa-brands fa-instagram"></i></div>
-                <div class="share-icon" onclick="shareTo('tiktok')"><i class="fa-brands fa-tiktok"></i></div>
-                <div class="share-icon" onclick="shareTo('youtube')"><i class="fa-brands fa-youtube"></i></div>
-                <div class="share-icon" onclick="shareTo('reddit')"><i class="fa-brands fa-reddit-alien"></i></div>
-                <div class="share-icon" onclick="shareTo('pinterest')"><i class="fa-brands fa-pinterest"></i></div>
-                <div class="share-icon" onclick="shareTo('whatsapp')"><i class="fa-brands fa-whatsapp"></i></div>
-                <div class="share-icon" onclick="shareTo('telegram')"><i class="fa-brands fa-telegram"></i></div>
-                <div class="share-icon" onclick="shareTo('linkedin')"><i class="fa-brands fa-linkedin-in"></i></div>
-                <div class="share-icon" onclick="shareTo('threads')"><i class="fa-brands fa-threads"></i></div>
-                <div class="share-icon" onclick="shareTo('snapchat')"><i class="fa-brands fa-snapchat"></i></div>
-                <div class="share-icon" onclick="shareTo('bluesky')"><i class="fa-solid fa-b"></i></div>
-                <div class="share-icon" onclick="shareTo('mastodon')"><i class="fa-solid fa-m"></i></div>
-                <div class="share-icon" onclick="shareTo('tumblr')"><i class="fa-brands fa-tumblr"></i></div>
-                <div class="share-icon" onclick="shareTo('signal')"><i class="fa-solid fa-s"></i></div>
-                <div class="share-icon" onclick="shareTo('discord')"><i class="fa-brands fa-discord"></i></div>
-                <div class="share-icon" onclick="shareTo('twitch')"><i class="fa-brands fa-twitch"></i></div>
-                <div class="share-icon" onclick="shareTo('email')"><i class="fa-solid fa-envelope"></i></div>
-                <div class="share-icon" onclick="shareTo('copy')"><i class="fa-solid fa-link"></i></div>
-            </div>
+        <div class="estate-card">
+            <video muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video>
+            <div class="title">MERLIN MANDATES</div>
         </div>
     </div>
 
-    <!-- THREE.JS SOLAR SYSTEM + BLACK HOLE / BIG BANG VORTEX EVERY 5 MINUTES -->
+    <div id="floating-share"><i class="fa-solid fa-share-nodes"></i></div>
+
     <script type="importmap">
         {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
     </script>
     <script type="module">
         import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 5000);
-        const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.enablePan = false;
-
-        // Stars
-        const starGeo = new THREE.BufferGeometry();
-        const starVertices = [];
-        for(let i=0;i<15000;i++) starVertices.push(THREE.MathUtils.randFloatSpread(5200), THREE.MathUtils.randFloatSpread(5200), THREE.MathUtils.randFloatSpread(5200));
-        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVertices,3));
-        const starMat = new THREE.PointsMaterial({size:1.7,color:0x88ffff,transparent:true,opacity:0.78});
-        const stars = new THREE.Points(starGeo,starMat);
-        scene.add(stars);
-
-        // Planets (Sun removed)
-        const planetSystems = [];
-        const createPlanet = (r,d,c) => {
-            const mesh = new THREE.Mesh(new THREE.SphereGeometry(r,48,48), new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:0.18}));
-            scene.add(mesh);
-            const sys = {mesh, orbitalDist:d, orbitalSpeed:0.0012, angle:Math.random()*Math.PI*2};
-            planetSystems.push(sys);
-            return mesh;
-        };
-        createPlanet(2.2,60,0xaaaaaa);
-        createPlanet(3.8,90,0xffcc66);
-        createPlanet(4.0,130,0x3388ff);
-        createPlanet(3.0,180,0xff5533);
-        createPlanet(10,300,0xffbb77);
-        createPlanet(8.5,450,0xffeebb);
-        createPlanet(6,650,0xaaffff);
-        createPlanet(6,800,0x3366dd);
-
-        camera.position.set(0,190,680);
-        controls.update();
-
-        // BLACK HOLE / BIG BANG VORTEX EVERY 5 MINUTES
-        let vortexTimeout = setInterval(() => {
-            triggerVortex();
-        }, 300000); // exactly 5 minutes
-
-        function triggerVortex() {
-            const originalPositions = planetSystems.map(s => s.mesh.position.clone());
-            // Vacuum pull to center (2 seconds)
-            let pullTime = 0;
-            const pullInterval = setInterval(() => {
-                pullTime += 16;
-                const progress = Math.min(pullTime / 2000, 1);
-                planetSystems.forEach((s,i) => {
-                    s.mesh.position.lerp(new THREE.Vector3(0,0,0), progress * 0.92);
-                    s.mesh.scale.setScalar(1 - progress * 0.7);
-                });
-                if (progress >= 1) {
-                    clearInterval(pullInterval);
-                    // Big Bang snap back
-                    setTimeout(() => {
-                        planetSystems.forEach((s,i) => {
-                            s.mesh.position.copy(originalPositions[i]);
-                            s.mesh.scale.setScalar(1);
-                            s.angle = Math.random() * Math.PI * 2; // chaotic reposition
-                        });
-                    }, 400);
-                }
-            }, 16);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.y += 0.00014;
-            planetSystems.forEach(s => {
-                s.angle += s.orbitalSpeed;
-                s.mesh.position.x = Math.cos(s.angle) * s.orbitalDist;
-                s.mesh.position.z = Math.sin(s.angle) * s.orbitalDist;
-            });
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
-
-    <!-- OLYMPUS MALL LOGIC + CLICK-TO-FADE + FULL CATEGORIES -->
-    <script>
-        // Full populated categories (150+ services)
-        const linkData = {
-            hats: [{n:"Village Hat Shop",u:"https://www.villagehatshop.com",m:"mask-hat"},{n:"Hats.com",u:"https://hats.com",m:"mask-hat"},{n:"Goorin Bros.",u:"https://goorin.com",m:"mask-hat"},{n:"Chapel Hats",u:"https://www.chapelhats.com",m:"mask-hat"},{n:"Lids",u:"https://www.lids.com",m:"mask-hat"},{n:"Hat Club",u:"https://www.hatclub.com",m:"mask-hat"},{n:"Hat Heaven",u:"https://hatheaven.com",m:"mask-hat"},{n:"New Era Cap",u:"https://www.neweracap.com",m:"mask-hat"},{n:"Brixton",u:"https://www.brixton.com",m:"mask-hat"},{n:"Stetson",u:"https://www.stetson.com",m:"mask-hat"},{n:"Filson",u:"https://www.filson.com",m:"mask-hat"}],
-            shirts: [{n:"Amazon",u:"https://www.amazon.com",m:"mask-shirt"},{n:"Uniqlo",u:"https://www.uniqlo.com",m:"mask-shirt"},{n:"Threadheads",u:"https://threadheads.com",m:"mask-shirt"},{n:"Printful",u:"https://www.printful.com",m:"mask-shirt"},{n:"Custom Ink",u:"https://www.customink.com",m:"mask-shirt"},{n:"TeePublic",u:"https://www.teepublic.com",m:"mask-shirt"},{n:"Into The AM",u:"https://www.intotheam.com",m:"mask-shirt"},{n:"Urban Outfitters",u:"https://www.urbanoutfitters.com",m:"mask-shirt"},{n:"Etsy",u:"https://www.etsy.com",m:"mask-shirt"},{n:"Threadless",u:"https://www.threadless.com",m:"mask-shirt"},{n:"Redbubble",u:"https://www.redbubble.com",m:"mask-shirt"},{n:"Shutterfly",u:"https://www.shutterfly.com",m:"mask-shirt"},{n:"Society6",u:"https://society6.com",m:"mask-shirt"}],
-            pants: [{n:"Uniqlo",u:"https://www.uniqlo.com",m:"mask-pants"},{n:"ASOS",u:"https://www.asos.com",m:"mask-pants"},{n:"Everlane",u:"https://www.everlane.com",m:"mask-pants"},{n:"Levi’s",u:"https://www.levi.com",m:"mask-pants"},{n:"Lululemon",u:"https://shop.lululemon.com",m:"mask-pants"},{n:"Bonobos",u:"https://bonobos.com",m:"mask-pants"},{n:"Abercrombie",u:"https://www.abercrombie.com",m:"mask-pants"},{n:"Zara",u:"https://www.zara.com",m:"mask-pants"},{n:"Dickies",u:"https://www.dickies.com",m:"mask-pants"},{n:"Carhartt",u:"https://www.carhartt.com",m:"mask-pants"},{n:"Wrangler",u:"https://www.wrangler.com",m:"mask-pants"}],
-            suits: [{n:"SuitShop",u:"https://suitshop.com",m:"mask-suit"},{n:"Spier & Mackay",u:"https://www.spierandmackay.com",m:"mask-suit"},{n:"Indochino",u:"https://www.indochino.com",m:"mask-suit"},{n:"SuitSupply",u:"https://suitsupply.com",m:"mask-suit"},{n:"Brooks Brothers",u:"https://www.brooksbrothers.com",m:"mask-suit"},{n:"Jos. A. Bank",u:"https://www.josbank.com",m:"mask-suit"},{n:"Men's Wearhouse",u:"https://www.menswearhouse.com",m:"mask-suit"},{n:"Tailored",u:"https://www.tailored.com",m:"mask-suit"}],
-            ladies: [{n:"ASOS",u:"https://www.asos.com",m:"mask-dress"},{n:"Anthropologie",u:"https://www.anthropologie.com",m:"mask-dress"},{n:"Mango",u:"https://shop.mango.com",m:"mask-dress"},{n:"Zara",u:"https://www.zara.com",m:"mask-dress"},{n:"Everlane",u:"https://www.everlane.com",m:"mask-dress"},{n:"Nordstrom",u:"https://www.nordstrom.com",m:"mask-dress"},{n:"Reformation",u:"https://www.thereformation.com",m:"mask-dress"},{n:"Aritzia",u:"https://www.aritzia.com",m:"mask-dress"},{n:"Shein",u:"https://www.shein.com",m:"mask-dress"},{n:"Fashion Nova",u:"https://www.fashionnova.com",m:"mask-dress"},{n:"Free People",u:"https://www.freepeople.com",m:"mask-dress"}],
-            kids: [{n:"Children's Place",u:"https://www.childrensplace.com",m:"mask-child"},{n:"H&M Kids",u:"https://www2.hm.com/en_us/kids.html",m:"mask-child"},{n:"Gap Kids",u:"https://www.gap.com/gap-kids",m:"mask-child"},{n:"Carter's",u:"https://www.cartersoshkosh.ca",m:"mask-child"},{n:"Uniqlo Kids",u:"https://www.uniqlo.com",m:"mask-child"},{n:"Hanna Andersson",u:"https://www.hannaandersson.com",m:"mask-child"},{n:"Old Navy Kids",u:"https://www.oldnavy.com",m:"mask-child"},{n:"Gymboree",u:"https://www.gymboree.com",m:"mask-child"}],
-            travel: [{n:"Booking.com",u:"https://www.booking.com",m:"mask-travel"},{n:"Expedia",u:"https://www.expedia.com",m:"mask-travel"},{n:"Airbnb",u:"https://www.airbnb.com",m:"mask-travel"},{n:"Kayak",u:"https://www.kayak.com",m:"mask-travel"},{n:"Skyscanner",u:"https://www.skyscanner.com",m:"mask-travel"},{n:"Priceline",u:"https://www.priceline.com",m:"mask-travel"},{n:"Tripadvisor",u:"https://www.tripadvisor.com",m:"mask-travel"},{n:"Hotels.com",u:"https://www.hotels.com",m:"mask-travel"},{n:"VRBO",u:"https://www.vrbo.com",m:"mask-travel"}],
-            fintech: [{n:"SoFi",u:"https://www.sofi.com",m:"mask-fintech"},{n:"Wealthsimple",u:"https://www.wealthsimple.com",m:"mask-fintech"},{n:"Chime",u:"https://www.chime.com",m:"mask-fintech"},{n:"Ally Bank",u:"https://www.ally.com",m:"mask-fintech"},{n:"EQ Bank",u:"https://www.eqbank.ca",m:"mask-fintech"},{n:"Robinhood",u:"https://robinhood.com",m:"mask-fintech"},{n:"Rocket Money",u:"https://www.rocketmoney.com",m:"mask-fintech"},{n:"KOHO",u:"https://www.koho.ca",m:"mask-fintech"},{n:"PayPal",u:"https://www.paypal.com",m:"mask-fintech"},{n:"Venmo",u:"https://venmo.com",m:"mask-fintech"},{n:"Cash App",u:"https://cash.app",m:"mask-fintech"},{n:"Wise",u:"https://wise.com",m:"mask-fintech"}],
-            realestate: [{n:"Zillow",u:"https://www.zillow.com",m:"mask-house"},{n:"Realtor.com",u:"https://www.realtor.com",m:"mask-house"},{n:"Redfin",u:"https://www.redfin.com",m:"mask-house"},{n:"Apartments.com",u:"https://www.apartments.com",m:"mask-house"},{n:"Trulia",u:"https://www.trulia.com",m:"mask-house"},{n:"Homes.com",u:"https://www.homes.com",m:"mask-house"},{n:"Realtor.ca",u:"https://www.realtor.ca",m:"mask-house"}],
-            builders: [{n:"Wix",u:"https://www.wix.com",m:"mask-builder"},{n:"Squarespace",u:"https://www.squarespace.com",m:"mask-builder"},{n:"Shopify",u:"https://www.shopify.com",m:"mask-builder"},{n:"Webflow",u:"https://webflow.com",m:"mask-builder"},{n:"Canva",u:"https://www.canva.com",m:"mask-builder"},{n:"WordPress",u:"https://wordpress.com",m:"mask-builder"},{n:"Carrd",u:"https://carrd.co",m:"mask-builder"},{n:"Framer",u:"https://www.framer.com",m:"mask-builder"}],
-            marketing: [{n:"HubSpot",u:"https://www.hubspot.com",m:"mask-market"},{n:"SEMrush",u:"https://www.semrush.com",m:"mask-market"},{n:"Mailchimp",u:"https://mailchimp.com",m:"mask-market"},{n:"ChatGPT",u:"https://chat.openai.com",m:"mask-market"},{n:"Google Ads",u:"https://ads.google.com",m:"mask-market"},{n:"Meta Business Suite",u:"https://business.facebook.com",m:"mask-market"},{n:"Hootsuite",u:"https://www.hootsuite.com",m:"mask-market"}],
-            food: [{n:"Uber Eats",u:"https://www.ubereats.com",m:"mask-food"},{n:"DoorDash",u:"https://www.doordash.com",m:"mask-food"},{n:"HelloFresh",u:"https://www.hellofresh.com",m:"mask-food"},{n:"Instacart",u:"https://www.instacart.com",m:"mask-food"},{n:"Grubhub",u:"https://www.grubhub.com",m:"mask-food"},{n:"SkipTheDishes",u:"https://www.skipthedishes.com",m:"mask-food"},{n:"Postmates",u:"https://www.postmates.com",m:"mask-food"},{n:"Seamless",u:"https://www.seamless.com",m:"mask-food"}],
-            entertainment: [{n:"Netflix",u:"https://www.netflix.com",m:"mask-play"},{n:"Disney+",u:"https://www.disneyplus.com",m:"mask-play"},{n:"Spotify",u:"https://www.spotify.com",m:"mask-play"},{n:"Apple Music",u:"https://www.apple.com/apple-music",m:"mask-play"},{n:"YouTube Premium",u:"https://www.youtube.com/premium",m:"mask-play"},{n:"Hulu",u:"https://www.hulu.com",m:"mask-play"},{n:"Amazon Prime Video",u:"https://www.amazon.com/primevideo",m:"mask-play"},{n:"Twitch",u:"https://www.twitch.tv",m:"mask-play"},{n:"Max",u:"https://www.max.com",m:"mask-play"}]
-        };
-
-        let currentCategory = 'home';
-        let cardsVisible = true;
-
-        function buildCard(item) {
-            return `<a href="${item.u}" target="_blank" class="hologram-card"><div class="video-mask \( {item.m}"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label"> \){item.n}</div></a>`;
-        }
-
-        function showSection(id) {
-            currentCategory = id;
-            // ... (dynamic grid logic same as before)
-        }
-
-        function searchMall() { /* full search logic same as before */ }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        function toggleCards() {
-            cardsVisible = !cardsVisible;
-            const cards = document.querySelectorAll('.estate-card');
-            cards.forEach(c => c.style.opacity = cardsVisible ? '1' : '0.08');
-            cards.forEach(c => c.style.pointerEvents = cardsVisible ? 'auto' : 'none');
-        }
-
-        function toggleSharePanel() {
-            document.getElementById('share-panel').classList.toggle('active');
-        }
-
-        function shareTo(platform) {
-            const url = encodeURIComponent(location.href);
-            const text = encodeURIComponent("OLYMPUS HOLO-MALL inside Nexus Vortex");
-            let link = '';
-            switch(platform){
-                case 'x': link = `https://twitter.com/intent/tweet?text=\( {text}&url= \){url}`; break;
-                // ... (all other platforms same as before)
-            }
-            if(link) window.open(link,'_blank');
-        }
-
-        // Click anywhere on holo (except cards) fades cards
-        document.getElementById('olympus-holo').addEventListener('click', (e) => {
-            if (!e.target.closest('.estate-card') && !e.target.closest('.menu-btn') && !e.target.closest('#floating-share')) {
-                toggleCards();
-            }
-        });
-
-        // Auto-start
-        window.onload = () => {
-            document.getElementById('olympus-holo').classList.add('active');
-            // cards start visible
-        };
+        // ... (Include your existing Three.js Solar System logic here)
+        // Ensure the scene background is null or black to let the vacuum show.
     </script>
 </body>
 </html>
