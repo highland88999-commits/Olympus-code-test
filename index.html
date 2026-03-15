@@ -198,7 +198,7 @@
 
         .label { font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #fff; text-align: center; }
 
-        /* Share Bar */
+        /* Expandable Share Bar */
         .share-section {
             margin-top: 80px;
             padding: 30px;
@@ -207,12 +207,23 @@
             border-radius: 12px;
             backdrop-filter: blur(15px);
         }
-        .share-section h3 {
+        .share-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             color: var(--neon-cyan);
             letter-spacing: 4px;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
+            transition: var(--transition);
         }
+        .share-header:hover { color: #fff; }
+        .share-toggle { font-size: 1.8rem; transition: transform 0.4s; }
+        .share-section.expanded .share-toggle { transform: rotate(180deg); }
+        .share-content { display: none; margin-top: 20px; }
+        .share-section.expanded .share-content { display: block; }
+
         .share-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
@@ -250,6 +261,7 @@
             font-size: 1rem;
             letter-spacing: 2px;
             margin-top: 20px;
+            width: 100%;
         }
 
         /* Controls */
@@ -325,102 +337,33 @@
             <!-- OLYMPIAN ESTATE — FULL COLLECTION -->
             <h2 style="color:var(--neon-cyan); letter-spacing:8px; font-size:1.6rem; margin:70px 0 30px;">OLYMPIAN ESTATE</h2>
             <div class="icon-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
-                <a href="https://rem-psi-mauve.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">REM-PSI MAUVE</div>
-                </a>
-                <a href="https://hyperion-gravitas.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">HYPERION GRAVITAS</div>
-                </a>
-                <a href="https://the-flying-dutchman.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">THE FLYING DUTCHMAN</div>
-                </a>
-                <a href="https://abyssal-voyage-lemon.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">ABYSSAL VOYAGE (RIDE)</div>
-                </a>
-                <a href="https://georgia-aquarium.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">GEORGIA AQUARIUM</div>
-                </a>
-                <a href="https://nexus-symbiote.onrender.com/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">NEXUS SYMBIOTE</div>
-                </a>
-                <a href="https://mega-city-liard.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">MEGA CITY LIARD</div>
-                </a>
-                <a href="https://sarib-beetles.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">SARIB BEETLES</div>
-                </a>
-                <a href="https://axiom-repository.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">AXIOM REPOSITORY</div>
-                </a>
-                <a href="https://grief-gully.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">GRIEF GULLY</div>
-                </a>
-                <a href="https://olympian-finances.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">OLYMPIAN FINANCES</div>
-                </a>
-                <a href="https://magic-mirror-puce.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">MAGIC MIRROR</div>
-                </a>
-                <a href="https://the-glass-slipper.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">THE GLASS SLIPPER</div>
-                </a>
-                <a href="https://aethelgard-five.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">AETHELGARD FIVE</div>
-                </a>
-                <a href="https://hercules-nine.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">HERCULES NINE</div>
-                </a>
-                <a href="https://neon-racer-ecru.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">NEON RACER</div>
-                </a>
-                <a href="https://colossus-xi.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">COLOSSUS XI</div>
-                </a>
-                <a href="https://zeus-v-hades.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">ZEUS VS HADES</div>
-                </a>
-                <a href="https://merlin-mandates.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">MERLIN MANDATES</div>
-                </a>
-                <a href="https://convergence-murex.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">CONVERGENCE MUREX</div>
-                </a>
-                <a href="https://artemis-hub.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">ARTEMIS HUB</div>
-                </a>
-                <a href="https://artemis-os.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">ARTEMIS OS</div>
-                </a>
-                <a href="https://aetheris-business-model.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">AETHERIS BUSINESS</div>
-                </a>
-                <a href="https://olympus-aetheris.vercel.app/" target="_blank" class="hologram-card">
-                    <div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
-                    <div class="label">OLYMPUS AETHERIS</div>
-                </a>
+                <!-- All 25+ worlds populated -->
+                <a href="https://rem-psi-mauve.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">REM-PSI MAUVE</div></a>
+                <a href="https://olympus-lac.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">OLYMPUS CORE</div></a>
+                <a href="https://architect-artemis.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">ARTEMIS</div></a>
+                <a href="https://hyperion-gravitas.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">HYPERION GRAVITAS</div></a>
+                <a href="https://the-flying-dutchman.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">THE FLYING DUTCHMAN</div></a>
+                <a href="https://abyssal-voyage-lemon.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">ABYSSAL VOYAGE (RIDE)</div></a>
+                <a href="https://georgia-aquarium.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">GEORGIA AQUARIUM</div></a>
+                <a href="https://nexus-symbiote.onrender.com/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">NEXUS SYMBIOTE</div></a>
+                <a href="https://mega-city-liard.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">MEGA CITY LIARD</div></a>
+                <a href="https://sarib-beetles.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">SARIB BEETLES</div></a>
+                <a href="https://axiom-repository.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">AXIOM REPOSITORY</div></a>
+                <a href="https://grief-gully.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">GRIEF GULLY</div></a>
+                <a href="https://olympian-finances.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">OLYMPIAN FINANCES</div></a>
+                <a href="https://magic-mirror-puce.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">MAGIC MIRROR</div></a>
+                <a href="https://the-glass-slipper.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">THE GLASS SLIPPER</div></a>
+                <a href="https://aethelgard-five.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">AETHELGARD FIVE</div></a>
+                <a href="https://hercules-nine.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">HERCULES NINE</div></a>
+                <a href="https://neon-racer-ecru.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">NEON RACER</div></a>
+                <a href="https://colossus-xi.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">COLOSSUS XI</div></a>
+                <a href="https://zeus-v-hades.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">ZEUS VS HADES</div></a>
+                <a href="https://merlin-mandates.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">MERLIN MANDATES</div></a>
+                <a href="https://convergence-murex.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">CONVERGENCE MUREX</div></a>
+                <a href="https://artemis-hub.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">ARTEMIS HUB</div></a>
+                <a href="https://artemis-os.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">ARTEMIS OS</div></a>
+                <a href="https://aetheris-business-model.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">AETHERIS BUSINESS</div></a>
+                <a href="https://olympus-aetheris.vercel.app/" target="_blank" class="hologram-card"><div class="video-mask mask-gate" style="width:80px;height:80px;"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div><div class="label">OLYMPUS AETHERIS</div></a>
                 <a href="https://the-afterlife.vercel.app/" target="_blank" class="hologram-card" style="border-color:#ff00ff; border-width:2px;">
                     <div class="video-mask mask-gate" style="width:80px;height:80px; filter:hue-rotate(300deg);"><video class="masked-video" muted loop playsinline autoplay><source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4"></video></div>
                     <div class="label" style="color:#ff00ff;">ENTER ELYSIUM</div>
@@ -432,33 +375,38 @@
             <div class="icon-grid" id="mallGrid"></div>
         </section>
 
-        <!-- SOCIAL SHARING BAR -->
-        <div class="share-section">
-            <h3>SHARE THE OLYMPUS MULTIVERSE EXPERIENCE</h3>
-            <div class="share-grid">
-                <button class="share-btn" onclick="shareToPlatform('x')" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('facebook')" title="Facebook"><i class="fa-brands fa-facebook-f"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('linkedin')" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('whatsapp')" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('reddit')" title="Reddit"><i class="fa-brands fa-reddit-alien"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('pinterest')" title="Pinterest"><i class="fa-brands fa-pinterest"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('telegram')" title="Telegram"><i class="fa-brands fa-telegram"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('bluesky')" title="Bluesky"><i class="fa-solid fa-b"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('mastodon')" title="Mastodon"><i class="fa-solid fa-m"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('tumblr')" title="Tumblr"><i class="fa-brands fa-tumblr"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('email')" title="Email"><i class="fa-solid fa-envelope"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('copy')" title="Copy Link"><i class="fa-solid fa-link"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('threads')" title="Threads"><i class="fa-brands fa-threads"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('snapchat')" title="Snapchat"><i class="fa-brands fa-snapchat"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('signal')" title="Signal"><i class="fa-solid fa-s"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('discord')" title="Discord"><i class="fa-brands fa-discord"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('instagram')" title="Instagram"><i class="fa-brands fa-instagram"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('tiktok')" title="TikTok"><i class="fa-brands fa-tiktok"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('youtube')" title="YouTube"><i class="fa-brands fa-youtube"></i></button>
-                <button class="share-btn" onclick="shareToPlatform('twitch')" title="Twitch"><i class="fa-brands fa-twitch"></i></button>
+        <!-- EXPANDABLE SHARE SECTION -->
+        <div class="share-section" id="share-section">
+            <div class="share-header" onclick="toggleShare()">
+                <h3>SHARE THE OLYMPUS MULTIVERSE EXPERIENCE</h3>
+                <span class="share-toggle" id="share-toggle">▼</span>
             </div>
-            <button onclick="nativeShare()" class="native-share-btn">SHARE YOUR EXPERIENCE</button>
-            <p style="margin-top:15px; opacity:0.6; font-size:0.7rem;">Total services in mall now &gt;150 (expanded with missing platforms like Instacart, Shein, Grubhub, etc.)</p>
+            <div class="share-content" id="share-content">
+                <div class="share-grid">
+                    <button class="share-btn" onclick="shareToPlatform('x')" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('facebook')" title="Facebook"><i class="fa-brands fa-facebook-f"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('linkedin')" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('whatsapp')" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('reddit')" title="Reddit"><i class="fa-brands fa-reddit-alien"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('pinterest')" title="Pinterest"><i class="fa-brands fa-pinterest"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('telegram')" title="Telegram"><i class="fa-brands fa-telegram"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('bluesky')" title="Bluesky"><i class="fa-solid fa-b"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('mastodon')" title="Mastodon"><i class="fa-solid fa-m"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('tumblr')" title="Tumblr"><i class="fa-brands fa-tumblr"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('email')" title="Email"><i class="fa-solid fa-envelope"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('copy')" title="Copy Link"><i class="fa-solid fa-link"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('threads')" title="Threads"><i class="fa-brands fa-threads"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('snapchat')" title="Snapchat"><i class="fa-brands fa-snapchat"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('signal')" title="Signal"><i class="fa-solid fa-s"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('discord')" title="Discord"><i class="fa-brands fa-discord"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('instagram')" title="Instagram"><i class="fa-brands fa-instagram"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('tiktok')" title="TikTok"><i class="fa-brands fa-tiktok"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('youtube')" title="YouTube"><i class="fa-brands fa-youtube"></i></button>
+                    <button class="share-btn" onclick="shareToPlatform('twitch')" title="Twitch"><i class="fa-brands fa-twitch"></i></button>
+                </div>
+                <button onclick="nativeShare()" class="native-share-btn">SHARE YOUR EXPERIENCE</button>
+                <p style="margin-top:15px; opacity:0.6; font-size:0.7rem;">Total services in mall now &gt;150 (expanded with missing platforms like Instacart, Shein, Grubhub, etc.)</p>
+            </div>
         </div>
 
         <footer>BROUGHT TO YOU BY HERMES</footer>
@@ -470,34 +418,171 @@
     </div>
 
     <script>
-        // MASTER DATA (unchanged from previous expansion)
-        const linkData = { /* ... full expanded data from your previous version ... */ 
-            hats: [ /* same as before */ ],
-            shirts: [ /* same */ ],
-            pants: [ /* same */ ],
-            suits: [ /* same */ ],
-            ladies: [ /* same */ ],
-            kids: [ /* same */ ],
-            travel: [ /* same */ ],
-            fintech: [ /* same */ ],
-            realestate: [ /* same */ ],
-            builders: [ /* same */ ],
-            marketing: [ /* same */ ],
-            food: [ /* same */ ],
-            entertainment: [ /* same */ ]
+        // FULLY POPULATED MASTER DATA (all categories expanded)
+        const linkData = {
+            hats: [
+                {n: "Village Hat Shop", u: "https://www.villagehatshop.com", m: "mask-hat"},
+                {n: "Hats.com", u: "https://hats.com", m: "mask-hat"},
+                {n: "Goorin Bros.", u: "https://goorin.com", m: "mask-hat"},
+                {n: "Chapel Hats", u: "https://www.chapelhats.com", m: "mask-hat"},
+                {n: "Lids", u: "https://www.lids.com", m: "mask-hat"},
+                {n: "Hat Club", u: "https://www.hatclub.com", m: "mask-hat"},
+                {n: "Hat Heaven", u: "https://hatheaven.com", m: "mask-hat"},
+                {n: "New Era Cap", u: "https://www.neweracap.com", m: "mask-hat"},
+                {n: "Brixton", u: "https://www.brixton.com", m: "mask-hat"},
+                {n: "Stetson", u: "https://www.stetson.com", m: "mask-hat"},
+                {n: "Filson", u: "https://www.filson.com", m: "mask-hat"}
+            ],
+            shirts: [
+                {n: "Amazon", u: "https://www.amazon.com", m: "mask-shirt"},
+                {n: "Uniqlo", u: "https://www.uniqlo.com", m: "mask-shirt"},
+                {n: "Threadheads", u: "https://threadheads.com", m: "mask-shirt"},
+                {n: "Printful", u: "https://www.printful.com", m: "mask-shirt"},
+                {n: "Custom Ink", u: "https://www.customink.com", m: "mask-shirt"},
+                {n: "TeePublic", u: "https://www.teepublic.com", m: "mask-shirt"},
+                {n: "Into The AM", u: "https://www.intotheam.com", m: "mask-shirt"},
+                {n: "Urban Outfitters", u: "https://www.urbanoutfitters.com", m: "mask-shirt"},
+                {n: "Etsy", u: "https://www.etsy.com", m: "mask-shirt"},
+                {n: "Threadless", u: "https://www.threadless.com", m: "mask-shirt"},
+                {n: "Redbubble", u: "https://www.redbubble.com", m: "mask-shirt"},
+                {n: "Shutterfly", u: "https://www.shutterfly.com", m: "mask-shirt"},
+                {n: "Society6", u: "https://society6.com", m: "mask-shirt"}
+            ],
+            pants: [
+                {n: "Uniqlo", u: "https://www.uniqlo.com", m: "mask-pants"},
+                {n: "ASOS", u: "https://www.asos.com", m: "mask-pants"},
+                {n: "Everlane", u: "https://www.everlane.com", m: "mask-pants"},
+                {n: "Levi’s", u: "https://www.levi.com", m: "mask-pants"},
+                {n: "Lululemon", u: "https://shop.lululemon.com", m: "mask-pants"},
+                {n: "Bonobos", u: "https://bonobos.com", m: "mask-pants"},
+                {n: "Abercrombie", u: "https://www.abercrombie.com", m: "mask-pants"},
+                {n: "Zara", u: "https://www.zara.com", m: "mask-pants"},
+                {n: "Dickies", u: "https://www.dickies.com", m: "mask-pants"},
+                {n: "Carhartt", u: "https://www.carhartt.com", m: "mask-pants"},
+                {n: "Wrangler", u: "https://www.wrangler.com", m: "mask-pants"}
+            ],
+            suits: [
+                {n: "SuitShop", u: "https://suitshop.com", m: "mask-suit"},
+                {n: "Spier & Mackay", u: "https://www.spierandmackay.com", m: "mask-suit"},
+                {n: "Indochino", u: "https://www.indochino.com", m: "mask-suit"},
+                {n: "SuitSupply", u: "https://suitsupply.com", m: "mask-suit"},
+                {n: "Brooks Brothers", u: "https://www.brooksbrothers.com", m: "mask-suit"},
+                {n: "Jos. A. Bank", u: "https://www.josbank.com", m: "mask-suit"},
+                {n: "Men's Wearhouse", u: "https://www.menswearhouse.com", m: "mask-suit"},
+                {n: "Tailored", u: "https://www.tailored.com", m: "mask-suit"}
+            ],
+            ladies: [
+                {n: "ASOS", u: "https://www.asos.com", m: "mask-dress"},
+                {n: "Anthropologie", u: "https://www.anthropologie.com", m: "mask-dress"},
+                {n: "Mango", u: "https://shop.mango.com", m: "mask-dress"},
+                {n: "Zara", u: "https://www.zara.com", m: "mask-dress"},
+                {n: "Everlane", u: "https://www.everlane.com", m: "mask-dress"},
+                {n: "Nordstrom", u: "https://www.nordstrom.com", m: "mask-dress"},
+                {n: "Reformation", u: "https://www.thereformation.com", m: "mask-dress"},
+                {n: "Aritzia", u: "https://www.aritzia.com", m: "mask-dress"},
+                {n: "Shein", u: "https://www.shein.com", m: "mask-dress"},
+                {n: "Fashion Nova", u: "https://www.fashionnova.com", m: "mask-dress"},
+                {n: "Free People", u: "https://www.freepeople.com", m: "mask-dress"}
+            ],
+            kids: [
+                {n: "Children's Place", u: "https://www.childrensplace.com", m: "mask-child"},
+                {n: "H&M Kids", u: "https://www2.hm.com/en_us/kids.html", m: "mask-child"},
+                {n: "Gap Kids", u: "https://www.gap.com/gap-kids", m: "mask-child"},
+                {n: "Carter's", u: "https://www.cartersoshkosh.ca", m: "mask-child"},
+                {n: "Uniqlo Kids", u: "https://www.uniqlo.com", m: "mask-child"},
+                {n: "Hanna Andersson", u: "https://www.hannaandersson.com", m: "mask-child"},
+                {n: "Old Navy Kids", u: "https://www.oldnavy.com", m: "mask-child"},
+                {n: "Gymboree", u: "https://www.gymboree.com", m: "mask-child"}
+            ],
+            travel: [
+                {n: "Booking.com", u: "https://www.booking.com", m: "mask-travel"},
+                {n: "Expedia", u: "https://www.expedia.com", m: "mask-travel"},
+                {n: "Airbnb", u: "https://www.airbnb.com", m: "mask-travel"},
+                {n: "Kayak", u: "https://www.kayak.com", m: "mask-travel"},
+                {n: "Skyscanner", u: "https://www.skyscanner.com", m: "mask-travel"},
+                {n: "Priceline", u: "https://www.priceline.com", m: "mask-travel"},
+                {n: "Tripadvisor", u: "https://www.tripadvisor.com", m: "mask-travel"},
+                {n: "Hotels.com", u: "https://www.hotels.com", m: "mask-travel"},
+                {n: "VRBO", u: "https://www.vrbo.com", m: "mask-travel"}
+            ],
+            fintech: [
+                {n: "SoFi", u: "https://www.sofi.com", m: "mask-fintech"},
+                {n: "Wealthsimple", u: "https://www.wealthsimple.com", m: "mask-fintech"},
+                {n: "Chime", u: "https://www.chime.com", m: "mask-fintech"},
+                {n: "Ally Bank", u: "https://www.ally.com", m: "mask-fintech"},
+                {n: "EQ Bank", u: "https://www.eqbank.ca", m: "mask-fintech"},
+                {n: "Robinhood", u: "https://robinhood.com", m: "mask-fintech"},
+                {n: "Rocket Money", u: "https://www.rocketmoney.com", m: "mask-fintech"},
+                {n: "KOHO", u: "https://www.koho.ca", m: "mask-fintech"},
+                {n: "PayPal", u: "https://www.paypal.com", m: "mask-fintech"},
+                {n: "Venmo", u: "https://venmo.com", m: "mask-fintech"},
+                {n: "Cash App", u: "https://cash.app", m: "mask-fintech"},
+                {n: "Wise", u: "https://wise.com", m: "mask-fintech"}
+            ],
+            realestate: [
+                {n: "Zillow", u: "https://www.zillow.com", m: "mask-house"},
+                {n: "Realtor.com", u: "https://www.realtor.com", m: "mask-house"},
+                {n: "Redfin", u: "https://www.redfin.com", m: "mask-house"},
+                {n: "Apartments.com", u: "https://www.apartments.com", m: "mask-house"},
+                {n: "Trulia", u: "https://www.trulia.com", m: "mask-house"},
+                {n: "Homes.com", u: "https://www.homes.com", m: "mask-house"},
+                {n: "Realtor.ca", u: "https://www.realtor.ca", m: "mask-house"}
+            ],
+            builders: [
+                {n: "Wix", u: "https://www.wix.com", m: "mask-builder"},
+                {n: "Squarespace", u: "https://www.squarespace.com", m: "mask-builder"},
+                {n: "Shopify", u: "https://www.shopify.com", m: "mask-builder"},
+                {n: "Webflow", u: "https://webflow.com", m: "mask-builder"},
+                {n: "Canva", u: "https://www.canva.com", m: "mask-builder"},
+                {n: "WordPress", u: "https://wordpress.com", m: "mask-builder"},
+                {n: "Carrd", u: "https://carrd.co", m: "mask-builder"},
+                {n: "Framer", u: "https://www.framer.com", m: "mask-builder"}
+            ],
+            marketing: [
+                {n: "HubSpot", u: "https://www.hubspot.com", m: "mask-market"},
+                {n: "SEMrush", u: "https://www.semrush.com", m: "mask-market"},
+                {n: "Mailchimp", u: "https://mailchimp.com", m: "mask-market"},
+                {n: "ChatGPT", u: "https://chat.openai.com", m: "mask-market"},
+                {n: "Google Ads", u: "https://ads.google.com", m: "mask-market"},
+                {n: "Meta Business Suite", u: "https://business.facebook.com", m: "mask-market"},
+                {n: "Hootsuite", u: "https://www.hootsuite.com", m: "mask-market"}
+            ],
+            food: [
+                {n: "Uber Eats", u: "https://www.ubereats.com", m: "mask-food"},
+                {n: "DoorDash", u: "https://www.doordash.com", m: "mask-food"},
+                {n: "HelloFresh", u: "https://www.hellofresh.com", m: "mask-food"},
+                {n: "Instacart", u: "https://www.instacart.com", m: "mask-food"},
+                {n: "Grubhub", u: "https://www.grubhub.com", m: "mask-food"},
+                {n: "SkipTheDishes", u: "https://www.skipthedishes.com", m: "mask-food"},
+                {n: "Postmates", u: "https://www.postmates.com", m: "mask-food"},
+                {n: "Seamless", u: "https://www.seamless.com", m: "mask-food"},
+                {n: "DoorDash Market", u: "https://www.doordash.com", m: "mask-food"}
+            ],
+            entertainment: [
+                {n: "Netflix", u: "https://www.netflix.com", m: "mask-play"},
+                {n: "Disney+", u: "https://www.disneyplus.com", m: "mask-play"},
+                {n: "Spotify", u: "https://www.spotify.com", m: "mask-play"},
+                {n: "Apple Music", u: "https://www.apple.com/apple-music", m: "mask-play"},
+                {n: "YouTube Premium", u: "https://www.youtube.com/premium", m: "mask-play"},
+                {n: "Hulu", u: "https://www.hulu.com", m: "mask-play"},
+                {n: "Amazon Prime Video", u: "https://www.amazon.com/primevideo", m: "mask-play"},
+                {n: "Twitch", u: "https://www.twitch.tv", m: "mask-play"},
+                {n: "Max", u: "https://www.max.com", m: "mask-play"}
+            ]
         };
 
         let currentCategory = 'home';
 
         function buildCard(item) {
-            return `<a href="${item.u}" target="_blank" class="hologram-card">
-                        <div class="video-mask ${item.m}">
-                            <video class="masked-video" muted loop playsinline autoplay>
-                                <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
-                            </video>
-                        </div>
-                        <div class="label">${item.n}</div>
-                    </a>`;
+            return `
+                <a href="${item.u}" target="_blank" class="hologram-card">
+                    <div class="video-mask ${item.m}">
+                        <video class="masked-video" muted loop playsinline autoplay>
+                            <source src="https://files.catbox.moe/qnb2fw.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="label">${item.n}</div>
+                </a>`;
         }
 
         function showSection(id, element = null) {
@@ -557,9 +642,14 @@
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Rain, controls, clock removed (no more top-right jargon)
+        // EXPANDABLE SHARE
+        function toggleShare() {
+            const section = document.getElementById('share-section');
+            const content = document.getElementById('share-content');
+            section.classList.toggle('expanded');
+        }
 
-        // SOCIAL SHARING (clean & fixed)
+        // SOCIAL SHARING
         function shareToPlatform(platform) {
             const url = encodeURIComponent(window.location.href);
             const text = encodeURIComponent("OLYMPUS | ONLINE SHOPPING MALL — Cyberpunk Multiverse Experience");
@@ -612,7 +702,7 @@
             document.getElementById('bg-video').style.filter = `brightness(${e.target.value/100}) grayscale(0.8)`;
         };
 
-        // Rain effect (kept)
+        // Rain effect
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
         let w, h, drops;
@@ -636,7 +726,12 @@
         initRain(); 
         window.onresize = initRain;
 
-        window.onload = () => showSection('home');
+        // Start collapsed share section + home
+        window.onload = () => {
+            showSection('home');
+            // Share starts collapsed
+            document.getElementById('share-content').style.display = 'none';
+        };
     </script>
 </body>
 </html>
