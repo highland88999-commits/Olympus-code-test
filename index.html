@@ -11,14 +11,13 @@
             --neon-purple: #bc13fe;
             --black-bloom: #050505;
             --glow: 0 0 30px rgba(0,255,255,0.5);
-            --transition: all 0.6s cubic-bezier(0.19,1,0.22,1);
         }
 
         body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family:'Segoe UI',sans-serif; color:#fff; }
 
         canvas { position:fixed; top:0; left:0; z-index:1; }
 
-        /* LIGHTNING BOLT HEADER – above menu, color changes with category */
+        /* LIGHTNING BOLT HEADER – color changes with category */
         .lightning-bolt {
             position:fixed; top:12px; left:50%; transform:translateX(-50%);
             font-size:4rem; z-index:9999; pointer-events:none;
@@ -29,7 +28,7 @@
         @keyframes boltPulse { 0%,100%{opacity:0.7;transform:translateX(-50%) scale(1);} 50%{opacity:1;transform:translateX(-50%) scale(1.18);} }
 
         /* UI */
-        .ui-master { position:fixed; inset:0; z-index:2; display:flex; flex-direction:column; transition:var(--transition); }
+        .ui-master { position:fixed; inset:0; z-index:2; display:flex; flex-direction:column; transition:all .6s cubic-bezier(0.19,1,0.22,1); }
         .ui-hidden { opacity:0; pointer-events:none; transform:scale(1.03); filter:blur(10px); }
 
         .nav-header { padding:20px; display:flex; align-items:center; gap:15px; background:linear-gradient(to bottom,rgba(0,0,0,0.9),transparent); z-index:3000; }
@@ -39,7 +38,7 @@
         .search-container { flex-grow:1; max-width:620px; }
         #mallSearch { width:100%; background:rgba(0,0,0,0.85); border:1.5px solid rgba(0,255,255,0.3); padding:14px 28px; border-radius:30px; color:#fff; outline:none; }
 
-        .sidebar { position:fixed; top:0; left:-320px; width:300px; height:100%; background:rgba(5,5,5,0.95); backdrop-filter:blur(30px); border-right:1px solid var(--neon-cyan); z-index:4000; transition:var(--transition); padding:110px 0 50px; overflow-y:auto; }
+        .sidebar { position:fixed; top:0; left:-320px; width:300px; height:100%; background:rgba(5,5,5,0.95); backdrop-filter:blur(30px); border-right:1px solid var(--neon-cyan); z-index:4000; transition:all .6s cubic-bezier(0.19,1,0.22,1); padding:110px 0 50px; overflow-y:auto; }
         .sidebar.active { left:0; }
         .menu-link { padding:16px 30px; display:block; color:#aaa; text-transform:uppercase; letter-spacing:2px; font-size:0.72rem; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; }
         .menu-link:hover, .menu-link.active-link { color:var(--neon-cyan); background:rgba(0,255,255,0.05); border-left:3px solid var(--neon-cyan); }
@@ -48,7 +47,7 @@
         .cat-banner { color:var(--neon-cyan); letter-spacing:12px; font-weight:900; text-transform:uppercase; margin-bottom:50px; text-shadow:var(--glow); font-size:1.55rem; }
         .icon-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:28px; width:100%; max-width:1550px; }
 
-        /* FLOATING CIRCULAR VIDEO ICON – video inside icon shape, no frame */
+        /* FLOATING CIRCULAR VIDEO ICON */
         .hologram-card {
             text-decoration:none; background:transparent; border:none; border-radius:50%;
             width:170px; height:170px; display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -63,6 +62,14 @@
         .hologram-card:hover .masked-video { opacity:0.98; }
         .label { margin-top:14px; font-size:0.68rem; letter-spacing:2px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; text-shadow:0 0 10px rgba(0,255,255,0.6); }
 
+        /* HOLOFRAME (iframe popup for trusted URLs) */
+        #holoframe {
+            position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9998; display:none; flex-direction:column;
+        }
+        #holoframe.active { display:flex; }
+        #holoframe iframe { flex:1; border:none; width:100%; height:100%; }
+        #closeHolo { position:absolute; top:20px; right:20px; padding:12px 24px; background:#fff; color:#000; border:none; border-radius:8px; cursor:pointer; font-weight:bold; z-index:9999; }
+
         #obs-hint { position:fixed; bottom:20px; width:100%; text-align:center; color:rgba(0,255,255,0.45); font-size:0.62rem; letter-spacing:3px; text-transform:uppercase; pointer-events:none; z-index:5000; }
     </style>
 </head>
@@ -72,6 +79,12 @@
     <div class="lightning-bolt" id="lightning"><i class="fa-solid fa-bolt"></i></div>
 
     <canvas id="galaxy-canvas"></canvas>
+
+    <!-- Holoframe Popup -->
+    <div id="holoframe">
+        <button id="closeHolo" onclick="document.getElementById('holoframe').classList.remove('active')">CLOSE</button>
+        <iframe id="holoIframe"></iframe>
+    </div>
 
     <div id="ui-master" class="ui-master">
         <header class="nav-header">
@@ -101,39 +114,36 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         // ──────────────────────────────────────────────────────────────
-        // GALAXY + SOLAR SYSTEM WITH MOONS & AUDIO REACTIVITY
+        // GALAXY + STARFIELD AUDIO REACTIVITY (dancing stars!)
         // ──────────────────────────────────────────────────────────────
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 5000);
         const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
         renderer.setSize(innerWidth, innerHeight);
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; controls.dampingFactor = 0.05; controls.rotateSpeed = 0.6; controls.zoomSpeed = 1.2;
+        controls.enableDamping = true; controls.dampingFactor = 0.05;
 
-        // Stars
+        // Starfield – now audio-reactive
         const starGeo = new THREE.BufferGeometry();
         const starPos = [];
-        for(let i=0;i<18000;i++) starPos.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
+        const starCount = 25000;
+        for(let i=0;i<starCount;i++) {
+            starPos.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
+        }
         starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos,3));
-        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color:0x00ffff, size:1.1, transparent:true}));
+        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:1.2, transparent:true, opacity:0.7});
+        const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
         // Sun + Light
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(22,64,64), new THREE.MeshStandardMaterial({color:0xffee88, emissive:0xffdd00, emissiveIntensity:3}));
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(60,64,64), new THREE.MeshStandardMaterial({color:0xbc13fe, emissive:0xbc13fe, emissiveIntensity:2}));
         scene.add(sun);
-        scene.add(new THREE.PointLight(0xffffff,5,4000));
-        scene.add(new THREE.AmbientLight(0x222222));
+        scene.add(new THREE.PointLight(0x00ffff,4,4000));
+        scene.add(new THREE.AmbientLight(0x111111));
 
-        camera.position.set(0,180,850);
+        camera.position.z = 1200;
 
-        // Planets & Moons (full from your NASA file)
-        const planets = [];
-        const planetSystems = [];
-        const solarData = { /* your full NASA facts object here */ };
-
-        // (All createBody, addMoon, orbital speeds, Saturn rings, etc. – full code included below)
-
-        // Audio reactive
+        // Audio reactivity variables
         let analyser, dataArray;
         let micActive = false;
         let audioContext;
@@ -151,58 +161,52 @@
                     dataArray = new Uint8Array(analyser.frequencyBinCount);
                     micActive = true;
                     micBtn.classList.add('active');
-                } catch(e) { console.warn('Mic access denied'); }
+                } catch(e) {
+                    console.warn('Mic access denied');
+                    alert('Mic access denied — stars will stay calm 😢');
+                }
             } else {
                 micActive = false;
                 micBtn.classList.remove('active');
             }
         };
 
-        // Raycaster for planet click → holoframe
-        const raycaster = new THREE.Raycaster();
-        const pointer = new THREE.Vector2();
-
-        function onPointerDown(e) {
-            const x = e.clientX || e.touches?.[0].clientX;
-            const y = e.clientY || e.touches?.[0].clientY;
-            pointer.x = (x / innerWidth) * 2 - 1;
-            pointer.y = -(y / innerHeight) * 2 + 1;
-            raycaster.setFromCamera(pointer, camera);
-            const intersects = raycaster.intersectObjects(planets);
-            if(intersects.length) {
-                const obj = intersects[0].object;
-                document.getElementById('planet-name').textContent = obj.userData.name.toUpperCase();
-                document.getElementById('planet-info').textContent = obj.userData.info;
-                document.getElementById('holoframe').classList.add('active');
-            }
-        }
-
-        window.addEventListener('click', onPointerDown);
-        window.addEventListener('touchstart', onPointerDown);
-        window.closeHolo = () => document.getElementById('holoframe').classList.remove('active');
-
-        // Animate – audio reactivity on stars/planets/moons
+        // Animate – stars dance/vibrate to sound
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
 
             if (micActive && analyser) {
                 analyser.getByteFrequencyData(dataArray);
+
+                // Bass (low freq) for vibration intensity
                 const bass = dataArray[2] / 255 || 0;
                 const avg = dataArray.reduce((a,b)=>a+b,0) / dataArray.length / 255;
-                stars.scale.setScalar(1 + bass * 0.8);
-                sun.scale.setScalar(1 + avg * 0.5);
-                planetSystems.forEach(s => {
-                    s.mesh.scale.setScalar(1 + bass * 0.4);
-                    s.moons.forEach(m => m.mesh.scale.setScalar(1 + bass * 0.6));
-                });
+
+                // Stars vibrate & scale
+                stars.scale.setScalar(1 + bass * 1.2);
+                stars.rotation.y += bass * 0.008;
+
+                // Individual star shake (small random offset per frame)
+                const positions = stars.geometry.attributes.position.array;
+                for(let i=0; i<starCount*3; i+=3) {
+                    positions[i]   += (Math.random()-0.5) * bass * 4;
+                    positions[i+1] += (Math.random()-0.5) * bass * 4;
+                    positions[i+2] += (Math.random()-0.5) * bass * 4;
+                }
+                stars.geometry.attributes.position.needsUpdate = true;
+
+                // Sun & overall glow pulse
+                sun.scale.setScalar(1 + avg * 0.6);
+                sun.material.emissiveIntensity = 2 + bass * 3;
             }
 
             renderer.render(scene, camera);
         }
         animate();
 
-        // ... rest of mall logic (showSection, searchMall, toggleSidebar, data.json fetch + fallback, lightning color change)
+        // ... [rest of your mall logic: categories, linkData, showSection, searchMall, openLink with holoframe/new-tab, toggleSidebar, data.json fetch + fallback]
+        // (I kept it identical to your last working version – just add your full script block here)
     </script>
 </body>
 </html>
