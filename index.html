@@ -3,117 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OLYMPUS | NEXUS VORTEX</title>
+    <title>OLYMPUS | MASTER INTERFACE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --neon-cyan: #00ffff;
             --active-accent: var(--neon-cyan);
-            --glitch-col: #ff0055;
-            --transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+            --black-bloom: #050505;
+            --transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family:'Courier New', monospace; color:#fff; }
+        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family:'Segoe UI', sans-serif; color:#fff; }
         
-        /* INTERACTION LAYERS */
+        /* THREE.JS BACKGROUND - ALWAYS INTERACTABLE */
         canvas { position:fixed; top:0; left:0; z-index:1; cursor: grab; }
         canvas:active { cursor: grabbing; }
 
-        .ui-wrapper { position: fixed; inset: 0; z-index: 10; pointer-events: none; transition: var(--transition); opacity: 1; }
-        .ui-wrapper.hidden { opacity: 0; filter: contrast(150%) brightness(200%) blur(10px); pointer-events: none; transform: scale(0.95); }
+        /* UI WRAPPER - PASSES CLICKS THROUGH GAPS */
+        .ui-wrapper { position: fixed; inset: 0; z-index: 10; pointer-events: none; transition: var(--transition); }
         .ui-wrapper > * { pointer-events: auto; }
 
-        /* THE LIGHTNING BOLT */
+        /* LIGHTNING BOLT */
         .lightning-bolt {
-            position:absolute; top:90px; left:50%; transform:translateX(-50%);
+            position:absolute; top:85px; left:50%; transform:translateX(-50%);
             font-size:3.5rem; color: var(--active-accent);
-            text-shadow: 0 0 20px var(--active-accent), 0 0 40px var(--active-accent);
-            animation: boltPulse 2s infinite alternate;
+            text-shadow: 0 0 30px var(--active-accent);
+            animation: boltPulse 2.5s infinite ease-in-out;
             pointer-events: none; z-index: 11;
         }
-        @keyframes boltPulse { from { opacity: 0.4; transform: translateX(-50%) scale(0.9); } to { opacity: 1; transform: translateX(-50%) scale(1.1); } }
+        @keyframes boltPulse { 0%, 100%{opacity:0.5; transform:translateX(-50%) scale(1);} 50%{opacity:1; transform:translateX(-50%) scale(1.15);} }
 
-        /* NAVIGATION HEADER */
-        .nav-header { padding:25px; display:flex; align-items:center; gap:20px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
+        /* HEADER & SEARCH */
+        .nav-header { padding:22px; display:flex; align-items:center; gap:18px; background:linear-gradient(to bottom,rgba(0,0,0,0.8),transparent); }
         .menu-btn, .mic-btn { 
-            width:55px; height:55px; background:rgba(0,0,0,0.9); 
+            width:52px; height:52px; background:rgba(0,0,0,0.9); 
             border:2px solid var(--active-accent); border-radius:50%; 
             display:flex; align-items:center; justify-content:center; 
-            color:var(--active-accent); cursor:pointer; 
-            box-shadow: 0 0 15px var(--active-accent); transition: 0.4s;
+            color:var(--active-accent); cursor:pointer; box-shadow: 0 0 15px var(--active-accent);
         }
-        .mic-btn.active { color:#ff0 !important; border-color:#ff0 !important; box-shadow: 0 0 30px #ff0 !important; animation: micVibe 0.2s infinite; }
-        @keyframes micVibe { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .mic-btn.active { color:#ff0 !important; border-color:#ff0 !important; box-shadow: 0 0 30px #ff0 !important; }
 
-        .search-container { flex-grow:1; max-width:450px; margin: 0 auto; }
+        .search-container { flex-grow:1; max-width:480px; margin: 0 auto; }
         #mallSearch { 
-            width:100%; background:rgba(0,0,0,0.8); border:1px solid var(--active-accent); 
-            padding:15px; border-radius:30px; color:#fff; text-align: center; outline:none;
-            letter-spacing: 2px; text-transform: uppercase; font-size: 0.7rem;
+            width:100%; background:rgba(0,0,0,0.9); border:1.5px solid rgba(0,255,255,0.2); 
+            padding:14px 25px; border-radius:40px; color:#fff; outline:none; text-align: center;
+            letter-spacing: 2px; text-transform: uppercase; font-size: 0.75rem;
         }
 
-        /* SIDEBAR NAVIGATION */
+        /* SIDEBAR */
         .sidebar { 
-            position:fixed; top:0; left:-350px; width:300px; height:100%; 
-            background:rgba(2,2,2,0.95); backdrop-filter:blur(50px); 
+            position:fixed; top:0; left:-340px; width:320px; height:100%; 
+            background:rgba(5,5,5,0.98); backdrop-filter:blur(40px); 
             border-right:1px solid var(--active-accent); z-index:4000; 
-            transition: var(--transition); padding:120px 0; overflow-y:auto; 
+            transition: var(--transition); padding:100px 0; overflow-y:auto; 
         }
-        .sidebar.active { left:0; box-shadow: 20px 0 100px rgba(0,255,255,0.2); }
-        .menu-link { 
-            padding:22px 40px; display:block; color:rgba(255,255,255,0.4); 
-            text-transform:uppercase; letter-spacing:4px; font-size:0.7rem; 
-            text-decoration: none; cursor:pointer; transition: 0.3s;
-        }
-        .menu-link:hover, .menu-link.active-link { color:var(--active-accent); background: rgba(0,255,255,0.05); border-left: 6px solid var(--active-accent); }
+        .sidebar.active { left:0; }
+        .menu-link { padding:20px 35px; display:block; color:#777; text-transform:uppercase; letter-spacing:3px; font-size:0.75rem; text-decoration: none; cursor:pointer; transition: 0.3s; }
+        .menu-link:hover, .menu-link.active-link { color:var(--active-accent); background: rgba(0,255,255,0.05); box-shadow: inset 5px 0 0 var(--active-accent); }
 
-        /* VIEWPORT & GRID */
-        .viewport { position: relative; height: 100vh; overflow-y: auto; padding: 180px 20px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
-        .cat-banner { color:var(--active-accent); letter-spacing:12px; font-weight:900; text-transform:uppercase; margin-bottom:70px; text-shadow: 0 0 20px var(--active-accent); font-size:1.5rem; text-align: center; }
-        .icon-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:50px; width:100%; max-width:1100px; }
+        /* VIEWPORT GRID */
+        .viewport { position: relative; height: 100vh; overflow-y: auto; padding: 160px 20px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
+        .cat-banner { color:var(--active-accent); letter-spacing:15px; font-weight:900; text-transform:uppercase; margin-bottom:60px; text-shadow: 0 0 25px var(--active-accent); font-size:1.4rem; text-align: center; }
+        .icon-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:40px; width:100%; max-width:1200px; }
 
         /* HOLOGRAM CARDS */
         .hologram-card { text-decoration:none; display:flex; flex-direction:column; align-items:center; transition: 0.4s; }
-        .hologram-card:hover { transform: translateY(-15px); }
+        .hologram-card:hover { transform: translateY(-10px); }
         .video-circle {
-            width:110px; height:110px; border-radius:50%; overflow:hidden; 
+            width:120px; height:120px; border-radius:50%; overflow:hidden; 
             border:2px solid var(--active-accent); box-shadow:0 0 25px var(--active-accent);
-            position: relative; background: #000; transition: 0.4s;
+            position: relative; background: #000;
         }
-        .hologram-card:hover .video-circle { box-shadow: 0 0 50px var(--active-accent); }
-        .card-icon { position: absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.8rem; color:var(--active-accent); z-index:2; }
-        .card-img { width:100%; height:100%; object-fit:cover; opacity:0.5; position: absolute; }
-        .label { margin-top:20px; font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; opacity: 0.7; }
+        .card-icon { position: absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--active-accent); z-index:2; }
+        .card-img { width:100%; height:100%; object-fit:cover; opacity:0.6; position: absolute; }
+        .label { margin-top:15px; font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; }
 
-        /* THE SHIELD */
-        #immersion-shield { position: fixed; inset: 0; z-index: 5; display: none; background: transparent; cursor: pointer; }
-
-        /* GLITCH OVERLAY */
-        #glitch-overlay {
-            position: fixed; inset: 0; z-index: 9999; pointer-events: none;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px);
-            display: none; opacity: 0.3;
-        }
+        /* SYSTEM OVERLAYS */
+        #glitch-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: none; background: rgba(0,255,255,0.05); display: none; }
+        #interaction-detector { position: fixed; inset: 0; z-index: 5; pointer-events: auto; background: transparent; display: none; }
     </style>
 </head>
-<body onclick="resumeAudio()">
+<body>
 
     <div id="glitch-overlay"></div>
     <canvas id="galaxy-canvas"></canvas>
-    <div id="immersion-shield"></div>
+    
+    <div id="interaction-detector"></div>
 
     <div id="ui-wrapper" class="ui-wrapper">
         <div class="lightning-bolt" id="lightning"><i class="fa-solid fa-bolt"></i></div>
         <header class="nav-header">
             <button class="menu-btn" id="burger"><i class="fa-solid fa-bars"></i></button>
             <div class="search-container">
-                <input type="text" id="mallSearch" placeholder="SEARCH MULTIVERSE..." onkeyup="searchMall()">
+                <input type="text" id="mallSearch" placeholder="SEARCH OLYMPUS..." onkeyup="searchMall()">
             </div>
             <button class="mic-btn" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
         </header>
         <nav class="sidebar" id="sidebar"></nav>
         <main class="viewport" id="viewport">
-            <div class="cat-banner" id="cat-indicator">Olympus Syncing...</div>
+            <div class="cat-banner" id="cat-indicator">Establishing Link...</div>
             <div class="icon-grid" id="mallGrid"></div>
         </main>
     </div>
@@ -124,18 +112,18 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 20000);
+        const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 15000);
         const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
         renderer.setSize(innerWidth, innerHeight);
         
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.autoRotate = true; 
-        controls.autoRotateSpeed = 0.3;
+        controls.autoRotateSpeed = 0.5;
 
-        // MULTIVERSE ASSETS
+        // UNIVERSE ASSETS
         let isCollapsing = false;
-        const starCount = 35000;
+        const starCount = 30000;
         const starGeo = new THREE.BufferGeometry();
         const starPos = new Float32Array(starCount * 3);
         const homePos = new Float32Array(starCount * 3);
@@ -145,54 +133,55 @@
             starPos[i] = p; homePos[i] = p;
         }
         starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:2.2, transparent:true, opacity:0.9, blending: THREE.AdditiveBlending});
+        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:2.1, transparent:true, opacity:0.8});
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(100,64,64), new THREE.MeshStandardMaterial({color:0x00ffff, emissive:0x00ffff, emissiveIntensity:6}));
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(90,64,64), new THREE.MeshStandardMaterial({color:0x00ffff, emissive:0x00ffff, emissiveIntensity:5}));
         scene.add(sun);
-        const light = new THREE.PointLight(0x00ffff, 20, 10000);
+        const light = new THREE.PointLight(0x00ffff, 15, 8000);
         scene.add(light);
         scene.add(new THREE.AmbientLight(0x111111));
 
-        camera.position.set(0, 500, 2500);
+        camera.position.z = 2500;
 
         // AUDIO ENGINE
-        let audioCtx, analyser, dataArray, micActive = false;
-        window.resumeAudio = () => { if(audioCtx) audioCtx.resume(); };
+        let analyser, dataArray, micActive = false, audioCtx;
+        const micBtn = document.getElementById('micBtn');
 
-        document.getElementById('micBtn').onclick = async (e) => {
+        micBtn.onclick = async (e) => {
             e.stopPropagation();
-            if (!micActive) {
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(!micActive) {
                 try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                     const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-                    const source = audioCtx.createMediaStreamSource(stream);
-                    analyser = audioCtx.createAnalyser(); analyser.fftSize = 256;
-                    source.connect(analyser);
+                    const src = audioCtx.createMediaStreamSource(stream);
+                    analyser = audioCtx.createAnalyser(); analyser.fftSize = 128;
+                    src.connect(analyser);
                     dataArray = new Uint8Array(analyser.frequencyBinCount);
-                    micActive = true; 
-                    document.getElementById('micBtn').classList.add('active');
-                } catch(err) { alert("Mic Access Denied"); }
+                    micActive = true; micBtn.classList.add('active');
+                } catch(e) { console.warn("Mic Access Error"); }
             } else {
-                micActive = false;
-                document.getElementById('micBtn').classList.remove('active');
+                micActive = false; micBtn.classList.remove('active');
             }
         };
 
         // INTERACTION MODES
         const ui = document.getElementById('ui-wrapper');
-        const shield = document.getElementById('immersion-shield');
-        const glitch = document.getElementById('glitch-overlay');
-
+        const det = document.getElementById('interaction-detector');
+        
+        // When user interacts with canvas, hide UI and show the "return" detector
         controls.addEventListener('start', () => {
-            ui.classList.add('hidden');
-            shield.style.display = 'block';
+            ui.style.opacity = '0';
+            ui.style.pointerEvents = 'none';
+            det.style.display = 'block';
         });
 
-        shield.onclick = () => {
-            ui.classList.remove('hidden');
-            shield.style.display = 'none';
+        // Tapping the empty space (detector) restores UI
+        det.onclick = () => {
+            ui.style.opacity = '1';
+            ui.style.pointerEvents = 'auto';
+            det.style.display = 'none';
         };
 
         window.updateGalaxy = (hex) => {
@@ -202,16 +191,16 @@
             document.documentElement.style.setProperty('--active-accent', hex);
         };
 
-        // COLLAPSE CYCLE (3 MINS)
+        // STELLAR COLLAPSE (3 MIN CYCLE)
         setInterval(() => {
             isCollapsing = true;
-            glitch.style.display = 'block';
+            document.getElementById('glitch-overlay').style.display = 'block';
             setTimeout(() => {
                 isCollapsing = false;
-                glitch.style.display = 'none';
-                const palette = ['#00ffff', '#bc13fe', '#ff0055', '#00ff66', '#ffaa00', '#ffffff'];
+                document.getElementById('glitch-overlay').style.display = 'none';
+                const palette = ['#00ffff', '#bc13fe', '#ff0055', '#00ff66', '#ffaa00'];
                 window.updateGalaxy(palette[Math.floor(Math.random()*palette.length)]);
-            }, 8000);
+            }, 7000);
         }, 180000);
 
         function animate() {
@@ -222,24 +211,22 @@
             if (isCollapsing) {
                 for(let i=0; i<starCount; i++){
                     const idx = i*3;
-                    posAttr.array[idx] *= 0.92;
-                    posAttr.array[idx+1] *= 0.92;
-                    posAttr.array[idx+2] *= 0.92;
+                    posAttr.array[idx] *= 0.93;
+                    posAttr.array[idx+1] *= 0.93;
+                    posAttr.array[idx+2] *= 0.93;
                 }
-                sun.scale.multiplyScalar(1.05);
-                if(sun.scale.x > 15) sun.scale.set(0.01, 0.01, 0.01);
+                sun.scale.multiplyScalar(1.04);
+                if(sun.scale.x > 12) sun.scale.set(0.1, 0.1, 0.1);
             } else {
-                let intensity = 0;
+                let bass = 0;
                 if(micActive && analyser) {
                     analyser.getByteFrequencyData(dataArray);
-                    intensity = dataArray[4] / 255;
+                    bass = dataArray[3] / 255;
                 }
                 for(let i=0; i<starCount; i++){
                     const idx = i*3;
-                    // VIBRATION MAGIC
-                    const freq = 0.2;
-                    const amp = intensity * 120;
-                    posAttr.array[idx] = THREE.MathUtils.lerp(posAttr.array[idx], homePos[idx] + (Math.sin(Date.now() * freq + i) * amp), 0.1);
+                    const shiver = (Math.sin(Date.now() * 0.2 + i) * (bass * 70));
+                    posAttr.array[idx] = THREE.MathUtils.lerp(posAttr.array[idx], homePos[idx] + shiver, 0.1);
                 }
                 sun.scale.lerp(new THREE.Vector3(1,1,1), 0.05);
             }
@@ -250,41 +237,39 @@
     </script>
 
     <script>
-        // DATA SYNC ARCHITECTURE
-        const REPO_DATA = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/data.json";
-        let localStore = {};
-        let catArray = [];
+        // MASTER DATA ARCHITECTURE
+        const DATA_URL = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/data.json";
+        let olympusData = { categories: [], links: {} };
 
-        async function initialize() {
+        async function syncNexus() {
             try {
-                const res = await fetch(`${REPO_DATA}?v=${Date.now()}`);
-                if (!res.ok) throw new Error("Fetch Error");
+                const res = await fetch(`${DATA_URL}?cache_bust=${Date.now()}`);
+                if(!res.ok) throw new Error("Connection Error");
                 const data = await res.json();
                 
-                catArray = data.categories || [];
-                localStore = data.links || {};
-                
+                olympusData = data;
                 const sb = document.getElementById('sidebar');
                 sb.innerHTML = ''; 
 
-                catArray.forEach(cat => {
-                    const btn = document.createElement('div');
-                    btn.className = 'menu-link';
-                    btn.id = `nav-${cat.id}`;
-                    btn.innerText = cat.name;
-                    btn.onclick = () => { renderView(cat.id); toggleMenu(false); };
-                    sb.appendChild(btn);
+                data.categories.forEach(cat => {
+                    const lnk = document.createElement('div');
+                    lnk.className = 'menu-link';
+                    lnk.id = `nav-${cat.id}`;
+                    lnk.innerText = cat.name;
+                    lnk.onclick = () => { buildSector(cat.id); toggleSide(false); };
+                    sb.appendChild(lnk);
                 });
                 
-                if (catArray.length > 0) renderView(catArray[0].id);
+                if (data.categories.length > 0) buildSector(data.categories[0].id);
             } catch (err) {
-                document.getElementById('cat-indicator').innerText = "SYSTEM OFFLINE: RE-SYNC REQUIRED";
+                document.getElementById('cat-indicator').innerText = "NEXUS OFFLINE: RE-SYNC REQUIRED";
                 console.error("Olympus Sync Failed:", err);
             }
         }
 
-        function renderView(id) {
+        function buildSector(id) {
             const grid = document.getElementById('mallGrid');
+            const ind = document.getElementById('cat-indicator');
             const colors = { core: '#00ffff', featured: '#bc13fe', finance: '#FFD700', tech: '#00ff66' };
             
             if(window.updateGalaxy) window.updateGalaxy(colors[id] || '#00ffff');
@@ -292,20 +277,18 @@
             document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
             document.getElementById(`nav-${id}`)?.classList.add('active-link');
             
-            const category = catArray.find(c => c.id === id);
-            document.getElementById('cat-indicator').innerText = category ? category.name : id;
+            const cat = olympusData.categories.find(c => c.id === id);
+            ind.innerText = cat ? cat.name : id;
             
             grid.innerHTML = '';
-            const items = localStore[id] || [];
+            const links = olympusData.links[id] || [];
             
-            if(items.length === 0) grid.innerHTML = '<p style="opacity:0.2; letter-spacing:5px;">VOID_NULL</p>';
-
-            items.forEach(item => {
+            links.forEach(item => {
                 grid.innerHTML += `
                     <a href="${item.u}" target="_blank" class="hologram-card">
                         <div class="video-circle">
                             ${item.img ? `<img src="${item.img}" class="card-img" onerror="this.style.display='none'">` : ''}
-                            <div class="card-icon"><i class="${item.i || 'fa-solid fa-satellite'}"></i></div>
+                            <div class="card-icon"><i class="${item.i || 'fa-solid fa-cube'}"></i></div>
                         </div>
                         <div class="label">${item.n}</div>
                     </a>`;
@@ -314,17 +297,17 @@
 
         const sb = document.getElementById('sidebar');
         const burger = document.getElementById('burger');
-        function toggleMenu(s) { if(s === false) sb.classList.remove('active'); else sb.classList.toggle('active'); }
-        burger.onclick = (e) => { e.stopPropagation(); toggleMenu(); };
-        window.onclick = (e) => { if(!sb.contains(e.target) && !burger.contains(e.target)) toggleMenu(false); };
+        function toggleSide(s) { if(s === false) sb.classList.remove('active'); else sb.classList.toggle('active'); }
+        burger.onclick = (e) => { e.stopPropagation(); toggleSide(); };
+        window.onclick = (e) => { if(!sb.contains(e.target) && !burger.contains(e.target)) toggleSide(false); };
 
         function searchMall() {
-            const query = document.getElementById('mallSearch').value.toLowerCase();
-            if(!query) { renderView(catArray[0].id); return; }
+            const q = document.getElementById('mallSearch').value.toLowerCase();
+            if(!q) { buildSector(olympusData.categories[0].id); return; }
             const grid = document.getElementById('mallGrid');
             grid.innerHTML = '';
-            Object.values(localStore).flat().forEach(item => {
-                if(item.n.toLowerCase().includes(query)) {
+            Object.values(olympusData.links).flat().forEach(item => {
+                if(item.n.toLowerCase().includes(q)) {
                     grid.innerHTML += `
                         <a href="${item.u}" target="_blank" class="hologram-card">
                             <div class="video-circle">
@@ -337,7 +320,7 @@
             });
         }
 
-        initialize();
+        syncNexus();
     </script>
 </body>
 </html>
