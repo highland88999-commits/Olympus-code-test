@@ -18,11 +18,9 @@
 
         canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
 
-        /* UI MASTER */
         .ui-master { position: fixed; inset: 0; opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; display: flex; flex-direction: column; }
         .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(10px); }
 
-        /* TOP NAVIGATION */
         .nav-header { padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 3000; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
         .menu-btn { 
             width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8); 
@@ -39,7 +37,6 @@
             transition: var(--transition); box-shadow: 0 0 10px var(--active-glow);
         }
 
-        /* SIDEBAR */
         .sidebar { 
             position: fixed; top: 0; left: -320px; width: 300px; height: 100%; 
             background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px); 
@@ -54,32 +51,27 @@
         }
         .menu-link:hover, .menu-link.active-link { color: var(--active-glow); background: rgba(255,255,255,0.05); border-left: 3px solid var(--active-glow); }
 
-        /* VIEWPORT & GRID */
         .viewport { flex-grow: 1; overflow-y: auto; padding: 20px 20px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
         .cat-banner { 
             color: var(--active-glow); letter-spacing: 12px; font-weight: 900; 
             text-transform: uppercase; margin-bottom: 50px; text-shadow: 0 0 20px var(--active-glow); 
             text-align: center; font-size: 1.5rem; pointer-events: none; transition: var(--transition);
         }
-        .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; width: 100%; max-width: 1500px; pointer-events: none; }
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 25px; width: 100%; max-width: 1500px; pointer-events: none; }
 
-        /* HOLOGRAM CARDS */
         .hologram-card { 
             background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px); 
             border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; 
             text-decoration: none; overflow: hidden; transition: 0.4s; 
-            display: flex; flex-direction: column; pointer-events: auto; position: relative;
+            display: flex; flex-direction: column; pointer-events: auto; 
         }
         .hologram-card:hover { transform: translateY(-8px); border-color: var(--active-glow); box-shadow: 0 0 30px var(--active-glow); }
         
-        .visual-container { width: 100%; height: 160px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .card-icon { font-size: 3rem; color: var(--active-glow); text-shadow: 0 0 15px var(--active-glow); transition: var(--transition); z-index: 2; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: contrast(1.1) brightness(0.8); position: absolute; }
+        .visual-container { width: 100%; height: 120px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .card-icon { font-size: 3rem; color: var(--active-glow); text-shadow: 0 0 15px var(--active-glow); transition: var(--transition); }
+        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; filter: contrast(1.1) brightness(0.9); }
 
-        .label { padding: 20px; color: #fff; font-size: 0.8rem; text-align: center; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; background: rgba(0,0,0,0.5); z-index: 2; }
-        
-        /* SHARE BUTTON OVERLAY */
-        .share-btn { position: absolute; bottom: 10px; right: 10px; width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--active-glow); display: flex; align-items: center; justify-content: center; color: var(--active-glow); font-size: 0.8rem; background: rgba(0,0,0,0.6); z-index: 10; }
+        .label { padding: 15px; color: #fff; font-size: 0.65rem; text-align: center; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -95,7 +87,7 @@
         </header>
         <nav class="sidebar" id="sidebar"></nav>
         <main class="viewport" id="viewport">
-            <div class="cat-banner" id="cat-indicator">Initializing Heartbeat...</div>
+            <div class="cat-banner" id="cat-indicator">Initializing...</div>
             <div class="icon-grid" id="mallGrid"></div>
         </main>
     </div>
@@ -105,38 +97,50 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+        // GALAXY ENGINE
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
         const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('galaxy-canvas'), antialias: true, alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.autoRotate = true; controls.autoRotateSpeed = 0.4;
+        controls.autoRotate = true; controls.autoRotateSpeed = 0.5;
 
+        // STARS
         const starGeo = new THREE.BufferGeometry();
         const starPos = [];
-        for(let i=0; i<20000; i++) { starPos.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000)); }
+        for(let i=0; i<15000; i++) { starPos.push(THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000)); }
         starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color: 0x00ffff, size: 0.9, transparent: true, opacity: 0.8});
+        const starMat = new THREE.PointsMaterial({color: 0x00ffff, size: 0.8, transparent: true});
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(70, 64, 64), new THREE.MeshStandardMaterial({color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2.5}));
+        // CENTRAL CORE (THE SUN)
+        const sunGeo = new THREE.SphereGeometry(60, 64, 64);
+        const sunMat = new THREE.MeshStandardMaterial({color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2});
+        const sun = new THREE.Mesh(sunGeo, sunMat);
         scene.add(sun);
         
-        const light = new THREE.PointLight(0x00ffff, 6, 4000);
+        const light = new THREE.PointLight(0x00ffff, 5, 3000);
         scene.add(light);
-        scene.add(new THREE.AmbientLight(0x151515));
+        scene.add(new THREE.AmbientLight(0x222222));
 
-        camera.position.z = 1200;
+        camera.position.z = 1000;
 
-        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+        function animate() { 
+            requestAnimationFrame(animate); 
+            controls.update(); 
+            renderer.render(scene, camera); 
+        }
         animate();
 
-        window.updateGalaxyColor = (hex) => {
-            const c = new THREE.Color(hex);
-            sun.material.color.set(c); sun.material.emissive.set(c);
-            stars.material.color.set(c); light.color.set(c);
-            document.documentElement.style.setProperty('--active-glow', hex);
+        // COLOR ENGINE
+        window.updateGalaxyColor = (hexColor) => {
+            const color = new THREE.Color(hexColor);
+            sun.material.color.set(color);
+            sun.material.emissive.set(color);
+            stars.material.color.set(color);
+            light.color.set(color);
+            document.documentElement.style.setProperty('--active-glow', hexColor);
         };
 
         window.addEventListener('resize', () => {
@@ -147,36 +151,204 @@
     </script>
 
     <script>
+        // INLINE FALLBACK DATA (used if data.json fetch fails)
+        const fallbackData = {
+            categories: [
+                { id: "core", name: "Multiverse Core" },
+                { id: "featured", name: "Olympus Featured" },
+                { id: "renewed", name: "A Renewed World" },
+                { id: "afterlife", name: "Afterlife & Beyond" },
+                { id: "abyssal", name: "Abyssal & Aquatic" },
+                { id: "tech", name: "The Tech Stack" },
+                { id: "hardware", name: "Hardware & Auctions" },
+                { id: "mobile", name: "Mobile & Comms" },
+                { id: "apparel", name: "Elite Apparel" },
+                { id: "shoes", name: "Footwear & Kicks" },
+                { id: "jewelry", name: "Jewelry Vault" },
+                { id: "watches", name: "Horology & Watches" },
+                { id: "beauty", name: "Health & Aesthetics" },
+                { id: "home", name: "Home & Habitat" },
+                { id: "leisure", name: "Leisure & Attractions" },
+                { id: "food", name: "Global Food Ops" },
+                { id: "travel", name: "Global Atlas" },
+                { id: "finance", name: "Crypto & Fintech" },
+                { id: "entertainment", name: "Media & Entertainment" },
+                { id: "kids", name: "Kids Zone" }
+            ],
+            links: {
+                core: [
+                    { n: "Olympus Core", u: "https://nexusvortex.ca", img: "1000038255.jpg" },
+                    { n: "Artemis OS", u: "https://artemis-os.vercel.app/", i: "fa-solid fa-ghost" },
+                    { n: "The Flying Dutchman", u: "https://the-flying-dutchman.vercel.app/", i: "fa-solid fa-ship" },
+                    { n: "Nexus Symbiote", u: "https://nexus-symbiote.onrender.com/", i: "fa-solid fa-dna" }
+                ],
+                featured: [
+                    { n: "REM-PSI Mauve", u: "https://rem-psi-mauve.vercel.app/", i: "fa-solid fa-eye" },
+                    { n: "Olympus LAC", u: "https://olympus-lac.vercel.app/", i: "fa-solid fa-building-shield" },
+                    { n: "Architect Artemis", u: "https://architect-artemis.vercel.app/", i: "fa-solid fa-compass-drafting" },
+                    { n: "Hyperion Gravitas", u: "https://hyperion-gravitas.vercel.app/", i: "fa-solid fa-weight-hanging" },
+                    { n: "Mega City Liard", u: "https://mega-city-liard.vercel.app/", i: "fa-solid fa-city" },
+                    { n: "Axiom Repository", u: "https://axiom-repository.vercel.app/", i: "fa-solid fa-database" },
+                    { n: "Grief Gully", u: "https://grief-gully.vercel.app/", i: "fa-solid fa-skull-crossbones" },
+                    { n: "Olympian Finances", u: "https://olympian-finances.vercel.app/", i: "fa-solid fa-vault" },
+                    { n: "Magic Mirror Puce", u: "https://magic-mirror-puce.vercel.app/", i: "fa-solid fa-wand-magic-sparkles" },
+                    { n: "The Glass Slipper", u: "https://the-glass-slipper.vercel.app/", i: "fa-solid fa-gem" },
+                    { n: "Aethelgard Five", u: "https://aethelgard-five.vercel.app/", i: "fa-solid fa-tree" },
+                    { n: "Hercules Nine", u: "https://hercules-nine.vercel.app/", i: "fa-solid fa-shield-halved" },
+                    { n: "Neon Racer Ecru", u: "https://neon-racer-ecru.vercel.app/", i: "fa-solid fa-car-side" },
+                    { n: "Colossus XI", u: "https://colossus-xi.vercel.app/", i: "fa-solid fa-monument" },
+                    { n: "Zeus v Hades", u: "https://zeus-v-hades.vercel.app/", i: "fa-solid fa-bolt" },
+                    { n: "Merlin Mandates", u: "https://merlin-mandates.vercel.app/", i: "fa-solid fa-scroll" },
+                    { n: "Convergence Murex", u: "https://convergence-murex.vercel.app/", i: "fa-solid fa-diagram-project" },
+                    { n: "Artemis Hub", u: "https://artemis-hub.vercel.app/", i: "fa-solid fa-network-wired" }
+                ],
+                renewed: [
+                    { n: "Aetheris Business Model", u: "https://aetheris-business-model.vercel.app/", i: "fa-solid fa-briefcase" },
+                    { n: "Olympus Aetheris", u: "https://olympus-aetheris.vercel.app/", i: "fa-solid fa-wind" }
+                ],
+                afterlife: [
+                    { n: "The Afterlife", u: "https://the-afterlife.vercel.app/", i: "fa-solid fa-spaghetti-monster-flying" }
+                ],
+                abyssal: [
+                    { n: "Abyssal Voyage", u: "https://abyssal-voyage-lemon.vercel.app/", i: "fa-solid fa-water" },
+                    { n: "Georgia Aquarium", u: "https://georgia-aquarium.vercel.app/", i: "fa-solid fa-fish-fins" }
+                ],
+                tech: [
+                    { n: "Google Workspace", u: "https://workspace.google.com", i: "fa-brands fa-google" },
+                    { n: "Microsoft 365", u: "https://www.office.com", i: "fa-brands fa-microsoft" },
+                    { n: "GitHub", u: "https://github.com", i: "fa-brands fa-github" },
+                    { n: "Vercel", u: "https://vercel.com", i: "fa-solid fa-triangle-exclamation" },
+                    { n: "Three.js Journey", u: "https://threejs-journey.com", i: "fa-solid fa-cube" }
+                ],
+                hardware: [
+                    { n: "eBay Computer Auctions", u: "https://www.ebay.com/b/Computers-Tablets-Network-Hardware/58058/bn_1865247", i: "fa-solid fa-gavel" },
+                    { n: "Memory Express", u: "https://www.memoryexpress.com", i: "fa-solid fa-memory" },
+                    { n: "Canada Computers", u: "https://www.canadacomputers.com", i: "fa-solid fa-microchip" },
+                    { n: "Newegg", u: "https://www.newegg.ca", i: "fa-solid fa-egg" },
+                    { n: "GovDeals Auctions", u: "https://www.govdeals.com", i: "fa-solid fa-landmark" },
+                    { n: "Dell Refurbished", u: "https://www.dellrefurbished.ca", i: "fa-solid fa-laptop" },
+                    { n: "B&H Photo Video", u: "https://www.bhphotovideo.com", i: "fa-solid fa-camera" }
+                ],
+                mobile: [
+                    { n: "Telus Mobility", u: "https://www.telus.com", i: "fa-solid fa-signal" },
+                    { n: "Bell Canada", u: "https://www.bell.ca", i: "fa-solid fa-bell" },
+                    { n: "Rogers Wireless", u: "https://www.rogers.com", i: "fa-solid fa-tower-broadcast" },
+                    { n: "Freedom Mobile", u: "https://www.freedommobile.ca", i: "fa-solid fa-dove" },
+                    { n: "Spigen Accessories", u: "https://www.spigen.com", i: "fa-solid fa-shield" },
+                    { n: "Dbrand Skins", u: "https://dbrand.com", i: "fa-solid fa-palette" }
+                ],
+                apparel: [
+                    { n: "Shein", u: "https://www.shein.com", i: "fa-solid fa-shirt" },
+                    { n: "Nike", u: "https://www.nike.com", i: "fa-solid fa-bolt" },
+                    { n: "Adidas", u: "https://www.adidas.ca", i: "fa-solid fa-stripe" },
+                    { n: "Zara", u: "https://www.zara.com", i: "fa-solid fa-bag-shopping" },
+                    { n: "H&M", u: "https://www2.hm.com", i: "fa-solid fa-shirt" },
+                    { n: "Lululemon", u: "https://shop.lululemon.com", i: "fa-solid fa-person-running" }
+                ],
+                shoes: [
+                    { n: "Foot Locker", u: "https://www.footlocker.ca", i: "fa-solid fa-shoe-prints" },
+                    { n: "StockX", u: "https://stockx.com", i: "fa-solid fa-chart-line" },
+                    { n: "GOAT", u: "https://www.goat.com", i: "fa-solid fa-mountain-sun" }
+                ],
+                jewelry: [
+                    { n: "Tiffany & Co.", u: "https://www.tiffany.ca", i: "fa-solid fa-gem" },
+                    { n: "Cartier", u: "https://www.cartier.com", i: "fa-solid fa-crown" }
+                ],
+                watches: [
+                    { n: "Chrono24", u: "https://www.chrono24.ca", i: "fa-solid fa-clock" },
+                    { n: "Rolex", u: "https://www.rolex.com", i: "fa-solid fa-hourglass" }
+                ],
+                beauty: [
+                    { n: "Sephora", u: "https://www.sephora.com", i: "fa-solid fa-sparkles" },
+                    { n: "MAC Cosmetics", u: "https://www.maccosmetics.ca", i: "fa-solid fa-face-smile-beam" }
+                ],
+                home: [
+                    { n: "IKEA", u: "https://www.ikea.com", i: "fa-solid fa-couch" },
+                    { n: "Wayfair", u: "https://www.wayfair.ca", i: "fa-solid fa-house-chimney" },
+                    { n: "HomeSense", u: "https://www.homesense.ca", i: "fa-solid fa-home" },
+                    { n: "Crate & Barrel", u: "https://www.crateandbarrel.ca", i: "fa-solid fa-chair" },
+                    { n: "Pottery Barn", u: "https://www.potterybarn.ca", i: "fa-solid fa-lamp" }
+                ],
+                leisure: [
+                    { n: "Cineplex", u: "https://www.cineplex.com", i: "fa-solid fa-ticket" },
+                    { n: "Banff National Park", u: "https://www.pc.gc.ca/en/pn-np/ab/banff", i: "fa-solid fa-mountain" },
+                    { n: "West Edmonton Mall", u: "https://www.wem.ca", i: "fa-solid fa-store" },
+                    { n: "AllTrails Canada", u: "https://www.alltrails.com/canada", i: "fa-solid fa-person-hiking" },
+                    { n: "Trans Canada Trail", u: "https://tctrail.ca", i: "fa-solid fa-route-highway" }
+                ],
+                food: [
+                    { n: "Instacart", u: "https://www.instacart.com", i: "fa-solid fa-cart-shopping" },
+                    { n: "SkipTheDishes", u: "https://www.skipthedishes.com", i: "fa-solid fa-person-running" },
+                    { n: "Uber Eats", u: "https://www.ubereats.com", i: "fa-solid fa-motorcycle" }
+                ],
+                travel: [
+                    { n: "Atlas Obscura", u: "https://www.atlasobscura.com", i: "fa-solid fa-map-location-dot" },
+                    { n: "Expedia", u: "https://www.expedia.ca", i: "fa-solid fa-plane" },
+                    { n: "SpaceX", u: "https://www.spacex.com", i: "fa-solid fa-rocket" }
+                ],
+                finance: [
+                    { n: "BlockDAG Network", u: "https://blockdag.network", i: "fa-solid fa-link" },
+                    { n: "Binance", u: "https://www.binance.com", i: "fa-solid fa-coins" },
+                    { n: "Wealthsimple", u: "https://www.wealthsimple.com", i: "fa-solid fa-piggy-bank" }
+                ],
+                entertainment: [
+                    { n: "Netflix", u: "https://www.netflix.com", i: "fa-solid fa-tv" },
+                    { n: "Twitch", u: "https://www.twitch.tv", i: "fa-brands fa-twitch" },
+                    { n: "GameStop", u: "https://www.gamestop.ca", i: "fa-solid fa-gamepad" }
+                ],
+                kids: [
+                    { n: "PBS Kids", u: "https://pbskids.org", i: "fa-solid fa-child" },
+                    { n: "NatGeo: Rocks", u: "https://kids.nationalgeographic.com/science/article/rocks-and-minerals", i: "fa-solid fa-gem" },
+                    { n: "Peppa Pig", u: "https://peppapig.com", i: "fa-solid fa-piggy-bank" }
+                ]
+            }
+        };
+
+        // Color Map for Categories
+        const colorPalette = {
+            core: '#00ffff',
+            featured: '#bc13fe',
+            renewed: '#7fffd4',
+            afterlife: '#f0f8ff',
+            abyssal: '#001f3f',
+            tech: '#00ff9f',
+            hardware: '#ffcc00',
+            mobile: '#00bfff',
+            apparel: '#ff3366',
+            shoes: '#ff6600',
+            jewelry: '#b8860b',
+            watches: '#c0c0c0',
+            beauty: '#ff69b4',
+            home: '#8b4513',
+            leisure: '#32cd32',
+            food: '#ff4500',
+            travel: '#1e90ff',
+            finance: '#ffd700',
+            entertainment: '#ff1493',
+            kids: '#ff69b4'
+        };
+
         let categories = [];
         let linkData = {};
-        
-        const colorPalette = {
-            core: '#00ffff',      
-            featured: '#bc13fe',  
-            abyssal: '#0055ff',  
-            finance: '#FFD700',   
-            kids: '#ff69b4',      
-            tech: '#00ff44',      
-            afterlife: '#ffffff', 
-            apparel: '#ff3300'    
-        };
 
         async function bootMultiverse() {
             try {
-                // Fetching the heart-beat synced data.json
-                const res = await fetch('data.json'); 
+                const res = await fetch('data.json');
+                if (!res.ok) throw new Error('data.json not found');
                 const data = await res.json();
                 categories = data.categories;
                 linkData = data.links;
-                
-                const sidebar = document.getElementById('sidebar');
-                categories.forEach(cat => {
-                    sidebar.innerHTML += `<a class="menu-link" id="link-${cat.id}" onclick="showSection('${cat.id}')">${cat.name}</a>`;
-                });
-                showSection('core');
             } catch (e) {
-                document.getElementById('cat-indicator').innerText = "DATA OFFLINE - SYNCING...";
+                console.warn('Using fallback inline data:', e);
+                categories = fallbackData.categories;
+                linkData = fallbackData.links;
             }
+
+            const sidebar = document.getElementById('sidebar');
+            categories.forEach(cat => {
+                sidebar.innerHTML += `<a class="menu-link" id="link-${cat.id}" onclick="showSection('${cat.id}')">${cat.name}</a>`;
+            });
+            showSection('core');
         }
 
         function showSection(id) {
@@ -193,46 +365,41 @@
             grid.innerHTML = '';
             
             (linkData[id] || []).forEach(item => {
-                let visual = item.img ? `<img src="${item.img}" class="card-img">` : '';
-                let icon = `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
+                let visual = `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
+                if(item.img) visual = `<img src="${item.img}" class="card-img" alt="${item.n}">`;
                 
                 grid.innerHTML += `
                     <a href="${item.u}" target="_blank" class="hologram-card">
-                        <div class="visual-container">${visual}${icon}</div>
+                        <div class="visual-container">${visual}</div>
                         <div class="label">${item.n}</div>
-                        <div class="share-btn"><i class="fa-solid fa-share-nodes"></i></div>
                     </a>`;
             });
-            if(window.innerWidth < 1000) toggleSidebar(false);
+
+            if(window.innerWidth < 800) toggleSidebar(false);
         }
 
         function searchMall() {
-            const q = document.getElementById('mallSearch').value.toLowerCase();
-            const ind = document.getElementById('cat-indicator');
-            const grid = document.getElementById('mallGrid');
-
+            const q = document.getElementById('mallSearch').value.toLowerCase().trim();
             if(!q) { showSection('core'); return; }
-            
-            ind.innerText = "Global Search Override";
+
+            const grid = document.getElementById('mallGrid');
             grid.innerHTML = '';
+
             Object.values(linkData).flat().forEach(item => {
                 if(item.n.toLowerCase().includes(q)) {
-                    let visual = item.img ? `<img src="${item.img}" class="card-img">` : '';
-                    let icon = `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
-                    grid.innerHTML += `
-                        <a href="${item.u}" target="_blank" class="hologram-card">
-                            <div class="visual-container">${visual}${icon}</div>
-                            <div class="label">${item.n}</div>
-                            <div class="share-btn"><i class="fa-solid fa-share-nodes"></i></div>
-                        </a>`;
+                    let v = item.img ? `<img src="${item.img}" class="card-img" alt="${item.n}">` : `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
+                    grid.innerHTML += `<a href="${item.u}" target="_blank" class="hologram-card"><div class="visual-container">${v}</div><div class="label">${item.n}</div></a>`;
                 }
             });
         }
 
         function toggleSidebar(force) { 
             const sb = document.getElementById('sidebar');
-            if(force === false) sb.classList.remove('active');
-            else sb.classList.toggle('active'); 
+            if(typeof force === 'boolean') {
+                sb.classList.toggle('active', force);
+            } else {
+                sb.classList.toggle('active');
+            }
         }
 
         window.onload = bootMultiverse;
