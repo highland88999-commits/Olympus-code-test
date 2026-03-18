@@ -14,9 +14,12 @@
         }
 
         body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family:'Segoe UI',sans-serif; color:#fff; }
+        
+        /* THE INTERACTION LAYER */
         canvas { position:fixed; top:0; left:0; z-index:1; cursor: grab; }
+        canvas:active { cursor: grabbing; }
 
-        .ui-wrapper { position: fixed; inset: 0; z-index: 10; pointer-events: none; transition: var(--transition); }
+        .ui-wrapper { position: fixed; inset: 0; z-index: 10; pointer-events: none; transition: var(--transition); opacity: 1; }
         .ui-wrapper.hidden { opacity: 0; filter: blur(20px); pointer-events: none; }
         .ui-wrapper > * { pointer-events: auto; }
 
@@ -37,8 +40,9 @@
             border:2px solid var(--active-accent); border-radius:50%; 
             display:flex; align-items:center; justify-content:center; 
             color:var(--active-accent); cursor:pointer; box-shadow: 0 0 15px var(--active-accent);
+            transition: 0.3s;
         }
-        .mic-btn.active { color:#ff0; border-color: #ff0; box-shadow:0 0 30px #ff0; }
+        .mic-btn.active { color:#ff0 !important; border-color: #ff0 !important; box-shadow:0 0 30px #ff0 !important; }
 
         .search-container { flex-grow:1; max-width:500px; margin: 0 auto; }
         #mallSearch { 
@@ -55,26 +59,27 @@
         }
         .sidebar.active { left:0; }
         .menu-link { padding:20px 35px; display:block; color:#777; text-transform:uppercase; letter-spacing:3px; font-size:0.75rem; text-decoration: none; cursor:pointer; transition: 0.3s; }
-        .menu-link:hover, .menu-link.active-link { color:var(--active-accent); background: rgba(0,255,255,0.05); box-shadow: inset 5px 0 0 var(--active-accent); }
+        .menu-link:hover, .menu-link.active-link { color:var(--active-accent); background: rgba(0,255,255,0.05); border-left: 5px solid var(--active-accent); }
 
         /* VIEWPORT */
         .viewport { position: relative; height: 100vh; overflow-y: auto; padding: 160px 20px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
         .cat-banner { color:var(--active-accent); letter-spacing:15px; font-weight:900; text-transform:uppercase; margin-bottom:60px; text-shadow: 0 0 25px var(--active-accent); font-size:1.4rem; text-align: center; }
-        .icon-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:40px; width:100%; max-width:1200px; }
+        .icon-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:40px; width:100%; max-width:1200px; }
 
         /* CARDS */
         .hologram-card { text-decoration:none; display:flex; flex-direction:column; align-items:center; transition: 0.4s; }
-        .hologram-card:hover { transform: translateY(-10px) scale(1.05); }
+        .hologram-card:hover { transform: scale(1.1); }
         .video-circle {
-            width:130px; height:130px; border-radius:50%; overflow:hidden; 
+            width:120px; height:120px; border-radius:50%; overflow:hidden; 
             border:2px solid var(--active-accent); box-shadow:0 0 30px var(--active-accent);
             position: relative; background: #000;
         }
-        .card-icon { position: absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2.2rem; color:var(--active-accent); z-index:2; text-shadow:0 0 15px var(--active-accent); }
+        .card-icon { position: absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--active-accent); z-index:2; text-shadow:0 0 15px var(--active-accent); }
         .card-img { width:100%; height:100%; object-fit:cover; opacity:0.6; position: absolute; }
-        .label { margin-top:18px; font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; }
+        .label { margin-top:15px; font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; }
 
-        #immersion-shield { position: fixed; inset: 0; z-index: 5; display: none; }
+        /* SHIELD FOR TOUCH CONTROL */
+        #immersion-shield { position: fixed; inset: 0; z-index: 5; display: none; background: transparent; }
     </style>
 </head>
 <body>
@@ -87,13 +92,13 @@
         <header class="nav-header">
             <button class="menu-btn" id="burger"><i class="fa-solid fa-bars"></i></button>
             <div class="search-container">
-                <input type="text" id="mallSearch" placeholder="ACCESSING OLYMPUS DATA..." onkeyup="searchMall()">
+                <input type="text" id="mallSearch" placeholder="CONNECTING TO NEXUS..." onkeyup="searchMall()">
             </div>
             <button class="mic-btn" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
         </header>
         <nav class="sidebar" id="sidebar"></nav>
         <main class="viewport" id="viewport">
-            <div class="cat-banner" id="cat-indicator">Syncing Multiverse...</div>
+            <div class="cat-banner" id="cat-indicator">Initializing...</div>
             <div class="icon-grid" id="mallGrid"></div>
         </main>
     </div>
@@ -110,52 +115,69 @@
         
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.autoRotate = true; controls.autoRotateSpeed = 0.5;
+        controls.autoRotate = true; controls.autoRotateSpeed = 0.4;
 
         // VORTEX PARAMS
         let isCollapsing = false;
-        const starCount = 20000;
+        const starCount = 25000;
         const starGeo = new THREE.BufferGeometry();
         const starPos = new Float32Array(starCount * 3);
         const originalPos = new Float32Array(starCount * 3);
         
         for(let i=0; i < starCount * 3; i++) {
-            const p = THREE.MathUtils.randFloatSpread(8000);
+            const p = THREE.MathUtils.randFloatSpread(8500);
             starPos[i] = p; originalPos[i] = p;
         }
         starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:2, transparent:true, opacity:0.8, blending: THREE.AdditiveBlending});
+        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:1.8, transparent:true, opacity:0.8});
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(80,64,64), new THREE.MeshStandardMaterial({color:0x00ffff, emissive:0x00ffff, emissiveIntensity:4}));
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(85,64,64), new THREE.MeshStandardMaterial({color:0x00ffff, emissive:0x00ffff, emissiveIntensity:5}));
         scene.add(sun);
         const light = new THREE.PointLight(0x00ffff, 15, 8000);
         scene.add(light);
         scene.add(new THREE.AmbientLight(0x222222));
 
-        camera.position.z = 2000;
+        camera.position.z = 2200;
 
-        // AUDIO
-        let analyser, dataArray, micActive = false;
-        document.getElementById('micBtn').onclick = async () => {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-            const source = audioCtx.createMediaStreamSource(stream);
-            analyser = audioCtx.createAnalyser(); analyser.fftSize = 256;
-            source.connect(analyser);
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-            micActive = true; document.getElementById('micBtn').classList.add('active');
-        };
+        // FIXED MIC LOGIC
+        let analyser, dataArray, micActive = false, audioCtx;
+        const mBtn = document.getElementById('micBtn');
 
-        // GALAXY IMMERSION
+        async function initMic() {
+            if (!micActive) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                    const source = audioCtx.createMediaStreamSource(stream);
+                    analyser = audioCtx.createAnalyser(); analyser.fftSize = 128;
+                    source.connect(analyser);
+                    dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    micActive = true; 
+                    mBtn.classList.add('active');
+                } catch(e) { console.error("Mic Blocked", e); }
+            } else {
+                micActive = false; 
+                mBtn.classList.remove('active');
+            }
+        }
+        mBtn.addEventListener('click', initMic);
+
+        // IMMERSION LOGIC
         const ui = document.getElementById('ui-wrapper');
         const shield = document.getElementById('immersion-shield');
-        controls.addEventListener('start', () => { ui.classList.add('hidden'); shield.style.display = 'block'; });
-        shield.onclick = () => { ui.classList.remove('hidden'); shield.style.display = 'none'; };
+        
+        controls.addEventListener('start', () => {
+            ui.classList.add('hidden');
+            shield.style.display = 'block';
+        });
 
-        // COLOR SHIFT & RESET
-        const palette = ['#00ffff', '#bc13fe', '#ff0055', '#00ff66', '#ffaa00', '#ffffff'];
+        shield.onclick = () => {
+            ui.classList.remove('hidden');
+            shield.style.display = 'none';
+        };
+
         window.updateGalaxy = (hex) => {
             const c = new THREE.Color(hex);
             sun.material.color.set(c); sun.material.emissive.set(c);
@@ -163,17 +185,15 @@
             document.documentElement.style.setProperty('--active-accent', hex);
         };
 
-        // THE DEVOURER CYCLE (Every 3 Mins)
-        setInterval(() => { triggerVortex(); }, 180000);
-
-        function triggerVortex() {
+        // 3-MINUTE COLLAPSE
+        setInterval(() => {
             isCollapsing = true;
             setTimeout(() => {
                 isCollapsing = false;
-                // Re-birth
-                window.updateGalaxy(palette[Math.floor(Math.random()*palette.length)]);
+                const colors = ['#00ffff', '#bc13fe', '#ff0055', '#00ff66', '#ffaa00'];
+                window.updateGalaxy(colors[Math.floor(Math.random()*colors.length)]);
             }, 6000);
-        }
+        }, 180000);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -181,29 +201,24 @@
             const posAttr = stars.geometry.attributes.position;
 
             if (isCollapsing) {
-                // VACUUM EFFECT
                 for(let i=0; i<starCount; i++){
                     const idx = i*3;
-                    posAttr.array[idx] *= 0.94;
-                    posAttr.array[idx+1] *= 0.94;
-                    posAttr.array[idx+2] *= 0.94;
+                    posAttr.array[idx] *= 0.93;
+                    posAttr.array[idx+1] *= 0.93;
+                    posAttr.array[idx+2] *= 0.93;
                 }
-                sun.scale.multiplyScalar(1.02);
-                if(sun.scale.x > 5) sun.scale.set(0.1, 0.1, 0.1); // "Devoured"
+                sun.scale.multiplyScalar(1.03);
+                if(sun.scale.x > 8) sun.scale.set(0.1, 0.1, 0.1);
             } else {
-                // REGULAR ORBIT + VIBRATE
                 let bass = 0;
                 if(micActive && analyser) {
                     analyser.getByteFrequencyData(dataArray);
                     bass = dataArray[2] / 255;
                 }
-                
                 for(let i=0; i<starCount; i++){
                     const idx = i*3;
-                    const vibe = (Math.sin(Date.now() * 0.1) * (bass * 60));
+                    const vibe = (Math.sin(Date.now() * 0.15) * (bass * 80));
                     posAttr.array[idx] = THREE.MathUtils.lerp(posAttr.array[idx], originalPos[idx] + vibe, 0.1);
-                    posAttr.array[idx+1] = THREE.MathUtils.lerp(posAttr.array[idx+1], originalPos[idx+1], 0.1);
-                    posAttr.array[idx+2] = THREE.MathUtils.lerp(posAttr.array[idx+2], originalPos[idx+2], 0.1);
                 }
                 sun.scale.lerp(new THREE.Vector3(1,1,1), 0.05);
             }
@@ -214,60 +229,58 @@
     </script>
 
     <script>
-        // DATA SYNC LOGIC
-        const DATA_SOURCE = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/data.json";
+        // DATA RECOVERY LOGIC
+        const RAW_JSON = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/data.json";
         let linkData = {};
         let categories = [];
 
-        async function boot() {
+        async function syncMultiverse() {
             try {
-                // Cache busting to prevent "Empty Menu" on repeat visits
-                const res = await fetch(`${DATA_SOURCE}?t=${Date.now()}`);
-                const data = await res.json();
+                // Fetch with cache-busting
+                const response = await fetch(`${RAW_JSON}?nocache=${Date.now()}`);
+                if (!response.ok) throw new Error("Network Response Failure");
+                const data = await response.json();
                 
-                // Safety check for data structure
                 categories = data.categories || [];
                 linkData = data.links || {};
                 
                 const sidebar = document.getElementById('sidebar');
-                sidebar.innerHTML = ''; // Clear old loaders
-                
-                if(categories.length === 0) throw new Error("No categories found");
+                sidebar.innerHTML = ''; 
 
                 categories.forEach(cat => {
                     const a = document.createElement('a');
                     a.className = 'menu-link';
                     a.id = `link-${cat.id}`;
                     a.innerText = cat.name;
-                    a.onclick = () => { showSection(cat.id); toggleMenu(false); };
+                    a.onclick = () => { renderSection(cat.id); toggleMenu(false); };
                     sidebar.appendChild(a);
                 });
                 
-                showSection(categories[0].id);
-            } catch (e) {
-                document.getElementById('cat-indicator').innerText = "SYNC FAILED. CHECK DATA.JSON Structure.";
-                console.error("Olympus Data Error:", e);
+                if (categories.length > 0) renderSection(categories[0].id);
+            } catch (err) {
+                document.getElementById('cat-indicator').innerHTML = "SYNC ERROR: CHECK REPO PERMISSIONS";
+                console.error(err);
             }
         }
 
-        function showSection(id) {
+        function renderSection(id) {
             const grid = document.getElementById('mallGrid');
-            const colorMap = { core: '#00ffff', featured: '#bc13fe', finance: '#FFD700', afterlife: '#ffffff', tech: '#00ff66' };
+            const ind = document.getElementById('cat-indicator');
+            const accentMap = { core: '#00ffff', featured: '#bc13fe', finance: '#FFD700', tech: '#00ff66' };
             
-            if(window.updateGalaxy) window.updateGalaxy(colorMap[id] || '#00ffff');
+            if(window.updateGalaxy) window.updateGalaxy(accentMap[id] || '#00ffff');
 
             document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
-            document.getElementById(`link-${id}`)?.classList.add('active-link');
+            const activeLink = document.getElementById(`link-${id}`);
+            if(activeLink) activeLink.classList.add('active-link');
             
-            const currentCat = categories.find(c => c.id === id);
-            document.getElementById('cat-indicator').innerText = currentCat ? currentCat.name : id;
+            const cat = categories.find(c => c.id === id);
+            ind.innerText = cat ? cat.name : "UNKNOWN SECTOR";
             
             grid.innerHTML = '';
             const items = linkData[id] || [];
             
-            if(items.length === 0) {
-                grid.innerHTML = '<div style="color:rgba(255,255,255,0.3); letter-spacing:5px;">VOID DETECTED IN SECTOR</div>';
-            }
+            if(items.length === 0) grid.innerHTML = '<p style="opacity:0.3">SECTOR EMPTY</p>';
 
             items.forEach(item => {
                 grid.innerHTML += `
@@ -281,20 +294,16 @@
             });
         }
 
-        // UI HELPERS
-        const sidebar = document.getElementById('sidebar');
-        const burger = document.getElementById('burger');
-        function toggleMenu(state) {
-            if(state === false) sidebar.classList.remove('active');
-            else sidebar.classList.toggle('active');
-        }
-        burger.onclick = (e) => { e.stopPropagation(); toggleMenu(); };
-        window.onclick = (e) => { if(!sidebar.contains(e.target) && !burger.contains(e.target)) toggleMenu(false); };
+        // SIDEBAR & TOUCH OVERRIDES
+        const sb = document.getElementById('sidebar');
+        const b = document.getElementById('burger');
+        function toggleMenu(s) { if(s === false) sb.classList.remove('active'); else sb.classList.toggle('active'); }
+        b.onclick = (e) => { e.stopPropagation(); toggleMenu(); };
+        window.onclick = (e) => { if(!sb.contains(e.target) && !b.contains(e.target)) toggleMenu(false); };
 
         function searchMall() {
             const q = document.getElementById('mallSearch').value.toLowerCase();
-            if(!q) { showSection(categories[0].id); return; }
-            document.getElementById('cat-indicator').innerText = "CROSS-SECTOR SEARCH";
+            if(!q) { renderSection(categories[0].id); return; }
             const grid = document.getElementById('mallGrid');
             grid.innerHTML = '';
             Object.values(linkData).flat().forEach(item => {
@@ -311,7 +320,7 @@
             });
         }
 
-        boot();
+        syncMultiverse();
     </script>
 </body>
 </html>
