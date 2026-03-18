@@ -8,115 +8,92 @@
     <style>
         :root {
             --neon-cyan: #00ffff;
-            --neon-purple: #bc13fe;
-            --black-bloom: #050505;
-            --glow: 0 0 40px rgba(0,255,255,0.6);
             --active-accent: var(--neon-cyan);
+            --black-bloom: #050505;
+            --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family:'Segoe UI',sans-serif; color:#fff; }
+        canvas { position:fixed; top:0; left:0; z-index:1; cursor: grab; }
+        canvas:active { cursor: grabbing; }
 
-        canvas { position:fixed; top:0; left:0; z-index:1; pointer-events: none; }
+        /* VANISHING UI LAYER */
+        .ui-wrapper { position: fixed; inset: 0; z-index: 2; pointer-events: none; transition: var(--transition); opacity: 1; }
+        .ui-wrapper.hidden { opacity: 0; transform: scale(1.05); filter: blur(15px); }
+        .ui-wrapper > * { pointer-events: auto; }
 
-        /* LIGHTNING BOLT HEADER */
+        /* LIGHTNING BOLT - Integrated into vanishing UI */
         .lightning-bolt {
-            position:fixed; top:18px; left:50%; transform:translateX(-50%);
-            font-size:3.5rem; z-index:9999; pointer-events:none;
-            color: var(--active-accent);
-            text-shadow:0 0 30px var(--active-accent), 0 0 60px var(--active-accent);
+            position:absolute; top:85px; left:50%; transform:translateX(-50%);
+            font-size:3rem; color: var(--active-accent);
+            text-shadow:0 0 30px var(--active-accent);
             animation:boltPulse 3.4s infinite ease-in-out;
-            transition:color 0.9s ease;
+            pointer-events: none; z-index: 10;
         }
-        @keyframes boltPulse { 0%,100%{opacity:0.75;transform:translateX(-50%) scale(1);} 50%{opacity:1;transform:translateX(-50%) scale(1.1);} }
+        @keyframes boltPulse { 0%,100%{opacity:0.6;transform:translateX(-50%) scale(1);} 50%{opacity:1;transform:translateX(-50%) scale(1.1);} }
 
-        /* UI STRUCTURE */
-        .ui-master { position:fixed; inset:0; z-index:2; display:flex; flex-direction:column; transition:all .6s cubic-bezier(0.19,1,0.22,1); }
-        .ui-hidden { opacity:0; pointer-events:none; transform:scale(1.04); filter:blur(12px); }
-
-        .nav-header { padding:22px; display:flex; align-items:center; gap:18px; background:linear-gradient(to bottom,rgba(0,0,0,0.92),transparent); z-index:3000; }
+        /* NAVIGATION */
+        .nav-header { padding:22px; display:flex; align-items:center; gap:18px; background:linear-gradient(to bottom,rgba(0,0,0,0.95),transparent); }
         .menu-btn, .mic-btn { 
-            width:52px; height:52px; background:rgba(0,0,0,0.85); 
-            border:1.8px solid var(--active-accent); border-radius:50%; 
+            width:52px; height:52px; background:rgba(0,0,0,0.8); 
+            border:1.5px solid var(--active-accent); border-radius:50%; 
             display:flex; align-items:center; justify-content:center; 
             color:var(--active-accent); cursor:pointer; box-shadow: 0 0 15px var(--active-accent);
-            transition: 0.3s;
         }
         .mic-btn.active { color:#ff0; border-color: #ff0; box-shadow:0 0 30px #ff0; }
 
-        .search-container { flex-grow:1; max-width:640px; margin: 0 auto; }
+        .search-container { flex-grow:1; max-width:500px; margin: 0 auto; }
         #mallSearch { 
-            width:100%; background:rgba(0,0,0,0.88); border:1.8px solid rgba(0,255,255,0.2); 
-            padding:14px 28px; border-radius:40px; color:#fff; outline:none; font-size:1rem;
-            box-shadow: 0 0 10px rgba(0,255,255,0.1); transition: 0.4s;
+            width:100%; background:rgba(0,0,0,0.9); border:1.5px solid rgba(0,255,255,0.2); 
+            padding:12px 25px; border-radius:40px; color:#fff; outline:none;
         }
-        #mallSearch:focus { border-color: var(--active-accent); box-shadow: 0 0 20px var(--active-accent); }
 
         /* SIDEBAR */
         .sidebar { 
             position:fixed; top:0; left:-340px; width:320px; height:100%; 
-            background:rgba(5,5,5,0.96); backdrop-filter:blur(32px); 
+            background:rgba(5,5,5,0.98); backdrop-filter:blur(30px); 
             border-right:1px solid var(--active-accent); z-index:4000; 
-            transition:all .7s cubic-bezier(0.19,1,0.22,1); padding:120px 0 60px; overflow-y:auto; 
+            transition: var(--transition); padding:100px 0; overflow-y:auto; 
         }
         .sidebar.active { left:0; }
-        .menu-link { padding:18px 34px; display:block; color:#aaa; text-transform:uppercase; letter-spacing:2.5px; font-size:0.73rem; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition: 0.3s; }
-        .menu-link:hover, .menu-link.active-link { color:var(--active-accent); background:rgba(0,255,255,0.06); border-left:4px solid var(--active-accent); }
+        .menu-link { padding:18px 35px; display:block; color:#888; text-transform:uppercase; letter-spacing:2px; font-size:0.75rem; text-decoration: none; cursor:pointer; }
+        .menu-link:hover, .menu-link.active-link { color:var(--active-accent); border-left:4px solid var(--active-accent); background: rgba(0,255,255,0.05); }
 
-        /* VIEWPORT */
-        .viewport { flex-grow:1; overflow-y:auto; padding:30px; display:flex; flex-direction:column; align-items:center; scrollbar-width: none; }
-        .cat-banner { color:var(--active-accent); letter-spacing:14px; font-weight:900; text-transform:uppercase; margin-bottom:60px; text-shadow: 0 0 20px var(--active-accent); font-size:1.65rem; transition: 0.8s; }
-        .icon-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:40px; width:100%; max-width:1400px; }
+        /* CONTENT VIEWPORT */
+        .viewport { position: relative; height: 100vh; overflow-y: auto; padding: 150px 40px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
+        .cat-banner { color:var(--active-accent); letter-spacing:15px; font-weight:900; text-transform:uppercase; margin-bottom:60px; text-shadow: 0 0 20px var(--active-accent); font-size:1.5rem; text-align: center; }
+        .icon-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:45px; width:100%; max-width:1200px; }
 
-        /* CIRCULAR HOLOGRAM CARDS */
+        /* CIRCULAR CARDS */
         .hologram-card {
-            text-decoration:none; background:transparent; border:none;
-            display:flex; flex-direction:column; align-items:center; justify-content:center;
-            transition:0.5s cubic-bezier(0.19,1,0.22,1); cursor:pointer;
+            text-decoration:none; display:flex; flex-direction:column; align-items:center;
+            transition: 0.4s; cursor:pointer;
         }
-        .hologram-card:hover { transform:scale(1.15); }
+        .hologram-card:hover { transform: scale(1.1); }
         .video-circle {
-            width:130px; height:130px; border-radius:50%; overflow:hidden; 
-            border:3px solid var(--active-accent);
-            box-shadow:0 0 35px var(--active-accent);
+            width:120px; height:120px; border-radius:50%; overflow:hidden; 
+            border:2px solid var(--active-accent); box-shadow:0 0 25px var(--active-accent);
             position: relative; background: #000;
         }
-        .card-icon { 
-            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            font-size: 2.5rem; color: var(--active-accent); z-index: 2; opacity: 0.8;
-            text-shadow: 0 0 10px var(--active-accent);
-        }
-        .masked-video, .card-img { 
-            width:100%; height:100%; object-fit:cover; opacity:0.6; 
-            filter: brightness(1.2); position: absolute; top:0; left:0;
-        }
-        .hologram-card:hover .masked-video, .hologram-card:hover .card-img { opacity:0.9; }
-        .label { margin-top:16px; font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; }
+        .card-icon { position: absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--active-accent); z-index:2; text-shadow:0 0 10px var(--active-accent); }
+        .card-img { width:100%; height:100%; object-fit:cover; opacity:0.5; position: absolute; }
+        .label { margin-top:15px; font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; }
 
-        /* HOLOFRAME */
-        #holoframe { position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:9998; display:none; flex-direction:column; }
-        #holoframe.active { display:flex; }
-        #holoframe iframe { flex:1; border:none; width:100%; height:100%; }
-        #closeHolo { position:absolute; top:25px; right:25px; padding:12px 24px; background:var(--active-accent); color:#000; border:none; border-radius:5px; cursor:pointer; font-weight:bold; z-index:9999; }
-
-        #obs-hint { position:fixed; bottom:25px; width:100%; text-align:center; color:rgba(0,255,255,0.4); font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; pointer-events:none; z-index:5000; }
+        #immersion-shield { position: fixed; inset: 0; z-index: 5; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="lightning-bolt" id="lightning"><i class="fa-solid fa-bolt"></i></div>
-
     <canvas id="galaxy-canvas"></canvas>
+    <div id="immersion-shield"></div>
 
-    <div id="holoframe">
-        <button id="closeHolo" onclick="document.getElementById('holoframe').classList.remove('active')">CLOSE INTERFACE</button>
-        <iframe id="holoIframe"></iframe>
-    </div>
+    <div id="ui-wrapper" class="ui-wrapper">
+        <div class="lightning-bolt" id="lightning"><i class="fa-solid fa-bolt"></i></div>
 
-    <div id="ui-master" class="ui-master">
         <header class="nav-header">
-            <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <button class="menu-btn" id="burger"><i class="fa-solid fa-bars"></i></button>
             <div class="search-container">
-                <input type="text" id="mallSearch" placeholder="ACCESSING MULTIVERSE..." onkeyup="searchMall()">
+                <input type="text" id="mallSearch" placeholder="SEARCH OLYMPUS..." onkeyup="searchMall()">
             </div>
             <button class="mic-btn" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
         </header>
@@ -129,58 +106,73 @@
         </main>
     </div>
 
-    <div id="obs-hint">Syncing with Heartbeat... Mic on = Stars dance to the frequency</div>
-
-    <script type="importmap">
-        {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
-    </script>
-
+    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 8000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
         const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
         renderer.setSize(window.innerWidth, window.innerHeight);
+        
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; 
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
 
-        // Starfield
+        // STARFIELD CONFIG
+        const starCount = 30000;
         const starGeo = new THREE.BufferGeometry();
-        const starPos = [];
-        for(let i=0;i<25000;i++) starPos.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
-        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos,3));
-        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:1.2, transparent:true, opacity:0.7});
+        const starPos = new Float32Array(starCount * 3);
+        const initialPos = new Float32Array(starCount * 3);
+        
+        for(let i=0; i < starCount * 3; i++) {
+            const p = THREE.MathUtils.randFloatSpread(7000);
+            starPos[i] = p;
+            initialPos[i] = p;
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:1.5, transparent:true, opacity:0.8});
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
-        // Central Star (Sun)
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(60,64,64), new THREE.MeshStandardMaterial({color:0x00ffff, emissive:0x00ffff, emissiveIntensity:2}));
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(75,64,64), new THREE.MeshStandardMaterial({color:0x00ffff, emissive:0x00ffff, emissiveIntensity:3}));
         scene.add(sun);
-        const light = new THREE.PointLight(0x00ffff, 5, 5000);
+        const light = new THREE.PointLight(0x00ffff, 10, 6000);
         scene.add(light);
-        scene.add(new THREE.AmbientLight(0x111111));
+        scene.add(new THREE.AmbientLight(0x222222));
 
-        camera.position.z = 1500;
+        camera.position.z = 1800;
 
-        // Audio reactivity logic
-        let analyser, dataArray, micActive = false, audioCtx;
+        // AUDIO
+        let analyser, dataArray, micActive = false;
         const micBtn = document.getElementById('micBtn');
 
         micBtn.onclick = async () => {
             if (!micActive) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-                    const source = audioCtx.createMediaStreamSource(stream);
-                    analyser = audioCtx.createAnalyser();
-                    analyser.fftSize = 256;
-                    source.connect(analyser);
-                    dataArray = new Uint8Array(analyser.frequencyBinCount);
-                    micActive = true; micBtn.classList.add('active');
-                } catch(e) { console.error("Mic Error", e); }
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                const source = audioCtx.createMediaStreamSource(stream);
+                analyser = audioCtx.createAnalyser(); analyser.fftSize = 256;
+                source.connect(analyser);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                micActive = true; micBtn.classList.add('active');
             } else { micActive = false; micBtn.classList.remove('active'); }
+        };
+
+        // GALAXY INTERACTION (IMMERSION MODE)
+        const ui = document.getElementById('ui-wrapper');
+        const shield = document.getElementById('immersion-shield');
+        
+        controls.addEventListener('start', () => {
+            ui.classList.add('hidden');
+            shield.style.display = 'block';
+        });
+
+        shield.onclick = () => {
+            ui.classList.remove('hidden');
+            shield.style.display = 'none';
         };
 
         window.updateGalaxy = (hex) => {
@@ -193,15 +185,22 @@
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
-            stars.rotation.y += 0.0005;
 
             if (micActive && analyser) {
                 analyser.getByteFrequencyData(dataArray);
-                const avg = dataArray.reduce((a,b)=>a+b,0) / dataArray.length / 255;
                 const bass = dataArray[2] / 255;
-                stars.rotation.y += bass * 0.01;
-                stars.scale.setScalar(1 + bass * 0.5);
-                sun.scale.setScalar(1 + avg * 1.5);
+                const mid = dataArray[10] / 255;
+                
+                const posAttr = stars.geometry.attributes.position;
+                for(let i=0; i < starCount; i++) {
+                    const idx = i * 3;
+                    // VIBRATE LEFT/RIGHT FAST (X-axis)
+                    posAttr.array[idx] = initialPos[idx] + (Math.sin(Date.now() * 0.1) * (bass * 50));
+                    // Subtle Y bounce
+                    posAttr.array[idx+1] = initialPos[idx+1] + (Math.cos(Date.now() * 0.05) * (mid * 20));
+                }
+                posAttr.needsUpdate = true;
+                sun.scale.setScalar(1 + bass * 0.8);
             }
             renderer.render(scene, camera);
         }
@@ -209,72 +208,69 @@
     </script>
 
     <script>
-        let categories = [];
+        // DATA SYNC WITH REPO
+        const REPO_URL = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/data.json";
         let linkData = {};
-        const colors = { core: '#00ffff', featured: '#bc13fe', tech: '#00ff44', finance: '#FFD700', afterlife: '#ffffff', apparel: '#ff3366' };
+        let categories = [];
 
-        async function bootMultiverse() {
+        async function boot() {
             try {
-                const res = await fetch('data.json');
+                const res = await fetch(REPO_URL);
                 const data = await res.json();
                 categories = data.categories;
                 linkData = data.links;
                 
                 const sidebar = document.getElementById('sidebar');
                 categories.forEach(cat => {
-                    sidebar.innerHTML += `<a class="menu-link" id="link-${cat.id}" onclick="showSection('${cat.id}')">${cat.name}</a>`;
+                    const a = document.createElement('a');
+                    a.className = 'menu-link';
+                    a.id = `link-${cat.id}`;
+                    a.innerText = cat.name;
+                    a.onclick = () => { showSection(cat.id); toggleMenu(false); };
+                    sidebar.appendChild(a);
                 });
                 showSection('core');
-            } catch (e) {
-                document.getElementById('cat-indicator').innerText = "OFFLINE - RECONNECTING...";
-            }
+            } catch (e) { console.error("Sync Error", e); }
         }
 
         function showSection(id) {
             const grid = document.getElementById('mallGrid');
-            const ind = document.getElementById('cat-indicator');
+            const colors = { core: '#00ffff', featured: '#bc13fe', finance: '#FFD700', afterlife: '#ffffff', tech: '#00ff66' };
             if(window.updateGalaxy) window.updateGalaxy(colors[id] || '#00ffff');
 
             document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
             document.getElementById(`link-${id}`)?.classList.add('active-link');
+            document.getElementById('cat-indicator').innerText = categories.find(c => c.id === id)?.name || id;
             
-            ind.innerText = categories.find(c => c.id === id)?.name || id;
             grid.innerHTML = '';
-            
             (linkData[id] || []).forEach(item => {
-                grid.innerHTML += createCard(item);
-            });
-            if(window.innerWidth < 1000) toggleSidebar(false);
-        }
-
-        function createCard(item) {
-            let visual = item.img ? `<img src="${item.img}" class="card-img">` : '';
-            let icon = `<div class="card-icon"><i class="${item.i || 'fa-solid fa-link'}"></i></div>`;
-            return `
-                <a href="${item.u}" target="_blank" class="hologram-card">
-                    <div class="video-circle">${visual}${icon}</div>
-                    <div class="label">${item.n}</div>
-                </a>`;
-        }
-
-        function searchMall() {
-            const q = document.getElementById('mallSearch').value.toLowerCase();
-            const grid = document.getElementById('mallGrid');
-            if(!q) { showSection('core'); return; }
-            document.getElementById('cat-indicator').innerText = "GLOBAL OVERRIDE";
-            grid.innerHTML = '';
-            Object.values(linkData).flat().forEach(item => {
-                if(item.n.toLowerCase().includes(q)) grid.innerHTML += createCard(item);
+                grid.innerHTML += `
+                    <a href="${item.u}" target="_blank" class="hologram-card">
+                        <div class="video-circle">
+                            ${item.img ? `<img src="${item.img}" class="card-img">` : ''}
+                            <div class="card-icon"><i class="${item.i || 'fa-solid fa-link'}"></i></div>
+                        </div>
+                        <div class="label">${item.n}</div>
+                    </a>`;
             });
         }
 
-        function toggleSidebar(force) { 
-            const sb = document.getElementById('sidebar');
-            if(force === false) sb.classList.remove('active');
-            else sb.classList.toggle('active'); 
+        const sidebar = document.getElementById('sidebar');
+        const burger = document.getElementById('burger');
+        
+        function toggleMenu(state) {
+            if(state === false) sidebar.classList.remove('active');
+            else sidebar.classList.toggle('active');
         }
 
-        window.onload = bootMultiverse;
+        burger.onclick = (e) => { e.stopPropagation(); toggleMenu(); };
+        
+        // CLOSE MENU ON OUTSIDE CLICK
+        window.onclick = (e) => {
+            if(!sidebar.contains(e.target) && !burger.contains(e.target)) toggleMenu(false);
+        };
+
+        boot();
     </script>
 </body>
 </html>
