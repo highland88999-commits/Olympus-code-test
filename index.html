@@ -3,358 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OLYMPUS | NEXUS VORTEX CORE ✨🩸❤️⚡</title>
+    <title>OLYMPUS | GRAND MULTIVERSE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --neon-cyan: #00ffff;
-            --royal-blue: #002366;
-            --vibrant-orange: #ff4500;
-            --blood-red: #c8102e;
-            --heart-pink: #ff69b4;
-            --active-accent: var(--neon-cyan);
-            --black-bloom: rgba(0,0,0,0.9);
-            --transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            --neon-purple: #bc13fe;
+            --black-bloom: #050505;
+            --glow: 0 0 20px rgba(0,255,255,0.4);
+            --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color:#fff; }
-        
-        canvas { position:fixed; top:0; left:0; z-index:1; cursor: grab; }
-        canvas:active { cursor: grabbing; }
+        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background: var(--black-bloom); font-family: 'Segoe UI', sans-serif; color: #fff; }
 
-        #void-trigger { position: fixed; inset: 0; z-index: 5; pointer-events: auto; background: transparent; display: none; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
 
-        .ui-wrapper { position: fixed; inset: 0; z-index: 10; pointer-events: none; transition: var(--transition); opacity: 1; }
-        .ui-wrapper.hidden { opacity: 0; filter: blur(20px); transform: scale(1.1); pointer-events: none; }
-        .ui-wrapper > * { pointer-events: auto; }
+        .ui-master { position: fixed; inset: 0; opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; display: flex; flex-direction: column; }
+        .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.02); filter: blur(8px); }
 
-        .lightning-bolt {
-            position:absolute; top:85px; left:50%; transform:translateX(-50%);
-            font-size:3.8rem; color: var(--active-accent);
-            text-shadow: 0 0 20px var(--active-accent), 0 0 50px var(--active-accent), 0 0 80px var(--heart-pink);
-            animation: boltPulse 2.5s infinite alternate;
-            pointer-events: none; z-index: 11;
-        }
-        @keyframes boltPulse { from { opacity: 0.5; transform: translateX(-50%) scale(0.9); } to { opacity: 1; transform: translateX(-50%) scale(1.15); } }
-
-        .nav-header { padding:22px; display:flex; align-items:center; gap:18px; background:linear-gradient(to bottom, rgba(0,0,0,0.85), transparent); }
-        .menu-btn, .mic-btn { 
-            width:54px; height:54px; background:rgba(0,0,0,0.9); 
-            border:2.5px solid var(--active-accent); border-radius:50%; 
-            display:flex; align-items:center; justify-content:center; 
-            color:var(--active-accent); cursor:pointer; 
-            box-shadow: 0 0 15px var(--active-accent); transition: 0.4s;
-        }
-        .mic-btn.active { color:#ffff00 !important; border-color:#ffff00 !important; box-shadow: 0 0 30px #ffff00 !important; }
-
-        .search-container { flex-grow:1; max-width:480px; margin: 0 auto; }
-        #mallSearch { 
-            width:100%; background:rgba(0,0,0,0.8); border:1.5px solid var(--active-accent); 
-            padding:14px 25px; border-radius:40px; color:#fff; text-align: center; outline:none;
-            letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem;
-            box-shadow: inset 0 0 10px rgba(0,255,255,0.1);
+        .nav-header {
+            padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 3000;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
         }
 
-        .sidebar { 
-            position:fixed; top:0; left:-340px; width:300px; height:100%; 
-            background:var(--black-bloom); backdrop-filter:blur(50px); 
-            border-right:1px solid var(--active-accent); z-index:4000; 
-            transition: var(--transition); padding:100px 0; overflow-y:auto; 
+        .menu-btn, .mic-btn {
+            width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8);
+            border: 1.5px solid var(--neon-cyan); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--neon-cyan); font-size: 1.2rem; cursor: pointer; box-shadow: var(--glow); transition: 0.3s;
         }
-        .sidebar.active { left:0; box-shadow: 30px 0 100px rgba(0,0,0,0.9); }
-        .menu-link { 
-            padding:20px 40px; display:block; color:rgba(255,255,255,0.4); 
-            text-transform:uppercase; letter-spacing:4px; font-size:0.75rem; 
-            text-decoration: none; cursor:pointer; transition: 0.3s;
-        }
-        .menu-link:hover, .menu-link.active-link { color:var(--active-accent); background: rgba(0,255,255,0.05); border-left: 4px solid var(--active-accent); }
+        .mic-btn.active { border-color: #ffff00; color: #ffff00; box-shadow: 0 0 25px #ffff00; }
 
-        .viewport { position: relative; height: 100vh; overflow-y: auto; padding: 180px 20px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
-        .cat-banner { color:var(--active-accent); letter-spacing:15px; font-weight:900; text-transform:uppercase; margin-bottom:70px; text-shadow: 0 0 30px var(--active-accent); font-size:1.6rem; text-align: center; }
-        .icon-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:50px; width:100%; max-width:1200px; }
+        .search-container { flex-grow: 1; max-width: 600px; margin: 0 auto; }
+        #mallSearch {
+            width: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
+            border: 1.5px solid rgba(0,255,255,0.3); padding: 12px 25px;
+            border-radius: 30px; color: #fff; outline: none; box-shadow: var(--glow);
+            font-size: 0.9rem; box-sizing: border-box; transition: 0.3s;
+        }
+        #mallSearch:focus { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(188, 19, 254, 0.5); }
 
-        .hologram-card { 
-            text-decoration:none; display:flex; flex-direction:column; align-items:center; transition: 0.4s; cursor:pointer;
+        .sidebar {
+            position: fixed; top: 0; left: -320px; width: 300px; height: 100%;
+            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px);
+            border-right: 1px solid var(--neon-cyan); z-index: 4000;
+            transition: var(--transition); padding: 100px 0 50px 0; overflow-y: auto;
         }
-        .hologram-card:hover { transform: translateY(-15px) scale(1.05); }
-        .video-circle {
-            width:125px; height:125px; border-radius:50%; overflow:hidden; 
-            border:2px solid var(--active-accent); box-shadow:0 0 30px var(--active-accent);
-            position: relative; background: #000;
+        .sidebar.active { left: 0; }
+        .menu-link {
+            padding: 16px 30px; display: block; color: #aaa; text-decoration: none;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem;
+            border-bottom: 1px solid rgba(0,255,255,0.05); transition: 0.3s; cursor: pointer;
         }
-        .card-video { width:100%; height:100%; object-fit:cover; opacity:0.7; position: absolute; z-index:1; }
-        .card-icon { position: absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--active-accent); z-index:2; text-shadow: 0 0 10px #000; }
-        .label { margin-top:20px; font-size:0.7rem; letter-spacing:3px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; text-shadow: 0 0 5px #000; }
+        .menu-link:hover, .menu-link.active-link { color: var(--neon-cyan); background: rgba(0,255,255,0.05); padding-left: 40px; border-left: 3px solid var(--neon-cyan); }
 
-        /* HOLOFRAME OVERLAY (from GitHub past + upgraded) */
-        #holoframe {
-            position:fixed; inset:0; background:rgba(0,0,0,0.96); z-index:9998; display:none; flex-direction:column;
+        .viewport {
+            flex-grow: 1; overflow-y: auto; padding: 20px 20px 120px;
+            display: flex; flex-direction: column; align-items: center;
+            scrollbar-width: none;
         }
-        #holoframe.active { display:flex; }
-        #holoframe iframe { flex:1; border:none; width:100%; height:100%; }
-        #closeHolo { 
-            position:absolute; top:25px; right:25px; padding:14px 28px; 
-            background:var(--active-accent); color:#000; border:none; border-radius:10px; 
-            cursor:pointer; font-weight:bold; z-index:9999; box-shadow:0 0 30px var(--active-accent);
-        }
+        .viewport::-webkit-scrollbar { display: none; }
 
-        #obs-hint { 
-            position:fixed; bottom:25px; width:100%; text-align:center; 
-            color:rgba(255,255,255,0.35); font-size:0.64rem; letter-spacing:3.5px; 
-            text-transform:uppercase; pointer-events:none; z-index:5000;
+        .cat-banner {
+            color: var(--neon-cyan); letter-spacing: 12px; font-weight: 900;
+            text-transform: uppercase; margin-bottom: 50px; text-shadow: var(--glow);
+            text-align: center; font-size: 1.5rem; pointer-events: none; transition: color 0.6s;
         }
 
-        /* GLITCH + BLOOD TINT */
-        #glitch-screen { position: fixed; inset: 0; z-index: 9999; pointer-events: none; background: rgba(0,255,255,0.05); display: none; }
-        #glitch-screen.active-blood { background: rgba(200,16,46,0.12); animation: bloodGlitch 0.3s infinite; }
-        @keyframes bloodGlitch { 0%,100% { opacity:0.12; } 50% { opacity:0.25; } }
+        .icon-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 30px; width: 100%; max-width: 1500px; pointer-events: none;
+        }
+
+        .hologram-card {
+            background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,255,255,0.15); border-radius: 15px;
+            text-decoration: none; overflow: hidden; transition: 0.4s;
+            display: flex; flex-direction: column; pointer-events: auto;
+            cursor: pointer; min-height: 180px;
+        }
+        .hologram-card:hover {
+            transform: translateY(-8px); border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0,255,255,0.4);
+        }
+        .video-box { width: 100%; height: 110px; background: #000; position: relative; }
+        .masked-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: hue-rotate(10deg); }
+        .icon-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            font-size: 2.8rem; color: rgba(0,255,255,0.7); text-shadow: 0 0 15px #000;
+            z-index: 2; pointer-events: none;
+        }
+        .label {
+            padding: 15px; color: #fff; font-size: 0.75rem; text-align: center;
+            letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold;
+        }
+
+        #obs-hint {
+            position: fixed; bottom: 20px; width: 100%; text-align: center;
+            color: rgba(0,255,255,0.4); font-size: 0.6rem; letter-spacing: 3px;
+            text-transform: uppercase; pointer-events: none; z-index: 5000;
+        }
     </style>
 </head>
 <body>
 
-    <div id="glitch-screen"></div>
+    <div id="obs-hint">Click background to toggle Observation Mode • Mic for audio reactivity</div>
+
     <canvas id="galaxy-canvas"></canvas>
-    <div id="void-trigger"></div>
 
-    <!-- HOLOFRAME -->
-    <div id="holoframe">
-        <button id="closeHolo" onclick="document.getElementById('holoframe').classList.remove('active')">✕ CLOSE NEXUS</button>
-        <iframe id="holoIframe"></iframe>
-    </div>
-
-    <div id="obs-hint">OBSERVING THE VORTEX CORE • MIC • GLITCH • DEVOURER CYCLE ACTIVE ✨🩸❤️⚡</div>
-
-    <div id="ui-wrapper" class="ui-wrapper">
-        <div class="lightning-bolt" id="lightning"><i class="fa-solid fa-bolt"></i></div>
-        <header class="nav-header">
-            <button class="menu-btn" id="burger"><i class="fa-solid fa-bars"></i></button>
+    <div id="ui-master" class="ui-master">
+        <header class="nav-header" id="nav-header">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
             <div class="search-container">
-                <input type="text" id="mallSearch" placeholder="ACCESSING OLYMPUS..." onkeyup="searchMall()">
+                <input type="text" id="mallSearch" placeholder="SEARCH ENTIRE DIRECTORY..." onkeyup="searchMall()">
             </div>
             <button class="mic-btn" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
         </header>
+
         <nav class="sidebar" id="sidebar"></nav>
+
         <main class="viewport" id="viewport">
-            <div class="cat-banner" id="cat-indicator">Initializing Sync...</div>
+            <div class="cat-banner" id="cat-indicator">Olympus Core</div>
             <div class="icon-grid" id="mallGrid"></div>
         </main>
     </div>
 
-    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+    <script type="importmap">
+        {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+    </script>
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 20000);
-        const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
-        renderer.setSize(innerWidth, innerHeight);
-        
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 1, 10000);
+        const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.autoRotate = true; 
-        controls.autoRotateSpeed = 0.4;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.2;
+        controls.enableZoom = true;
 
-        let isCollapsing = false;
-        const starCount = 30000;
-        const starGeo = new THREE.BufferGeometry();
-        const starPos = new Float32Array(starCount * 3);
-        const homePos = new Float32Array(starCount * 3);
-        
-        for(let i=0; i < starCount * 3; i++) {
-            const p = THREE.MathUtils.randFloatSpread(10000);
-            starPos[i] = p; homePos[i] = p;
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 25000; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
         }
-        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color:0x00ffff, size:2.4, transparent:true, opacity:0.8, blending: THREE.AdditiveBlending});
-        const stars = new THREE.Points(starGeo, starMat);
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const material = new THREE.PointsMaterial({ color: 0x00ffff, size: 1.2, transparent: true, opacity: 0.7 });
+        const stars = new THREE.Points(geometry, material);
         scene.add(stars);
 
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(110,64,64), new THREE.MeshStandardMaterial({color:0x00ffff, emissive:0x00ffff, emissiveIntensity:6}));
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(60, 64, 64), new THREE.MeshStandardMaterial({color: 0xbc13fe, emissive: 0xbc13fe, emissiveIntensity: 2}));
         scene.add(sun);
-        const light = new THREE.PointLight(0x00ffff, 25, 12000);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x222222));
+        
+        scene.add(new THREE.PointLight(0x00ffff, 4, 4000));
+        scene.add(new THREE.AmbientLight(0x111111));
 
-        camera.position.set(0, 400, 2800);
+        camera.position.z = 1200;
 
+        // ── AUDIO REACTIVITY ────────────────────────────────────────
         let audioCtx, analyser, dataArray, micActive = false;
-        document.getElementById('micBtn').onclick = async (e) => {
-            e.stopPropagation();
-            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if(!micActive) {
+        const micBtn = document.getElementById('micBtn');
+        micBtn.onclick = async () => {
+            if (!micActive) {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
                     const source = audioCtx.createMediaStreamSource(stream);
-                    analyser = audioCtx.createAnalyser(); analyser.fftSize = 256;
+                    analyser = audioCtx.createAnalyser();
+                    analyser.fftSize = 256;
                     source.connect(analyser);
                     dataArray = new Uint8Array(analyser.frequencyBinCount);
-                    micActive = true; 
-                    document.getElementById('micBtn').classList.add('active');
-                } catch(err) { console.error("Mic denied"); }
+                    micActive = true;
+                    micBtn.classList.add('active');
+                } catch (err) {
+                    console.error("Mic access denied", err);
+                }
             } else {
-                micActive = false; 
-                document.getElementById('micBtn').classList.remove('active');
+                micActive = false;
+                micBtn.classList.remove('active');
             }
         };
-
-        const ui = document.getElementById('ui-wrapper');
-        const voidShield = document.getElementById('void-trigger');
-
-        controls.addEventListener('start', () => {
-            ui.classList.add('hidden');
-            voidShield.style.display = 'block';
-        });
-
-        voidShield.onclick = () => {
-            ui.classList.remove('hidden');
-            voidShield.style.display = 'none';
-        };
-
-        window.updateGalaxy = (hex) => {
-            const c = new THREE.Color(hex);
-            sun.material.color.set(c); sun.material.emissive.set(c);
-            stars.material.color.set(c); light.color.set(c);
-            document.documentElement.style.setProperty('--active-accent', hex);
-        };
-
-        // DEVOURER CYCLE WITH BLOOD + HEART
-        setInterval(() => {
-            isCollapsing = true;
-            const glitch = document.getElementById('glitch-screen');
-            glitch.style.display = 'block';
-            glitch.classList.add('active-blood');
-            setTimeout(() => {
-                isCollapsing = false;
-                glitch.style.display = 'none';
-                glitch.classList.remove('active-blood');
-                const cycleColors = ['#00ffff', '#002366', '#ff4500', '#bc13fe', '#00ff66', '#c8102e', '#ff69b4'];
-                window.updateGalaxy(cycleColors[Math.floor(Math.random()*cycleColors.length)]);
-            }, 8000);
-        }, 180000);
 
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
-            const posAttr = stars.geometry.attributes.position;
 
-            if (isCollapsing) {
-                for(let i=0; i<starCount; i++){
-                    const idx = i*3;
-                    posAttr.array[idx] *= 0.94;
-                    posAttr.array[idx+1] *= 0.94;
-                    posAttr.array[idx+2] *= 0.94;
+            if (micActive && analyser) {
+                analyser.getByteFrequencyData(dataArray);
+                const intensity = dataArray[4] / 255 * 80; // low-mid freq for vibe
+                const positions = stars.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    const offset = Math.sin(Date.now() * 0.001 + i) * intensity;
+                    positions[i+1] += offset * 0.0005; // gentle vertical pulse
                 }
-                sun.scale.multiplyScalar(1.08);
-                if(sun.scale.x > 20) sun.scale.set(0.01, 0.01, 0.01);
-            } else {
-                let intensity = 0;
-                if(micActive && analyser) {
-                    analyser.getByteFrequencyData(dataArray);
-                    intensity = dataArray[8] / 255;
-                }
-                for(let i=0; i<starCount; i++){
-                    const idx = i*3;
-                    const vibe = (Math.sin(Date.now() * 0.3 + i) * (intensity * 100));
-                    posAttr.array[idx] = THREE.MathUtils.lerp(posAttr.array[idx], homePos[idx] + vibe, 0.1);
-                }
-                sun.scale.lerp(new THREE.Vector3(1,1,1), 0.05);
+                stars.geometry.attributes.position.needsUpdate = true;
             }
-            posAttr.needsUpdate = true;
+
             renderer.render(scene, camera);
         }
         animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // UI toggle
+        const uiMaster = document.getElementById('ui-master');
+        const viewport = document.getElementById('viewport');
+        viewport.addEventListener('click', (e) => {
+            if (e.target === viewport) uiMaster.classList.add('ui-hidden');
+        });
+        document.getElementById('nav-header').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('nav-header')) uiMaster.classList.add('ui-hidden');
+        });
+        document.getElementById('galaxy-canvas').addEventListener('click', () => {
+            uiMaster.classList.remove('ui-hidden');
+        });
     </script>
 
     <script>
-        const REPO_JSON = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/data.json";
-        const HOLO_VIDEO = "https://files.catbox.moe/qnb2fw.mp4";
-        let masterData = { categories: [], links: {} };
+        // ── EASY EDIT ZONE ── Add categories & links here ───────────────────────────────
+        const config = {
+            accentColor: "#00ffff", // default
 
-        async function syncOlympus() {
-            try {
-                const res = await fetch(`\( {REPO_JSON}?t= \){Date.now()}`);
-                if(!res.ok) throw new Error("Sync Failed");
-                const data = await res.json();
-                masterData = data;
-                const sidebar = document.getElementById('sidebar');
-                sidebar.innerHTML = ''; 
+            categories: [
+                { id: "core", name: "Multiverse Core" },
+                { id: "featured", name: "Olympus Featured" },
+                { id: "renewed", name: "A Renewed World" },
+                { id: "afterlife", name: "Afterlife & Beyond" },
+                { id: "abyssal", name: "Abyssal & Aquatic" },
+                { id: "tech", name: "The Tech Stack" },
+                // Add more categories here, e.g.:
+                // { id: "newstuff", name: "New Experiments" },
+            ],
 
-                data.categories.forEach(cat => {
-                    const btn = document.createElement('div');
-                    btn.className = 'menu-link';
-                    btn.id = `nav-${cat.id}`;
-                    btn.innerText = cat.name;
-                    btn.onclick = () => { switchView(cat.id); toggleMenu(false); };
-                    sidebar.appendChild(btn);
-                });
-                
-                if (data.categories.length > 0) switchView(data.categories[0].id);
-            } catch (err) {
-                document.getElementById('cat-indicator').innerText = "DATA OFFLINE: RE-SYNC REQUIRED";
-                console.error("Olympus Error:", err);
+            links: {
+                core: [
+                    { n: "Olympus Core", u: "https://nexusvortex.ca", i: "fa-solid fa-crown" },
+                    { n: "Artemis OS", u: "https://artemis-os.vercel.app/", i: "fa-solid fa-ghost" },
+                    { n: "The Flying Dutchman", u: "https://the-flying-dutchman.vercel.app/", i: "fa-solid fa-ship" },
+                    // Add more: { n: "New Realm", u: "https://example.com", i: "fa-solid fa-rocket" },
+                ],
+                featured: [
+                    { n: "REM-PSI Mauve", u: "https://rem-psi-mauve.vercel.app/", i: "fa-solid fa-eye" },
+                    // ... add/edit as needed
+                ],
+                // Add new category data here matching the id above, e.g.:
+                // newstuff: [
+                //     { n: "Test Link", u: "https://test.com", i: "fa-solid fa-flask" }
+                // ],
+                // ... rest of your categories
+            },
+
+            videoUrl: "https://files.catbox.moe/qnb2fw.mp4"
+        };
+
+        // ── CATEGORY COLORS (optional per-category override) ───────────────────────────
+        const categoryColors = {
+            core: "#00ffff",
+            featured: "#bc13fe",
+            renewed: "#88ffaa",
+            afterlife: "#aa88ff",
+            abyssal: "#0066cc",
+            tech: "#00ff88"
+            // add more as desired
+        };
+
+        // ── DO NOT EDIT BELOW UNLESS CUSTOMIZING LOGIC ────────────────────────────────
+        const sidebar = document.getElementById('sidebar');
+        config.categories.forEach(cat => {
+            sidebar.innerHTML += `<div class="menu-link" id="link-\( {cat.id}" onclick="showSection(' \){cat.id}')">${cat.name}</div>`;
+        });
+
+        function showSection(id) {
+            const grid = document.getElementById('mallGrid');
+            const indicator = document.getElementById('cat-indicator');
+
+            document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
+            document.getElementById(`link-${id}`)?.classList.add('active-link');
+
+            const catName = config.categories.find(c => c.id === id)?.name || id;
+            indicator.innerText = catName;
+
+            // Realm color change
+            const color = categoryColors[id] || config.accentColor;
+            document.documentElement.style.setProperty('--neon-cyan', color);
+            indicator.style.color = color;
+
+            grid.innerHTML = '';
+            (config.links[id] || []).forEach(item => {
+                const icon = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
+                grid.innerHTML += `
+                <a href="${item.u}" target="_blank" class="hologram-card">
+                    <div class="video-box">
+                        <video class="masked-video" muted loop playsinline autoplay>
+                            <source src="${config.videoUrl}" type="video/mp4">
+                        </video>
+                        ${icon}
+                    </div>
+                    <div class="label">${item.n}</div>
+                </a>`;
+            });
+
+            if (window.innerWidth < 1100 && sidebar.classList.contains('active')) {
+                toggleSidebar();
             }
         }
 
-        function openHolo(url) {
-            document.getElementById('holoIframe').src = url;
-            document.getElementById('holoframe').classList.add('active');
-        }
-
-        function switchView(id) {
+        function searchMall() {
+            const query = document.getElementById('mallSearch').value.toLowerCase().trim();
             const grid = document.getElementById('mallGrid');
             const indicator = document.getElementById('cat-indicator');
-            const themeColors = { core: '#00ffff', featured: '#bc13fe', finance: '#FFD700', tech: '#00ff66' };
-            
-            if(window.updateGalaxy) window.updateGalaxy(themeColors[id] || '#00ffff');
 
-            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
-            document.getElementById(`nav-${id}`)?.classList.add('active-link');
-            
-            const category = masterData.categories.find(c => c.id === id);
-            indicator.innerText = category ? category.name : id;
-            
-            grid.innerHTML = '';
-            const items = masterData.links[id] || [];
-            
-            items.forEach(item => {
-                grid.innerHTML += `
-                    <div onclick="openHolo('${item.u}')" class="hologram-card">
-                        <div class="video-circle">
-                            <video src="${HOLO_VIDEO}" autoplay loop muted playsinline class="card-video"></video>
-                            <div class="card-icon"><i class="${item.i || 'fa-solid fa-cube'}"></i></div>
-                        </div>
-                        <div class="label">${item.n}</div>
-                    </div>`;
-            });
-        }
+            if (query) {
+                indicator.innerText = "Search Results";
+                document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
+                grid.innerHTML = '';
 
-        const sb = document.getElementById('sidebar');
-        const burger = document.getElementById('burger');
-        function toggleMenu(s) { if(s === false) sb.classList.remove('active'); else sb.classList.toggle('active'); }
-        burger.onclick = (e) => { e.stopPropagation(); toggleMenu(); };
-        window.onclick = (e) => { if(!sb.contains(e.target) && !burger.contains(e.target)) toggleMenu(false); };
-
-        function searchMall() {
-            const query = document.getElementById('mallSearch').value.toLowerCase();
-            if(!query) { switchView(masterData.categories[0].id); return; }
-            const grid = document.getElementById('mallGrid');
-            grid.innerHTML = '';
-            Object.values(masterData.links).flat().forEach(item => {
-                if(item.n.toLowerCase().includes(query)) {
-                    grid.innerHTML += `
-                        <div onclick="openHolo('${item.u}')" class="hologram-card">
-                            <div class="video-circle">
-                                <video src="${HOLO_VIDEO}" autoplay loop muted playsinline class="card-video"></video>
-                                <div class="card-icon"><i class="${item.i || 'fa-solid fa-link'}"></i></div>
+                Object.values(config.links).flat().forEach(item => {
+                    if (item.n.toLowerCase().includes(query)) {
+                        const icon = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
+                        grid.innerHTML += `
+                        <a href="${item.u}" target="_blank" class="hologram-card">
+                            <div class="video-box">
+                                <video class="masked-video" muted loop playsinline autoplay>
+                                    <source src="${config.videoUrl}" type="video/mp4">
+                                </video>
+                                ${icon}
                             </div>
                             <div class="label">${item.n}</div>
-                        </div>`;
-                }
-            });
+                        </a>`;
+                    }
+                });
+            } else {
+                showSection('core');
+            }
         }
 
-        syncOlympus();
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Initial load
+        showSection('core');
     </script>
 </body>
 </html>
