@@ -3,49 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OLYMPUS | MODULAR MULTIVERSE</title>
+    <title>OLYMPUS | GRAND MULTIVERSE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --neon-cyan: #00ffff;
             --neon-purple: #bc13fe;
             --black-bloom: #050505;
-            --glow: 0 0 20px rgba(0,255,255,0.4);
-            --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            --active-glow: var(--neon-cyan);
+            --transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background: var(--black-bloom); font-family: 'Segoe UI', sans-serif; color: #fff; }
 
         canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
 
-        /* UI MASTER */
         .ui-master { position: fixed; inset: 0; opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; display: flex; flex-direction: column; }
         .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(10px); }
 
         .nav-header { padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 3000; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
-        .menu-btn { width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8); border: 1.5px solid var(--neon-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--neon-cyan); cursor: pointer; box-shadow: var(--glow); }
+        .menu-btn { 
+            width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8); 
+            border: 1.5px solid var(--active-glow); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            color: var(--active-glow); cursor: pointer; transition: var(--transition);
+            box-shadow: 0 0 15px var(--active-glow); 
+        }
 
         .search-container { flex-grow: 1; max-width: 600px; margin: 0 auto; }
-        #mallSearch { width: 100%; background: rgba(0,0,0,0.8); border: 1.5px solid rgba(0,255,255,0.3); padding: 12px 25px; border-radius: 30px; color: #fff; outline: none; box-shadow: var(--glow); }
+        #mallSearch { 
+            width: 100%; background: rgba(0,0,0,0.8); border: 1.5px solid var(--active-glow); 
+            padding: 12px 25px; border-radius: 30px; color: #fff; outline: none; 
+            transition: var(--transition); box-shadow: 0 0 10px var(--active-glow);
+        }
 
-        /* SIDEBAR */
-        .sidebar { position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px); border-right: 1px solid var(--neon-cyan); z-index: 4000; transition: var(--transition); padding: 100px 0 50px 0; overflow-y: auto; }
+        .sidebar { 
+            position: fixed; top: 0; left: -320px; width: 300px; height: 100%; 
+            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px); 
+            border-right: 1px solid var(--active-glow); z-index: 4000; 
+            transition: var(--transition); padding: 100px 0 50px 0; overflow-y: auto; 
+        }
         .sidebar.active { left: 0; }
-        .menu-link { padding: 16px 30px; display: block; color: #aaa; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; border-bottom: 1px solid rgba(0,255,255,0.05); cursor: pointer; }
-        .menu-link:hover, .menu-link.active-link { color: var(--neon-cyan); background: rgba(0,255,255,0.05); border-left: 3px solid var(--neon-cyan); }
+        .menu-link { 
+            padding: 16px 30px; display: block; color: #aaa; text-decoration: none; 
+            text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s;
+        }
+        .menu-link:hover, .menu-link.active-link { color: var(--active-glow); background: rgba(255,255,255,0.05); border-left: 3px solid var(--active-glow); }
 
-        /* GRID RENDERING */
         .viewport { flex-grow: 1; overflow-y: auto; padding: 20px 20px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
-        .cat-banner { color: var(--neon-cyan); letter-spacing: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 50px; text-shadow: var(--glow); text-align: center; font-size: 1.5rem; pointer-events: none; }
+        .cat-banner { 
+            color: var(--active-glow); letter-spacing: 12px; font-weight: 900; 
+            text-transform: uppercase; margin-bottom: 50px; text-shadow: 0 0 20px var(--active-glow); 
+            text-align: center; font-size: 1.5rem; pointer-events: none; transition: var(--transition);
+        }
         .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 25px; width: 100%; max-width: 1500px; pointer-events: none; }
 
-        /* MODULAR HOLOGRAM CARDS */
-        .hologram-card { background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0,255,255,0.15); border-radius: 15px; text-decoration: none; overflow: hidden; transition: 0.4s; display: flex; flex-direction: column; pointer-events: auto; }
-        .hologram-card:hover { transform: translateY(-8px); border-color: var(--neon-cyan); box-shadow: 0 0 30px rgba(0,255,255,0.4); }
+        .hologram-card { 
+            background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; 
+            text-decoration: none; overflow: hidden; transition: 0.4s; 
+            display: flex; flex-direction: column; pointer-events: auto; 
+        }
+        .hologram-card:hover { transform: translateY(-8px); border-color: var(--active-glow); box-shadow: 0 0 30px var(--active-glow); }
         
         .visual-container { width: 100%; height: 120px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .card-icon { font-size: 2.5rem; color: var(--neon-cyan); text-shadow: 0 0 15px var(--neon-cyan); }
-        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; filter: contrast(1.2) brightness(0.8) sepia(1) hue-rotate(140deg); } /* THE BLACK BLOOM FILTER */
+        .card-icon { font-size: 2.5rem; color: var(--active-glow); text-shadow: 0 0 15px var(--active-glow); transition: var(--transition); }
+        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; filter: contrast(1.1) brightness(0.9); }
 
         .label { padding: 15px; color: #fff; font-size: 0.65rem; text-align: center; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
     </style>
@@ -55,15 +79,13 @@
     <canvas id="galaxy-canvas"></canvas>
 
     <div id="ui-master" class="ui-master">
-        <header class="nav-header" id="nav-header">
+        <header class="nav-header">
             <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
             <div class="search-container">
-                <input type="text" id="mallSearch" placeholder="ACCESSING DATABASE..." onkeyup="searchMall()">
+                <input type="text" id="mallSearch" placeholder="ACCESSING MULTIVERSE..." onkeyup="searchMall()">
             </div>
         </header>
-
         <nav class="sidebar" id="sidebar"></nav>
-
         <main class="viewport" id="viewport">
             <div class="cat-banner" id="cat-indicator">Initializing...</div>
             <div class="icon-grid" id="mallGrid"></div>
@@ -74,37 +96,81 @@
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // GALAXY ENGINE
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
         const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('galaxy-canvas'), antialias: true, alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.autoRotate = true; controls.autoRotateSpeed = 0.5;
+
+        // STARS
         const starGeo = new THREE.BufferGeometry();
         const starPos = [];
         for(let i=0; i<15000; i++) { starPos.push(THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000)); }
         starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color: 0x00ffff, size: 0.7});
-        scene.add(new THREE.Points(starGeo, starMat));
+        const starMat = new THREE.PointsMaterial({color: 0x00ffff, size: 0.8, transparent: true});
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+
+        // CENTRAL CORE (THE SUN)
+        const sunGeo = new THREE.SphereGeometry(60, 64, 64);
+        const sunMat = new THREE.MeshStandardMaterial({color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2});
+        const sun = new THREE.Mesh(sunGeo, sunMat);
+        scene.add(sun);
+        
+        const light = new THREE.PointLight(0x00ffff, 5, 3000);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x222222));
+
         camera.position.z = 1000;
-        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+
+        function animate() { 
+            requestAnimationFrame(animate); 
+            controls.update(); 
+            renderer.render(scene, camera); 
+        }
         animate();
 
-        // OBSERVATION MODE LOGIC
-        const ui = document.getElementById('ui-master');
-        const vp = document.getElementById('viewport');
-        const cv = document.getElementById('galaxy-canvas');
-        vp.addEventListener('click', (e) => { if(e.target === vp) ui.classList.add('ui-hidden'); });
-        cv.addEventListener('click', () => ui.classList.remove('ui-hidden'));
+        // COLOR ENGINE
+        window.updateGalaxyColor = (hexColor) => {
+            const color = new THREE.Color(hexColor);
+            // Smoothly transition Three.js elements
+            sun.material.color.set(color);
+            sun.material.emissive.set(color);
+            stars.material.color.set(color);
+            light.color.set(color);
+            // Update CSS Variables
+            document.documentElement.style.setProperty('--active-glow', hexColor);
+        };
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 
     <script>
         let categories = [];
         let linkData = {};
+        
+        // Color Map for Categories
+        const colorPalette = {
+            core: '#00ffff',      // Cyan
+            featured: '#bc13fe',  // Purple
+            abyssal: '#0055ff',  // Deep Blue
+            finance: '#FFD700',   // GOLD
+            kids: '#ff69b4',      // Pink
+            tech: '#00ff44',      // Matrix Green
+            afterlife: '#ffffff', // Ghost White
+            apparel: '#ff3300'    // Red
+        };
 
         async function bootMultiverse() {
             try {
-                const res = await fetch('database.json');
+                const res = await fetch('data.json'); // Matches your YAML-to-JSON workflow
                 const data = await res.json();
                 categories = data.categories;
                 linkData = data.links;
@@ -122,6 +188,11 @@
         function showSection(id) {
             const grid = document.getElementById('mallGrid');
             const ind = document.getElementById('cat-indicator');
+            const color = colorPalette[id] || '#00ffff';
+
+            // Trigger Galaxy Shift
+            if(window.updateGalaxyColor) window.updateGalaxyColor(color);
+
             document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
             document.getElementById(`link-${id}`)?.classList.add('active-link');
             
@@ -138,6 +209,7 @@
                         <div class="label">${item.n}</div>
                     </a>`;
             });
+            if(window.innerWidth < 800) toggleSidebar(false);
         }
 
         function searchMall() {
@@ -147,13 +219,18 @@
             grid.innerHTML = '';
             Object.values(linkData).flat().forEach(item => {
                 if(item.n.toLowerCase().includes(q)) {
-                    let v = item.img ? `<img src="${item.img}" class="card-img">` : `<i class="${item.i} card-icon"></i>`;
+                    let v = item.img ? `<img src="${item.img}" class="card-img">` : `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
                     grid.innerHTML += `<a href="${item.u}" target="_blank" class="hologram-card"><div class="visual-container">${v}</div><div class="label">${item.n}</div></a>`;
                 }
             });
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function toggleSidebar(force) { 
+            const sb = document.getElementById('sidebar');
+            if(force === false) sb.classList.remove('active');
+            else sb.classList.toggle('active'); 
+        }
+
         window.onload = bootMultiverse;
     </script>
 </body>
