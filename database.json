@@ -1,0 +1,31 @@
+{
+  "categories": [
+    { "id": "core", "name": "Multiverse Core" },
+    { "id": "featured", "name": "Olympus Featured" },
+    { "id": "hardware", "name": "Computers & Auctions" },
+    { "id": "jewelry", "name": "Jewelry & Accessories" },
+    { "id": "kids", "name": "Kids Room" }
+  ],
+  "links": {
+    "core": [
+      { "n": "Olympus Core", "u": "https://nexusvortex.ca", "img": "1000038255.jpg" },
+      { "n": "Artemis OS", "u": "https://artemis-os.vercel.app/", "i": "fa-solid fa-ghost" }
+    ],
+    "featured": [
+      { "n": "REM-PSI Mauve", "u": "https://rem-psi-mauve.vercel.app/", "i": "fa-solid fa-eye" },
+      { "n": "Mega City Liard", "u": "https://mega-city-liard.vercel.app/", "i": "fa-solid fa-city" }
+    ],
+    "hardware": [
+      { "n": "eBay Auctions", "u": "https://www.ebay.com/b/Computers/58058/bn_1865247", "i": "fa-solid fa-gavel" },
+      { "n": "Memory Express", "u": "https://www.memoryexpress.com", "i": "fa-solid fa-memory" }
+    ],
+    "jewelry": [
+      { "n": "Tiffany & Co.", "u": "https://www.tiffany.ca", "i": "fa-solid fa-gem" },
+      { "n": "Rolex", "u": "https://www.rolex.com", "i": "fa-solid fa-clock" }
+    ],
+    "kids": [
+      { "n": "PBS Kids", "u": "https://pbskids.org", "i": "fa-solid fa-child-reaching" },
+      { "n": "National Geographic", "u": "https://kids.nationalgeographic.com", "i": "fa-solid fa-earth-americas" }
+    ]
+  }
+}
