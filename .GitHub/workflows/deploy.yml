@@ -1,0 +1,32 @@
+name: Olympus Multiverse Sync
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Runs every 15 minutes
+  push:
+    paths:
+      - 'multiverse.yml'     # Runs immediately on save
+  workflow_dispatch:         # Allows you to click "Run" manually
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install YQ
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Transform YAML to JSON
+        # This takes your multiverse.yml and outputs a clean data.json
+        run: yq eval -j multiverse.yml > data.json
+
+      - name: Deploy to Olympus
+        run: |
+          git config --global user.name 'Olympus-Architect'
+          git config --global user.email 'architect@nexusvortex.ca'
+          git add data.json
+          git commit -m "Automated Sync: Heartbeat [$(date)]" || echo "No changes to sync"
+          git push
