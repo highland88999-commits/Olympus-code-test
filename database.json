@@ -1,31 +1,313 @@
-{
-  "categories": [
-    { "id": "core", "name": "Multiverse Core" },
-    { "id": "featured", "name": "Olympus Featured" },
-    { "id": "hardware", "name": "Computers & Auctions" },
-    { "id": "jewelry", "name": "Jewelry & Accessories" },
-    { "id": "kids", "name": "Kids Room" }
-  ],
-  "links": {
-    "core": [
-      { "n": "Olympus Core", "u": "https://nexusvortex.ca", "img": "1000038255.jpg" },
-      { "n": "Artemis OS", "u": "https://artemis-os.vercel.app/", "i": "fa-solid fa-ghost" }
-    ],
-    "featured": [
-      { "n": "REM-PSI Mauve", "u": "https://rem-psi-mauve.vercel.app/", "i": "fa-solid fa-eye" },
-      { "n": "Mega City Liard", "u": "https://mega-city-liard.vercel.app/", "i": "fa-solid fa-city" }
-    ],
-    "hardware": [
-      { "n": "eBay Auctions", "u": "https://www.ebay.com/b/Computers/58058/bn_1865247", "i": "fa-solid fa-gavel" },
-      { "n": "Memory Express", "u": "https://www.memoryexpress.com", "i": "fa-solid fa-memory" }
-    ],
-    "jewelry": [
-      { "n": "Tiffany & Co.", "u": "https://www.tiffany.ca", "i": "fa-solid fa-gem" },
-      { "n": "Rolex", "u": "https://www.rolex.com", "i": "fa-solid fa-clock" }
-    ],
-    "kids": [
-      { "n": "PBS Kids", "u": "https://pbskids.org", "i": "fa-solid fa-child-reaching" },
-      { "n": "National Geographic", "u": "https://kids.nationalgeographic.com", "i": "fa-solid fa-earth-americas" }
-    ]
-  }
-}
+categories:
+  - id: "core"
+    name: "Multiverse Core"
+  - id: "featured"
+    name: "Olympus Featured"
+  - id: "renewed"
+    name: "A Renewed World"
+  - id: "afterlife"
+    name: "Afterlife & Beyond"
+  - id: "abyssal"
+    name: "Abyssal & Aquatic"
+  - id: "tech"
+    name: "The Tech Stack"
+  - id: "hardware"
+    name: "Hardware & Auctions"
+  - id: "mobile"
+    name: "Mobile & Comms"
+  - id: "apparel"
+    name: "Elite Apparel"
+  - id: "shoes"
+    name: "Footwear & Kicks"
+  - id: "jewelry"
+    name: "Jewelry Vault"
+  - id: "watches"
+    name: "Horology & Watches"
+  - id: "beauty"
+    name: "Health & Aesthetics"
+  - id: "home"
+    name: "Home & Habitat"
+  - id: "leisure"
+    name: "Leisure & Attractions"
+  - id: "food"
+    name: "Global Food Ops"
+  - id: "travel"
+    name: "Global Atlas"
+  - id: "finance"
+    name: "Crypto & Fintech"
+  - id: "entertainment"
+    name: "Media & Entertainment"
+  - id: "kids"
+    name: "Kids Zone"
+
+links:
+  core:
+    - n: "Olympus Core"
+      u: "https://nexusvortex.ca"
+      img: "1000038255.jpg"
+    - n: "Artemis OS"
+      u: "https://artemis-os.vercel.app/"
+      i: "fa-solid fa-ghost"
+    - n: "The Flying Dutchman"
+      u: "https://the-flying-dutchman.vercel.app/"
+      i: "fa-solid fa-ship"
+    - n: "Nexus Symbiote"
+      u: "https://nexus-symbiote.onrender.com/"
+      i: "fa-solid fa-dna"
+
+  featured:
+    - n: "REM-PSI Mauve"
+      u: "https://rem-psi-mauve.vercel.app/"
+      i: "fa-solid fa-eye"
+    - n: "Olympus LAC"
+      u: "https://olympus-lac.vercel.app/"
+      i: "fa-solid fa-building-shield"
+    - n: "Architect Artemis"
+      u: "https://architect-artemis.vercel.app/"
+      i: "fa-solid fa-compass-drafting"
+    - n: "Hyperion Gravitas"
+      u: "https://hyperion-gravitas.vercel.app/"
+      i: "fa-solid fa-weight-hanging"
+    - n: "Mega City Liard"
+      u: "https://mega-city-liard.vercel.app/"
+      i: "fa-solid fa-city"
+    - n: "Axiom Repository"
+      u: "https://axiom-repository.vercel.app/"
+      i: "fa-solid fa-database"
+    - n: "Grief Gully"
+      u: "https://grief-gully.vercel.app/"
+      i: "fa-solid fa-skull-crossbones"
+    - n: "Olympian Finances"
+      u: "https://olympian-finances.vercel.app/"
+      i: "fa-solid fa-vault"
+    - n: "Magic Mirror Puce"
+      u: "https://magic-mirror-puce.vercel.app/"
+      i: "fa-solid fa-wand-magic-sparkles"
+    - n: "The Glass Slipper"
+      u: "https://the-glass-slipper.vercel.app/"
+      i: "fa-solid fa-gem"
+    - n: "Aethelgard Five"
+      u: "https://aethelgard-five.vercel.app/"
+      i: "fa-solid fa-tree"
+    - n: "Hercules Nine"
+      u: "https://hercules-nine.vercel.app/"
+      i: "fa-solid fa-shield-halved"
+    - n: "Neon Racer Ecru"
+      u: "https://neon-racer-ecru.vercel.app/"
+      i: "fa-solid fa-car-side"
+    - n: "Colossus XI"
+      u: "https://colossus-xi.vercel.app/"
+      i: "fa-solid fa-monument"
+    - n: "Zeus v Hades"
+      u: "https://zeus-v-hades.vercel.app/"
+      i: "fa-solid fa-bolt"
+    - n: "Merlin Mandates"
+      u: "https://merlin-mandates.vercel.app/"
+      i: "fa-solid fa-scroll"
+    - n: "Convergence Murex"
+      u: "https://convergence-murex.vercel.app/"
+      i: "fa-solid fa-diagram-project"
+    - n: "Artemis Hub"
+      u: "https://artemis-hub.vercel.app/"
+      i: "fa-solid fa-network-wired"
+
+  renewed:
+    - n: "Aetheris Business Model"
+      u: "https://aetheris-business-model.vercel.app/"
+      i: "fa-solid fa-briefcase"
+    - n: "Olympus Aetheris"
+      u: "https://olympus-aetheris.vercel.app/"
+      i: "fa-solid fa-wind"
+
+  afterlife:
+    - n: "The Afterlife"
+      u: "https://the-afterlife.vercel.app/"
+      i: "fa-solid fa-spaghetti-monster-flying"
+
+  abyssal:
+    - n: "Abyssal Voyage"
+      u: "https://abyssal-voyage-lemon.vercel.app/"
+      i: "fa-solid fa-water"
+    - n: "Georgia Aquarium"
+      u: "https://georgia-aquarium.vercel.app/"
+      i: "fa-solid fa-fish-fins"
+
+  tech:
+    - n: "Google Workspace"
+      u: "https://workspace.google.com"
+      i: "fa-brands fa-google"
+    - n: "Microsoft 365"
+      u: "https://www.office.com"
+      i: "fa-brands fa-microsoft"
+    - n: "GitHub"
+      u: "https://github.com"
+      i: "fa-brands fa-github"
+    - n: "Vercel"
+      u: "https://vercel.com"
+      i: "fa-solid fa-triangle-exclamation"
+    - n: "Three.js Journey"
+      u: "https://threejs-journey.com"
+      i: "fa-solid fa-cube"
+
+  hardware:
+    - n: "eBay Computer Auctions"
+      u: "https://www.ebay.com/b/Computers-Tablets-Network-Hardware/58058/bn_1865247"
+      i: "fa-solid fa-gavel"
+    - n: "Memory Express"
+      u: "https://www.memoryexpress.com"
+      i: "fa-solid fa-memory"
+    - n: "Canada Computers"
+      u: "https://www.canadacomputers.com"
+      i: "fa-solid fa-microchip"
+    - n: "Newegg"
+      u: "https://www.newegg.ca"
+      i: "fa-solid fa-egg"
+    - n: "GovDeals Auctions"
+      u: "https://www.govdeals.com"
+      i: "fa-solid fa-landmark"
+    - n: "Dell Refurbished"
+      u: "https://www.dellrefurbished.ca"
+      i: "fa-solid fa-laptop"
+    - n: "B&H Photo Video"
+      u: "https://www.bhphotovideo.com"
+      i: "fa-solid fa-camera"
+
+  mobile:
+    - n: "Telus Mobility"
+      u: "https://www.telus.com"
+      i: "fa-solid fa-signal"
+    - n: "Bell Canada"
+      u: "https://www.bell.ca"
+      i: "fa-solid fa-bell"
+    - n: "Rogers Wireless"
+      u: "https://www.rogers.com"
+      i: "fa-solid fa-tower-broadcast"
+    - n: "Freedom Mobile"
+      u: "https://www.freedommobile.ca"
+      i: "fa-solid fa-dove"
+    - n: "Spigen Accessories"
+      u: "https://www.spigen.com"
+      i: "fa-solid fa-shield"
+    - n: "Dbrand Skins"
+      u: "https://dbrand.com"
+      i: "fa-solid fa-palette"
+
+  apparel:
+    - n: "Shein"
+      u: "https://www.shein.com"
+      i: "fa-solid fa-shirt"
+    - n: "Nike"
+      u: "https://www.nike.com"
+      i: "fa-solid fa-bolt"
+    - n: "Adidas"
+      u: "https://www.adidas.ca"
+      i: "fa-solid fa-stripe"
+    - n: "Zara"
+      u: "https://www.zara.com"
+      i: "fa-solid fa-bag-shopping"
+
+  shoes:
+    - n: "Foot Locker"
+      u: "https://www.footlocker.ca"
+      i: "fa-solid fa-shoe-prints"
+    - n: "StockX"
+      u: "https://stockx.com"
+      i: "fa-solid fa-chart-line"
+    - n: "GOAT"
+      u: "https://www.goat.com"
+      i: "fa-solid fa-mountain-sun"
+
+  jewelry:
+    - n: "Tiffany & Co."
+      u: "https://www.tiffany.ca"
+      i: "fa-solid fa-gem"
+    - n: "Cartier"
+      u: "https://www.cartier.com"
+      i: "fa-solid fa-crown"
+
+  watches:
+    - n: "Chrono24"
+      u: "https://www.chrono24.ca"
+      i: "fa-solid fa-clock"
+    - n: "Rolex"
+      u: "https://www.rolex.com"
+      i: "fa-solid fa-hourglass"
+
+  beauty:
+    - n: "Sephora"
+      u: "https://www.sephora.com"
+      i: "fa-solid fa-sparkles"
+    - n: "MAC Cosmetics"
+      u: "https://www.maccosmetics.ca"
+      i: "fa-solid fa-face-smile-beam"
+
+  home:
+    - n: "IKEA"
+      u: "https://www.ikea.com"
+      i: "fa-solid fa-couch"
+    - n: "Wayfair"
+      u: "https://www.wayfair.ca"
+      i: "fa-solid fa-house-chimney"
+
+  leisure:
+    - n: "Cineplex"
+      u: "https://www.cineplex.com"
+      i: "fa-solid fa-ticket"
+    - n: "West Edmonton Mall"
+      u: "https://www.wem.ca"
+      i: "fa-solid fa-store"
+
+  food:
+    - n: "Instacart"
+      u: "https://www.instacart.com"
+      i: "fa-solid fa-cart-shopping"
+    - n: "SkipTheDishes"
+      u: "https://www.skipthedishes.com"
+      i: "fa-solid fa-person-running"
+    - n: "Uber Eats"
+      u: "https://www.ubereats.com"
+      i: "fa-solid fa-motorcycle"
+
+  travel:
+    - n: "Atlas Obscura"
+      u: "https://www.atlasobscura.com"
+      i: "fa-solid fa-map-location-dot"
+    - n: "Expedia"
+      u: "https://www.expedia.ca"
+      i: "fa-solid fa-plane"
+    - n: "SpaceX"
+      u: "https://www.spacex.com"
+      i: "fa-solid fa-rocket"
+
+  finance:
+    - n: "BlockDAG Network"
+      u: "https://blockdag.network"
+      i: "fa-solid fa-link"
+    - n: "Binance"
+      u: "https://www.binance.com"
+      i: "fa-solid fa-coins"
+    - n: "Wealthsimple"
+      u: "https://www.wealthsimple.com"
+      i: "fa-solid fa-piggy-bank"
+
+  entertainment:
+    - n: "Netflix"
+      u: "https://www.netflix.com"
+      i: "fa-solid fa-tv"
+    - n: "Twitch"
+      u: "https://www.twitch.tv"
+      i: "fa-brands fa-twitch"
+    - n: "GameStop"
+      u: "https://www.gamestop.ca"
+      i: "fa-solid fa-gamepad"
+
+  kids:
+    - n: "PBS Kids"
+      u: "https://pbskids.org"
+      i: "fa-solid fa-child"
+    - n: "NatGeo: Rocks"
+      u: "https://kids.nationalgeographic.com/science/article/rocks-and-minerals"
+      i: "fa-solid fa-gem"
+    - n: "Peppa Pig"
+      u: "https://peppapig.com"
+      i: "fa-solid fa-piggy-bank"
