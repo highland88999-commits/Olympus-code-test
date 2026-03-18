@@ -18,9 +18,11 @@
 
         canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
 
+        /* UI MASTER */
         .ui-master { position: fixed; inset: 0; opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; display: flex; flex-direction: column; }
         .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.05); filter: blur(10px); }
 
+        /* TOP NAVIGATION */
         .nav-header { padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 3000; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
         .menu-btn { 
             width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8); 
@@ -37,6 +39,7 @@
             transition: var(--transition); box-shadow: 0 0 10px var(--active-glow);
         }
 
+        /* SIDEBAR */
         .sidebar { 
             position: fixed; top: 0; left: -320px; width: 300px; height: 100%; 
             background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px); 
@@ -51,27 +54,32 @@
         }
         .menu-link:hover, .menu-link.active-link { color: var(--active-glow); background: rgba(255,255,255,0.05); border-left: 3px solid var(--active-glow); }
 
+        /* VIEWPORT & GRID */
         .viewport { flex-grow: 1; overflow-y: auto; padding: 20px 20px 100px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; }
         .cat-banner { 
             color: var(--active-glow); letter-spacing: 12px; font-weight: 900; 
             text-transform: uppercase; margin-bottom: 50px; text-shadow: 0 0 20px var(--active-glow); 
             text-align: center; font-size: 1.5rem; pointer-events: none; transition: var(--transition);
         }
-        .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 25px; width: 100%; max-width: 1500px; pointer-events: none; }
+        .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; width: 100%; max-width: 1500px; pointer-events: none; }
 
+        /* HOLOGRAM CARDS */
         .hologram-card { 
             background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px); 
             border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; 
             text-decoration: none; overflow: hidden; transition: 0.4s; 
-            display: flex; flex-direction: column; pointer-events: auto; 
+            display: flex; flex-direction: column; pointer-events: auto; position: relative;
         }
         .hologram-card:hover { transform: translateY(-8px); border-color: var(--active-glow); box-shadow: 0 0 30px var(--active-glow); }
         
-        .visual-container { width: 100%; height: 120px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .card-icon { font-size: 2.5rem; color: var(--active-glow); text-shadow: 0 0 15px var(--active-glow); transition: var(--transition); }
-        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; filter: contrast(1.1) brightness(0.9); }
+        .visual-container { width: 100%; height: 160px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .card-icon { font-size: 3rem; color: var(--active-glow); text-shadow: 0 0 15px var(--active-glow); transition: var(--transition); z-index: 2; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: contrast(1.1) brightness(0.8); position: absolute; }
 
-        .label { padding: 15px; color: #fff; font-size: 0.65rem; text-align: center; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; }
+        .label { padding: 20px; color: #fff; font-size: 0.8rem; text-align: center; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; background: rgba(0,0,0,0.5); z-index: 2; }
+        
+        /* SHARE BUTTON OVERLAY */
+        .share-btn { position: absolute; bottom: 10px; right: 10px; width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--active-glow); display: flex; align-items: center; justify-content: center; color: var(--active-glow); font-size: 0.8rem; background: rgba(0,0,0,0.6); z-index: 10; }
     </style>
 </head>
 <body>
@@ -87,7 +95,7 @@
         </header>
         <nav class="sidebar" id="sidebar"></nav>
         <main class="viewport" id="viewport">
-            <div class="cat-banner" id="cat-indicator">Initializing...</div>
+            <div class="cat-banner" id="cat-indicator">Initializing Heartbeat...</div>
             <div class="icon-grid" id="mallGrid"></div>
         </main>
     </div>
@@ -97,52 +105,38 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // GALAXY ENGINE
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10000);
         const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('galaxy-canvas'), antialias: true, alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.autoRotate = true; controls.autoRotateSpeed = 0.5;
+        controls.autoRotate = true; controls.autoRotateSpeed = 0.4;
 
-        // STARS
         const starGeo = new THREE.BufferGeometry();
         const starPos = [];
-        for(let i=0; i<15000; i++) { starPos.push(THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000)); }
+        for(let i=0; i<20000; i++) { starPos.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000)); }
         starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color: 0x00ffff, size: 0.8, transparent: true});
+        const starMat = new THREE.PointsMaterial({color: 0x00ffff, size: 0.9, transparent: true, opacity: 0.8});
         const stars = new THREE.Points(starGeo, starMat);
         scene.add(stars);
 
-        // CENTRAL CORE (THE SUN)
-        const sunGeo = new THREE.SphereGeometry(60, 64, 64);
-        const sunMat = new THREE.MeshStandardMaterial({color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2});
-        const sun = new THREE.Mesh(sunGeo, sunMat);
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(70, 64, 64), new THREE.MeshStandardMaterial({color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 2.5}));
         scene.add(sun);
         
-        const light = new THREE.PointLight(0x00ffff, 5, 3000);
+        const light = new THREE.PointLight(0x00ffff, 6, 4000);
         scene.add(light);
-        scene.add(new THREE.AmbientLight(0x222222));
+        scene.add(new THREE.AmbientLight(0x151515));
 
-        camera.position.z = 1000;
+        camera.position.z = 1200;
 
-        function animate() { 
-            requestAnimationFrame(animate); 
-            controls.update(); 
-            renderer.render(scene, camera); 
-        }
+        function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
         animate();
 
-        // COLOR ENGINE
-        window.updateGalaxyColor = (hexColor) => {
-            const color = new THREE.Color(hexColor);
-            // Smoothly transition Three.js elements
-            sun.material.color.set(color);
-            sun.material.emissive.set(color);
-            stars.material.color.set(color);
-            light.color.set(color);
-            // Update CSS Variables
-            document.documentElement.style.setProperty('--active-glow', hexColor);
+        window.updateGalaxyColor = (hex) => {
+            const c = new THREE.Color(hex);
+            sun.material.color.set(c); sun.material.emissive.set(c);
+            stars.material.color.set(c); light.color.set(c);
+            document.documentElement.style.setProperty('--active-glow', hex);
         };
 
         window.addEventListener('resize', () => {
@@ -156,21 +150,21 @@
         let categories = [];
         let linkData = {};
         
-        // Color Map for Categories
         const colorPalette = {
-            core: '#00ffff',      // Cyan
-            featured: '#bc13fe',  // Purple
-            abyssal: '#0055ff',  // Deep Blue
-            finance: '#FFD700',   // GOLD
-            kids: '#ff69b4',      // Pink
-            tech: '#00ff44',      // Matrix Green
-            afterlife: '#ffffff', // Ghost White
-            apparel: '#ff3300'    // Red
+            core: '#00ffff',      
+            featured: '#bc13fe',  
+            abyssal: '#0055ff',  
+            finance: '#FFD700',   
+            kids: '#ff69b4',      
+            tech: '#00ff44',      
+            afterlife: '#ffffff', 
+            apparel: '#ff3300'    
         };
 
         async function bootMultiverse() {
             try {
-                const res = await fetch('data.json'); // Matches your YAML-to-JSON workflow
+                // Fetching the heart-beat synced data.json
+                const res = await fetch('data.json'); 
                 const data = await res.json();
                 categories = data.categories;
                 linkData = data.links;
@@ -181,7 +175,7 @@
                 });
                 showSection('core');
             } catch (e) {
-                document.getElementById('cat-indicator').innerText = "DATA OFFLINE";
+                document.getElementById('cat-indicator').innerText = "DATA OFFLINE - SYNCING...";
             }
         }
 
@@ -190,7 +184,6 @@
             const ind = document.getElementById('cat-indicator');
             const color = colorPalette[id] || '#00ffff';
 
-            // Trigger Galaxy Shift
             if(window.updateGalaxyColor) window.updateGalaxyColor(color);
 
             document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
@@ -200,27 +193,38 @@
             grid.innerHTML = '';
             
             (linkData[id] || []).forEach(item => {
-                let visual = `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
-                if(item.img) visual = `<img src="${item.img}" class="card-img">`;
+                let visual = item.img ? `<img src="${item.img}" class="card-img">` : '';
+                let icon = `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
                 
                 grid.innerHTML += `
                     <a href="${item.u}" target="_blank" class="hologram-card">
-                        <div class="visual-container">${visual}</div>
+                        <div class="visual-container">${visual}${icon}</div>
                         <div class="label">${item.n}</div>
+                        <div class="share-btn"><i class="fa-solid fa-share-nodes"></i></div>
                     </a>`;
             });
-            if(window.innerWidth < 800) toggleSidebar(false);
+            if(window.innerWidth < 1000) toggleSidebar(false);
         }
 
         function searchMall() {
             const q = document.getElementById('mallSearch').value.toLowerCase();
-            if(!q) { showSection('core'); return; }
+            const ind = document.getElementById('cat-indicator');
             const grid = document.getElementById('mallGrid');
+
+            if(!q) { showSection('core'); return; }
+            
+            ind.innerText = "Global Search Override";
             grid.innerHTML = '';
             Object.values(linkData).flat().forEach(item => {
                 if(item.n.toLowerCase().includes(q)) {
-                    let v = item.img ? `<img src="${item.img}" class="card-img">` : `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
-                    grid.innerHTML += `<a href="${item.u}" target="_blank" class="hologram-card"><div class="visual-container">${v}</div><div class="label">${item.n}</div></a>`;
+                    let visual = item.img ? `<img src="${item.img}" class="card-img">` : '';
+                    let icon = `<i class="${item.i || 'fa-solid fa-link'} card-icon"></i>`;
+                    grid.innerHTML += `
+                        <a href="${item.u}" target="_blank" class="hologram-card">
+                            <div class="visual-container">${visual}${icon}</div>
+                            <div class="label">${item.n}</div>
+                            <div class="share-btn"><i class="fa-solid fa-share-nodes"></i></div>
+                        </a>`;
                 }
             });
         }
