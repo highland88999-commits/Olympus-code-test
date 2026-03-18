@@ -22,17 +22,28 @@
         .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.02); filter: blur(8px); }
 
         .nav-header {
-            padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 3000;
+            padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 5000;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            position: relative;
         }
 
         .menu-btn, .mic-btn {
             width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8);
             border: 1.5px solid var(--neon-cyan); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: var(--neon-cyan); font-size: 1.2rem; cursor: pointer; box-shadow: var(--glow); transition: 0.3s;
+            color: var(--neon-cyan); font-size: 1.2rem; cursor: pointer; box-shadow: var(--glow);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .mic-btn.active { border-color: #ffff00; color: #ffff00; box-shadow: 0 0 25px #ffff00; }
+        .mic-btn.active {
+            border-color: #ffff00;
+            color: #ffff00;
+            box-shadow: 0 0 25px #ffff00;
+            animation: micPulse 1.5s infinite;
+        }
+        @keyframes micPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
 
         .search-container { flex-grow: 1; max-width: 600px; margin: 0 auto; }
         #mallSearch {
@@ -47,9 +58,11 @@
             position: fixed; top: 0; left: -320px; width: 300px; height: 100%;
             background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px);
             border-right: 1px solid var(--neon-cyan); z-index: 4000;
-            transition: var(--transition); padding: 100px 0 50px 0; overflow-y: auto;
+            transition: left 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            padding: 100px 0 50px 0; overflow-y: auto;
         }
         .sidebar.active { left: 0; }
+
         .menu-link {
             padding: 16px 30px; display: block; color: #aaa; text-decoration: none;
             text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem;
@@ -107,7 +120,7 @@
 </head>
 <body>
 
-    <div id="obs-hint">Click background to toggle Observation Mode • Mic for audio reactivity</div>
+    <div id="obs-hint">Click background to hide UI • Swipe/drag sidebar LEFT to close • Mic for audio reactivity ✨</div>
 
     <canvas id="galaxy-canvas"></canvas>
 
@@ -164,24 +177,23 @@
 
         camera.position.z = 1200;
 
-        // ── AUDIO REACTIVITY ────────────────────────────────────────
+        // ── AUDIO + MIC VISUAL REACTIVITY ─────────────────────────────────
         let audioCtx, analyser, dataArray, micActive = false;
         const micBtn = document.getElementById('micBtn');
+        let micIntensity = 0;
+
         micBtn.onclick = async () => {
             if (!micActive) {
                 try {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                     const stream = await navigator.mediaDevices.getUserMedia({audio: true});
                     const source = audioCtx.createMediaStreamSource(stream);
-                    analyser = audioCtx.createAnalyser();
-                    analyser.fftSize = 256;
+                    analyser = audioCtx.createAnalyser(); analyser.fftSize = 128;
                     source.connect(analyser);
                     dataArray = new Uint8Array(analyser.frequencyBinCount);
                     micActive = true;
                     micBtn.classList.add('active');
-                } catch (err) {
-                    console.error("Mic access denied", err);
-                }
+                } catch(e) { console.error("Mic denied"); }
             } else {
                 micActive = false;
                 micBtn.classList.remove('active');
@@ -194,13 +206,20 @@
 
             if (micActive && analyser) {
                 analyser.getByteFrequencyData(dataArray);
-                const intensity = dataArray[4] / 255 * 80; // low-mid freq for vibe
-                const positions = stars.geometry.attributes.position.array;
-                for (let i = 0; i < positions.length; i += 3) {
-                    const offset = Math.sin(Date.now() * 0.001 + i) * intensity;
-                    positions[i+1] += offset * 0.0005; // gentle vertical pulse
+                micIntensity = dataArray.reduce((a,b)=>a+b,0) / dataArray.length / 255;
+
+                // Stars react
+                const pos = stars.geometry.attributes.position.array;
+                for (let i = 1; i < pos.length; i += 3) {
+                    pos[i] += Math.sin(Date.now() * 0.003 + i) * micIntensity * 0.8;
                 }
                 stars.geometry.attributes.position.needsUpdate = true;
+
+                // MIC ICON REACTS (no overlap — it's in header)
+                micBtn.style.transform = `scale(${1 + micIntensity * 0.35})`;
+                micBtn.style.boxShadow = `0 0 ${15 + micIntensity * 55}px #ffff00`;
+            } else {
+                micBtn.style.transform = 'scale(1)';
             }
 
             renderer.render(scene, camera);
@@ -213,58 +232,19 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // UI toggle
+        // UI hide
         const uiMaster = document.getElementById('ui-master');
-        const viewport = document.getElementById('viewport');
-        viewport.addEventListener('click', (e) => {
-            if (e.target === viewport) uiMaster.classList.add('ui-hidden');
-        });
-        document.getElementById('nav-header').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('nav-header')) uiMaster.classList.add('ui-hidden');
-        });
-        document.getElementById('galaxy-canvas').addEventListener('click', () => {
-            uiMaster.classList.remove('ui-hidden');
-        });
+        document.getElementById('viewport').addEventListener('click', e => { if(e.target.id==='viewport') uiMaster.classList.add('ui-hidden'); });
+        document.getElementById('nav-header').addEventListener('click', e => { if(e.target.id==='nav-header') uiMaster.classList.add('ui-hidden'); });
+        document.getElementById('galaxy-canvas').addEventListener('click', () => uiMaster.classList.remove('ui-hidden'));
     </script>
 
     <script>
-        // ── EASY EDIT ZONE ── Add categories & links here ───────────────────────────────
-        const config = {
-            accentColor: "#00ffff", // default
+        // ── CONFIG: CHANGE THESE TWO LINES ONLY IF YOU CHANGE REPO ─────────────────────
+        const REPO = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/";
+        const VIDEO_URL = "https://files.catbox.moe/qnb2fw.mp4";
 
-            categories: [
-                { id: "core", name: "Multiverse Core" },
-                { id: "featured", name: "Olympus Featured" },
-                { id: "renewed", name: "A Renewed World" },
-                { id: "afterlife", name: "Afterlife & Beyond" },
-                { id: "abyssal", name: "Abyssal & Aquatic" },
-                { id: "tech", name: "The Tech Stack" },
-                // Add more categories here, e.g.:
-                // { id: "newstuff", name: "New Experiments" },
-            ],
-
-            links: {
-                core: [
-                    { n: "Olympus Core", u: "https://nexusvortex.ca", i: "fa-solid fa-crown" },
-                    { n: "Artemis OS", u: "https://artemis-os.vercel.app/", i: "fa-solid fa-ghost" },
-                    { n: "The Flying Dutchman", u: "https://the-flying-dutchman.vercel.app/", i: "fa-solid fa-ship" },
-                    // Add more: { n: "New Realm", u: "https://example.com", i: "fa-solid fa-rocket" },
-                ],
-                featured: [
-                    { n: "REM-PSI Mauve", u: "https://rem-psi-mauve.vercel.app/", i: "fa-solid fa-eye" },
-                    // ... add/edit as needed
-                ],
-                // Add new category data here matching the id above, e.g.:
-                // newstuff: [
-                //     { n: "Test Link", u: "https://test.com", i: "fa-solid fa-flask" }
-                // ],
-                // ... rest of your categories
-            },
-
-            videoUrl: "https://files.catbox.moe/qnb2fw.mp4"
-        };
-
-        // ── CATEGORY COLORS (optional per-category override) ───────────────────────────
+        // ── CATEGORY COLORS (add new ones here when you create new category) ───────────
         const categoryColors = {
             core: "#00ffff",
             featured: "#bc13fe",
@@ -272,86 +252,184 @@
             afterlife: "#aa88ff",
             abyssal: "#0066cc",
             tech: "#00ff88"
-            // add more as desired
+            // add more: newcat: "#ffaa00"
         };
 
-        // ── DO NOT EDIT BELOW UNLESS CUSTOMIZING LOGIC ────────────────────────────────
-        const sidebar = document.getElementById('sidebar');
-        config.categories.forEach(cat => {
-            sidebar.innerHTML += `<div class="menu-link" id="link-\( {cat.id}" onclick="showSection(' \){cat.id}')">${cat.name}</div>`;
-        });
+        // ── DATA LOADING: UNIQUE FILE PER CATEGORY ───────────────────────────────────
+        // INSTRUCTIONS (do this once):
+        // 1. Upload categories.json to your repo root (example below)
+        // 2. For every category, upload links-CATEGORYID.json (e.g. links-core.json)
+        // 3. Refresh this page — it auto-pulls everything!
+        //
+        // EXAMPLE categories.json:
+        // [
+        //   {"id":"core","name":"Multiverse Core"},
+        //   {"id":"featured","name":"Olympus Featured"},
+        //   {"id":"renewed","name":"A Renewed World"},
+        //   {"id":"afterlife","name":"Afterlife & Beyond"},
+        //   {"id":"abyssal","name":"Abyssal & Aquatic"}
+        // ]
+        //
+        // EXAMPLE links-core.json:
+        // [
+        //   {"n":"Olympus Core","u":"https://nexusvortex.ca","i":"fa-solid fa-crown"},
+        //   {"n":"Artemis OS","u":"https://artemis-os.vercel.app/","i":"fa-solid fa-ghost"}
+        // ]
 
-        function showSection(id) {
+        let categories = [];
+        let allLinksCache = {}; // { "core": [items], "featured": [...] }
+
+        async function loadAllData() {
+            try {
+                // 1. Load master categories list
+                const catRes = await fetch(`\( {REPO}categories.json?t= \){Date.now()}`);
+                categories = await catRes.json();
+
+                // 2. Build sidebar
+                const sidebar = document.getElementById('sidebar');
+                sidebar.innerHTML = '';
+                categories.forEach(cat => {
+                    const div = document.createElement('div');
+                    div.className = 'menu-link';
+                    div.id = `link-${cat.id}`;
+                    div.textContent = cat.name;
+                    div.onclick = () => showSection(cat.id);
+                    sidebar.appendChild(div);
+                });
+
+                // 3. Pre-load ALL links files in parallel (for fast search)
+                const linkPromises = categories.map(cat =>
+                    fetch(`\( {REPO}links- \){cat.id}.json?t=${Date.now()}`)
+                        .then(r => r.ok ? r.json() : [])
+                        .then(items => { allLinksCache[cat.id] = items; })
+                );
+                await Promise.all(linkPromises);
+
+                // Show first category
+                if (categories.length) showSection(categories[0].id);
+            } catch(e) {
+                document.getElementById('cat-indicator').innerText = "Upload categories.json + links-*.json to repo first";
+                console.error("Data load failed — create the files!", e);
+            }
+        }
+
+        // ── SHOW SECTION (realm color change + icons) ────────────────────────────────
+        async function showSection(id) {
             const grid = document.getElementById('mallGrid');
             const indicator = document.getElementById('cat-indicator');
 
-            document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
+            // Active link highlight
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
             document.getElementById(`link-${id}`)?.classList.add('active-link');
 
-            const catName = config.categories.find(c => c.id === id)?.name || id;
+            const catName = categories.find(c => c.id === id)?.name || id;
             indicator.innerText = catName;
 
             // Realm color change
-            const color = categoryColors[id] || config.accentColor;
+            const color = categoryColors[id] || "#00ffff";
             document.documentElement.style.setProperty('--neon-cyan', color);
             indicator.style.color = color;
 
             grid.innerHTML = '';
-            (config.links[id] || []).forEach(item => {
-                const icon = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
+
+            const items = allLinksCache[id] || [];
+            items.forEach(item => {
+                const iconHTML = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
                 grid.innerHTML += `
                 <a href="${item.u}" target="_blank" class="hologram-card">
                     <div class="video-box">
                         <video class="masked-video" muted loop playsinline autoplay>
-                            <source src="${config.videoUrl}" type="video/mp4">
+                            <source src="${VIDEO_URL}" type="video/mp4">
                         </video>
-                        ${icon}
+                        ${iconHTML}
                     </div>
                     <div class="label">${item.n}</div>
                 </a>`;
             });
 
-            if (window.innerWidth < 1100 && sidebar.classList.contains('active')) {
-                toggleSidebar();
-            }
+            // Auto-close sidebar on mobile after selection
+            if (window.innerWidth < 1100) document.getElementById('sidebar').classList.remove('active');
         }
 
+        // ── GLOBAL SEARCH (uses pre-cached links) ────────────────────────────────────
         function searchMall() {
             const query = document.getElementById('mallSearch').value.toLowerCase().trim();
             const grid = document.getElementById('mallGrid');
             const indicator = document.getElementById('cat-indicator');
 
-            if (query) {
-                indicator.innerText = "Search Results";
-                document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
-                grid.innerHTML = '';
-
-                Object.values(config.links).flat().forEach(item => {
-                    if (item.n.toLowerCase().includes(query)) {
-                        const icon = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
-                        grid.innerHTML += `
-                        <a href="${item.u}" target="_blank" class="hologram-card">
-                            <div class="video-box">
-                                <video class="masked-video" muted loop playsinline autoplay>
-                                    <source src="${config.videoUrl}" type="video/mp4">
-                                </video>
-                                ${icon}
-                            </div>
-                            <div class="label">${item.n}</div>
-                        </a>`;
-                    }
-                });
-            } else {
-                showSection('core');
+            if (!query) {
+                showSection(categories[0]?.id || 'core');
+                return;
             }
+
+            indicator.innerText = "Global Search";
+            document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
+            grid.innerHTML = '';
+
+            // Search across ALL cached links
+            Object.values(allLinksCache).flat().forEach(item => {
+                if (item.n.toLowerCase().includes(query)) {
+                    const iconHTML = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
+                    grid.innerHTML += `
+                    <a href="${item.u}" target="_blank" class="hologram-card">
+                        <div class="video-box">
+                            <video class="masked-video" muted loop playsinline autoplay>
+                                <source src="${VIDEO_URL}" type="video/mp4">
+                            </video>
+                            ${iconHTML}
+                        </div>
+                        <div class="label">${item.n}</div>
+                    </a>`;
+                }
+            });
         }
 
+        // ── SIDEBAR OPEN/CLOSE + SWIPE / DRAG TO CLOSE (left swipe) ──────────────────
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Initial load
-        showSection('core');
+        // Swipe / Drag logic
+        const sidebarEl = document.getElementById('sidebar');
+        let startX = 0;
+        let isDragging = false;
+
+        // TOUCH (mobile swipe left)
+        sidebarEl.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+        });
+        sidebarEl.addEventListener('touchmove', e => {
+            if (!sidebarEl.classList.contains('active')) return;
+            const delta = e.touches[0].clientX - startX;
+            if (delta < -90) { // swiped left
+                sidebarEl.classList.remove('active');
+            }
+        });
+
+        // MOUSE (click-drag left)
+        sidebarEl.addEventListener('mousedown', e => {
+            startX = e.clientX;
+            isDragging = true;
+        });
+        document.addEventListener('mousemove', e => {
+            if (!isDragging || !sidebarEl.classList.contains('active')) return;
+            const delta = e.clientX - startX;
+            if (delta < -100) {
+                sidebarEl.classList.remove('active');
+                isDragging = false;
+            }
+        });
+        document.addEventListener('mouseup', () => { isDragging = false; });
+
+        // Click outside also closes (existing safety)
+        window.onclick = (e) => {
+            if (!sidebarEl.contains(e.target) && !document.querySelector('.menu-btn').contains(e.target)) {
+                sidebarEl.classList.remove('active');
+            }
+        };
+
+        // START
+        loadAllData();
     </script>
 </body>
 </html>
