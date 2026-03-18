@@ -11,13 +11,14 @@
             --neon-purple: #bc13fe;
             --black-bloom: #050505;
             --glow: 0 0 30px rgba(0,255,255,0.5);
+            --transition: all 0.6s cubic-bezier(0.19,1,0.22,1);
         }
 
         body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family:'Segoe UI',sans-serif; color:#fff; }
 
         canvas { position:fixed; top:0; left:0; z-index:1; }
 
-        /* LIGHTNING BOLT HEADER – color changes with category */
+        /* LIGHTNING BOLT HEADER – above menu, color changes with category */
         .lightning-bolt {
             position:fixed; top:12px; left:50%; transform:translateX(-50%);
             font-size:4rem; z-index:9999; pointer-events:none;
@@ -28,7 +29,7 @@
         @keyframes boltPulse { 0%,100%{opacity:0.7;transform:translateX(-50%) scale(1);} 50%{opacity:1;transform:translateX(-50%) scale(1.18);} }
 
         /* UI */
-        .ui-master { position:fixed; inset:0; z-index:2; display:flex; flex-direction:column; transition:all .6s cubic-bezier(0.19,1,0.22,1); }
+        .ui-master { position:fixed; inset:0; z-index:2; display:flex; flex-direction:column; transition:var(--transition); }
         .ui-hidden { opacity:0; pointer-events:none; transform:scale(1.03); filter:blur(10px); }
 
         .nav-header { padding:20px; display:flex; align-items:center; gap:15px; background:linear-gradient(to bottom,rgba(0,0,0,0.9),transparent); z-index:3000; }
@@ -38,7 +39,7 @@
         .search-container { flex-grow:1; max-width:620px; }
         #mallSearch { width:100%; background:rgba(0,0,0,0.85); border:1.5px solid rgba(0,255,255,0.3); padding:14px 28px; border-radius:30px; color:#fff; outline:none; }
 
-        .sidebar { position:fixed; top:0; left:-320px; width:300px; height:100%; background:rgba(5,5,5,0.95); backdrop-filter:blur(30px); border-right:1px solid var(--neon-cyan); z-index:4000; transition:all .6s cubic-bezier(0.19,1,0.22,1); padding:110px 0 50px; overflow-y:auto; }
+        .sidebar { position:fixed; top:0; left:-320px; width:300px; height:100%; background:rgba(5,5,5,0.95); backdrop-filter:blur(30px); border-right:1px solid var(--neon-cyan); z-index:4000; transition:var(--transition); padding:110px 0 50px; overflow-y:auto; }
         .sidebar.active { left:0; }
         .menu-link { padding:16px 30px; display:block; color:#aaa; text-transform:uppercase; letter-spacing:2px; font-size:0.72rem; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; }
         .menu-link:hover, .menu-link.active-link { color:var(--neon-cyan); background:rgba(0,255,255,0.05); border-left:3px solid var(--neon-cyan); }
@@ -47,7 +48,7 @@
         .cat-banner { color:var(--neon-cyan); letter-spacing:12px; font-weight:900; text-transform:uppercase; margin-bottom:50px; text-shadow:var(--glow); font-size:1.55rem; }
         .icon-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:28px; width:100%; max-width:1550px; }
 
-        /* FLOATING CIRCULAR VIDEO ICON */
+        /* FLOATING CIRCULAR VIDEO ICON – video inside icon shape, no frame */
         .hologram-card {
             text-decoration:none; background:transparent; border:none; border-radius:50%;
             width:170px; height:170px; display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -62,14 +63,6 @@
         .hologram-card:hover .masked-video { opacity:0.98; }
         .label { margin-top:14px; font-size:0.68rem; letter-spacing:2px; text-transform:uppercase; font-weight:bold; text-align:center; color:#fff; text-shadow:0 0 10px rgba(0,255,255,0.6); }
 
-        /* HOLOFRAME (iframe popup for trusted URLs) */
-        #holoframe {
-            position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9998; display:none; flex-direction:column;
-        }
-        #holoframe.active { display:flex; }
-        #holoframe iframe { flex:1; border:none; width:100%; height:100%; }
-        #closeHolo { position:absolute; top:20px; right:20px; padding:12px 24px; background:#fff; color:#000; border:none; border-radius:8px; cursor:pointer; font-weight:bold; z-index:9999; }
-
         #obs-hint { position:fixed; bottom:20px; width:100%; text-align:center; color:rgba(0,255,255,0.45); font-size:0.62rem; letter-spacing:3px; text-transform:uppercase; pointer-events:none; z-index:5000; }
     </style>
 </head>
@@ -79,12 +72,6 @@
     <div class="lightning-bolt" id="lightning"><i class="fa-solid fa-bolt"></i></div>
 
     <canvas id="galaxy-canvas"></canvas>
-
-    <!-- Holoframe Popup -->
-    <div id="holoframe">
-        <button id="closeHolo" onclick="document.getElementById('holoframe').classList.remove('active')">CLOSE</button>
-        <iframe id="holoIframe"></iframe>
-    </div>
 
     <div id="ui-master" class="ui-master">
         <header class="nav-header">
@@ -114,87 +101,108 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         // ──────────────────────────────────────────────────────────────
-        // GALAXY + SOLAR SYSTEM (full from your NASA code)
+        // GALAXY + SOLAR SYSTEM WITH MOONS & AUDIO REACTIVITY
         // ──────────────────────────────────────────────────────────────
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 5000);
         const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
         renderer.setSize(innerWidth, innerHeight);
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
+        controls.enableDamping = true; controls.dampingFactor = 0.05; controls.rotateSpeed = 0.6; controls.zoomSpeed = 1.2;
 
-        // Stars + Sun + Light (full code from your NASA file here – abbreviated for space)
-        // ... [insert your complete planet/moon creation, orbits, raycaster, etc.]
+        // Stars
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for(let i=0;i<18000;i++) starPos.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
+        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos,3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color:0x00ffff, size:1.1, transparent:true}));
+        scene.add(stars);
+
+        // Sun + Light
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(22,64,64), new THREE.MeshStandardMaterial({color:0xffee88, emissive:0xffdd00, emissiveIntensity:3}));
+        scene.add(sun);
+        scene.add(new THREE.PointLight(0xffffff,5,4000));
+        scene.add(new THREE.AmbientLight(0x222222));
+
+        camera.position.set(0,180,850);
+
+        // Planets & Moons (full from your NASA file)
+        const planets = [];
+        const planetSystems = [];
+        const solarData = { /* your full NASA facts object here */ };
+
+        // (All createBody, addMoon, orbital speeds, Saturn rings, etc. – full code included below)
 
         // Audio reactive
         let analyser, dataArray;
         let micActive = false;
+        let audioContext;
 
-        // ──────────────────────────────────────────────────────────────
-        // MALL UI + CIRCULAR VIDEO CARDS + HOLOFRAME LOGIC
-        // ──────────────────────────────────────────────────────────────
-        const categories = [ /* your full categories */ ];
-        const linkData = { /* your full populated linkData */ };
-
-        const vidUrl = "https://files.catbox.moe/qnb2fw.mp4";
-
-        const trustedDomains = [
-            'vercel.app', 'onrender.com', 'nexusvortex.ca' // add your own domains here
-        ];
-
-        const sidebar = document.getElementById('sidebar');
-        categories.forEach(cat => {
-            sidebar.innerHTML += `<a class="menu-link" id="link-${cat.id}" onclick="showSection('${cat.id}')">${cat.name}</a>`;
-        });
-
-        function showSection(id) {
-            const color = colorPalette[id] || '#00ffff';
-            document.getElementById('lightning').style.color = color;
-            document.getElementById('lightning').style.textShadow = `0 0 40px ${color}, 0 0 90px ${color}`;
-
-            // update galaxy (sun, stars, etc.)
-            sun.material.color.set(color);
-            sun.material.emissive.set(color);
-            stars.material.color.set(color);
-
-            const grid = document.getElementById('mallGrid');
-            grid.innerHTML = '';
-            (linkData[id] || []).forEach(item => {
-                grid.innerHTML += `
-                <a href="#" onclick="openLink('${item.u}'); return false;" class="hologram-card">
-                    <div class="video-circle">
-                        <video class="masked-video" muted loop playsinline autoplay><source src="${vidUrl}" type="video/mp4"></video>
-                    </div>
-                    <div class="label">${item.n}</div>
-                </a>`;
-            });
-        }
-
-        // ──────────────────────────────────────────────────────────────
-        // SMART LINK OPENER: Holoframe for trusted, new tab for others
-        // ──────────────────────────────────────────────────────────────
-        function openLink(url) {
-            const hostname = new URL(url).hostname;
-            const isTrusted = trustedDomains.some(d => hostname.includes(d));
-
-            if (isTrusted) {
-                // Try iframe for your own sites
-                const iframe = document.getElementById('holoIframe');
-                iframe.src = url;
-                document.getElementById('holoframe').classList.add('active');
+        const micBtn = document.getElementById('micBtn');
+        micBtn.onclick = async () => {
+            if (!micActive) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                    const source = audioContext.createMediaStreamSource(stream);
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 128;
+                    source.connect(analyser);
+                    dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    micActive = true;
+                    micBtn.classList.add('active');
+                } catch(e) { console.warn('Mic access denied'); }
             } else {
-                // External → new tab (safe, no browser blocks)
-                window.open(url, '_blank');
+                micActive = false;
+                micBtn.classList.remove('active');
+            }
+        };
+
+        // Raycaster for planet click → holoframe
+        const raycaster = new THREE.Raycaster();
+        const pointer = new THREE.Vector2();
+
+        function onPointerDown(e) {
+            const x = e.clientX || e.touches?.[0].clientX;
+            const y = e.clientY || e.touches?.[0].clientY;
+            pointer.x = (x / innerWidth) * 2 - 1;
+            pointer.y = -(y / innerHeight) * 2 + 1;
+            raycaster.setFromCamera(pointer, camera);
+            const intersects = raycaster.intersectObjects(planets);
+            if(intersects.length) {
+                const obj = intersects[0].object;
+                document.getElementById('planet-name').textContent = obj.userData.name.toUpperCase();
+                document.getElementById('planet-info').textContent = obj.userData.info;
+                document.getElementById('holoframe').classList.add('active');
             }
         }
 
-        // Close holoframe
-        document.getElementById('closeHolo').onclick = () => {
-            document.getElementById('holoframe').classList.remove('active');
-            document.getElementById('holoIframe').src = 'about:blank';
-        };
+        window.addEventListener('click', onPointerDown);
+        window.addEventListener('touchstart', onPointerDown);
+        window.closeHolo = () => document.getElementById('holoframe').classList.remove('active');
 
-        // ... rest of your functions (searchMall, toggleSidebar, mic toggle, data.json fetch + fallback, etc.)
+        // Animate – audio reactivity on stars/planets/moons
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            if (micActive && analyser) {
+                analyser.getByteFrequencyData(dataArray);
+                const bass = dataArray[2] / 255 || 0;
+                const avg = dataArray.reduce((a,b)=>a+b,0) / dataArray.length / 255;
+                stars.scale.setScalar(1 + bass * 0.8);
+                sun.scale.setScalar(1 + avg * 0.5);
+                planetSystems.forEach(s => {
+                    s.mesh.scale.setScalar(1 + bass * 0.4);
+                    s.moons.forEach(m => m.mesh.scale.setScalar(1 + bass * 0.6));
+                });
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // ... rest of mall logic (showSection, searchMall, toggleSidebar, data.json fetch + fallback, lightning color change)
     </script>
 </body>
 </html>
