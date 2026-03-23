@@ -2,434 +2,299 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OLYMPUS | GRAND MULTIVERSE</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Vortex | Digital Mall & Directory</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --neon-cyan: #00ffff;
+            --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
-            --black-bloom: #050505;
-            --glow: 0 0 20px rgba(0,255,255,0.4);
-            --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            --dark-bg: #050505;
+            --glass: rgba(0, 255, 255, 0.1);
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background: var(--black-bloom); font-family: 'Segoe UI', sans-serif; color: #fff; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            background-color: var(--dark-bg);
+            font-family: var(--font-main);
+            color: white;
+        }
 
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
 
-        .ui-master { position: fixed; inset: 0; opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; display: flex; flex-direction: column; }
-        .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.02); filter: blur(8px); }
-
-        .nav-header {
-            padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 5000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+        /* --- Layout Structure --- */
+        .ui-wrapper {
             position: relative;
+            z-index: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .menu-btn, .mic-btn {
-            width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8);
-            border: 1.5px solid var(--neon-cyan); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--neon-cyan); font-size: 1.2rem; cursor: pointer; box-shadow: var(--glow);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .mic-btn.active {
-            border-color: #ffff00;
-            color: #ffff00;
-            box-shadow: 0 0 25px #ffff00;
-            animation: micPulse 1.5s infinite;
-        }
-        @keyframes micPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
         }
 
-        .search-container { flex-grow: 1; max-width: 600px; margin: 0 auto; }
-        #mallSearch {
-            width: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
-            border: 1.5px solid rgba(0,255,255,0.3); padding: 12px 25px;
-            border-radius: 30px; color: #fff; outline: none; box-shadow: var(--glow);
-            font-size: 0.9rem; box-sizing: border-box; transition: 0.3s;
-        }
-        #mallSearch:focus { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(188, 19, 254, 0.5); }
-
-        .sidebar {
-            position: fixed; top: 0; left: -320px; width: 300px; height: 100%;
-            background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(30px);
-            border-right: 1px solid var(--neon-cyan); z-index: 4000;
-            transition: left 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            padding: 100px 0 50px 0; overflow-y: auto;
-        }
-        .sidebar.active { left: 0; }
-
-        .menu-link {
-            padding: 16px 30px; display: block; color: #aaa; text-decoration: none;
-            text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem;
-            border-bottom: 1px solid rgba(0,255,255,0.05); transition: 0.3s; cursor: pointer;
-        }
-        .menu-link:hover, .menu-link.active-link { color: var(--neon-cyan); background: rgba(0,255,255,0.05); padding-left: 40px; border-left: 3px solid var(--neon-cyan); }
-
-        .viewport {
-            flex-grow: 1; overflow-y: auto; padding: 20px 20px 120px;
-            display: flex; flex-direction: column; align-items: center;
-            scrollbar-width: none;
-        }
-        .viewport::-webkit-scrollbar { display: none; }
-
-        .cat-banner {
-            color: var(--neon-cyan); letter-spacing: 12px; font-weight: 900;
-            text-transform: uppercase; margin-bottom: 50px; text-shadow: var(--glow);
-            text-align: center; font-size: 1.5rem; pointer-events: none; transition: color 0.6s;
+        header h1 {
+            font-size: 3rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px var(--neon-cyan);
+            margin: 0;
         }
 
-        .icon-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 30px; width: 100%; max-width: 1500px; pointer-events: none;
+        /* --- Grid & Cards --- */
+        .mall-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 1400px;
+            /* Collision Avoidance for Search FAB */
+            padding-bottom: 120px; 
+            padding-right: 10px;
         }
 
         .hologram-card {
-            background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px);
-            border: 1px solid rgba(0,255,255,0.15); border-radius: 15px;
-            text-decoration: none; overflow: hidden; transition: 0.4s;
-            display: flex; flex-direction: column; pointer-events: auto;
-            cursor: pointer; min-height: 180px;
-        }
-        .hologram-card:hover {
-            transform: translateY(-8px); border-color: var(--neon-cyan);
-            box-shadow: 0 0 30px rgba(0,255,255,0.4);
-        }
-        .video-box { width: 100%; height: 110px; background: #000; position: relative; }
-        .masked-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: hue-rotate(10deg); }
-        .icon-overlay {
-            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-            font-size: 2.8rem; color: rgba(0,255,255,0.7); text-shadow: 0 0 15px #000;
-            z-index: 2; pointer-events: none;
-        }
-        .label {
-            padding: 15px; color: #fff; font-size: 0.75rem; text-align: center;
-            letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold;
+            background: var(--glass);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
         }
 
-        #obs-hint {
-            position: fixed; bottom: 20px; width: 100%; text-align: center;
-            color: rgba(0,255,255,0.4); font-size: 0.6rem; letter-spacing: 3px;
-            text-transform: uppercase; pointer-events: none; z-index: 5000;
+        .hologram-card:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 25px var(--neon-purple);
+            transform: translateY(-5px);
+        }
+
+        .hologram-card h3 {
+            margin-top: 0;
+            color: var(--neon-cyan);
+            font-size: 1.2rem;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .hologram-card p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            background: rgba(188, 19, 254, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--neon-purple);
+            float: right;
+        }
+
+        /* --- Floating Search FAB --- */
+        .floating-search {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 10000;
+        }
+
+        .search-button {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: var(--dark-bg);
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            cursor: pointer;
+            color: var(--neon-cyan);
+            font-size: 1.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .search-button:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 25px var(--neon-purple);
+            color: var(--neon-purple);
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .search-field {
+            width: 0;
+            opacity: 0;
+            height: 50px;
+            border-radius: 25px;
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0;
+            outline: none;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(15px);
+            font-size: 1rem;
+        }
+
+        .floating-search.active .search-field {
+            width: 300px;
+            opacity: 1;
+            padding: 0 25px;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .floating-search.active .search-field { width: 200px; }
+            header h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div id="obs-hint">Click background to hide UI • Swipe/drag sidebar LEFT to close • Mic for audio reactivity ✨</div>
+<div id="canvas-container"></div>
 
-    <canvas id="galaxy-canvas"></canvas>
+<div class="ui-wrapper">
+    <header>
+        <h1>Nexus Vortex</h1>
+        <p>Omni-Channel Digital Mall & Multiverse Directory</p>
+    </header>
 
-    <div id="ui-master" class="ui-master">
-        <header class="nav-header" id="nav-header">
-            <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-            <div class="search-container">
-                <input type="text" id="mallSearch" placeholder="SEARCH ENTIRE DIRECTORY..." onkeyup="searchMall()">
-            </div>
-            <button class="mic-btn" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
-        </header>
+    <div class="mall-grid" id="mall-grid">
+        </div>
+</div>
 
-        <nav class="sidebar" id="sidebar"></nav>
+<div id="search-container" class="floating-search">
+    <input type="text" id="search-input" placeholder="Scan the sectors..." class="search-field">
+    <button id="search-trigger" class="search-button">
+        <span>🔍</span>
+    </button>
+</div>
 
-        <main class="viewport" id="viewport">
-            <div class="cat-banner" id="cat-indicator">Olympus Core</div>
-            <div class="icon-grid" id="mallGrid"></div>
-        </main>
-    </div>
+<script>
+    /* --- 1. THE DATA (All Categories) --- */
+    const sectors = [
+        { title: "Multiverse Core", desc: "Central hub for all dimensional data and core site navigation.", tag: "System" },
+        { title: "Olympus Featured", desc: "Premium realms and high-traffic portals within the Vortex.", tag: "Priority" },
+        { title: "Apparel Sector", desc: "Nexus-branded garments and futuristic streetwear.", tag: "Retail" },
+        { title: "Tech Stack", desc: "Three.js, WebGL, and Blockchain infrastructure tools.", tag: "Dev" },
+        { title: "A Renewed World", desc: "Environmental data and sustainability initiatives.", tag: "Eco" },
+        { title: "Afterlife & Beyond", desc: "Spiritual archives and digital consciousness research.", tag: "Deep" },
+        { title: "Abyssal Aquatic", desc: "Oceanic data and underwater digital environments.", tag: "Research" },
+        { title: "Jewelry & Horology", desc: "Exquisite timepieces and digital accessories.", tag: "Luxury" },
+        { title: "Mining & Energy", desc: "Real-time stats for crypto mining and oil/gas logistics.", tag: "Industry" }
+    ];
 
-    <script type="importmap">
-        {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
-    </script>
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    /* --- 2. THE THREE.JS STARFIELD --- */
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 1, 10000);
-        const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
+    // Stars
+    const starGeometry = new THREE.BufferGeometry();
+    const starMaterial = new THREE.PointsMaterial({ color: 0x00f3ff, size: 0.7 });
+    const starVertices = [];
+    for (let i = 0; i < 15000; i++) {
+        const x = (Math.random() - 0.5) * 2000;
+        const y = (Math.random() - 0.5) * 2000;
+        const z = -Math.random() * 2000;
+        starVertices.push(x, y, z);
+    }
+    starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    camera.position.z = 1;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        stars.rotation.z += 0.0005;
+        stars.position.z += 0.5;
+        if (stars.position.z > 500) stars.position.z = 0;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    /* --- 3. UI GENERATION --- */
+    const grid = document.getElementById('mall-grid');
+    function renderCards(data) {
+        grid.innerHTML = '';
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'hologram-card';
+            card.innerHTML = `
+                <span class="tag">${item.tag}</span>
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+            `;
+            grid.appendChild(card);
+        });
+    }
+    renderCards(sectors);
+
+    /* --- 4. SEARCH FUNCTIONALITY --- */
+    const searchContainer = document.getElementById('search-container');
+    const searchTrigger = document.getElementById('search-trigger');
+    const searchInput = document.getElementById('search-input');
+
+    searchTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchContainer.classList.toggle('active');
+        if (searchContainer.classList.contains('active')) searchInput.focus();
+    });
+
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = sectors.filter(s => 
+            s.title.toLowerCase().includes(term) || 
+            s.desc.toLowerCase().includes(term) ||
+            s.tag.toLowerCase().includes(term)
+        );
+        renderCards(filtered);
+    });
+
+    // Close search if clicking outside
+    document.addEventListener('click', (e) => {
+        if (!searchContainer.contains(e.target)) {
+            searchContainer.classList.remove('active');
+        }
+    });
+
+    // Handle Resize
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.2;
-        controls.enableZoom = true;
-
-        const geometry = new THREE.BufferGeometry();
-        const vertices = [];
-        for (let i = 0; i < 25000; i++) {
-            vertices.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
-        }
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-        const material = new THREE.PointsMaterial({ color: 0x00ffff, size: 1.2, transparent: true, opacity: 0.7 });
-        const stars = new THREE.Points(geometry, material);
-        scene.add(stars);
-
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(60, 64, 64), new THREE.MeshStandardMaterial({color: 0xbc13fe, emissive: 0xbc13fe, emissiveIntensity: 2}));
-        scene.add(sun);
-        
-        scene.add(new THREE.PointLight(0x00ffff, 4, 4000));
-        scene.add(new THREE.AmbientLight(0x111111));
-
-        camera.position.z = 1200;
-
-        // ── AUDIO + MIC VISUAL REACTIVITY ─────────────────────────────────
-        let audioCtx, analyser, dataArray, micActive = false;
-        const micBtn = document.getElementById('micBtn');
-        let micIntensity = 0;
-
-        micBtn.onclick = async () => {
-            if (!micActive) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
-                    const source = audioCtx.createMediaStreamSource(stream);
-                    analyser = audioCtx.createAnalyser(); analyser.fftSize = 128;
-                    source.connect(analyser);
-                    dataArray = new Uint8Array(analyser.frequencyBinCount);
-                    micActive = true;
-                    micBtn.classList.add('active');
-                } catch(e) { console.error("Mic denied"); }
-            } else {
-                micActive = false;
-                micBtn.classList.remove('active');
-            }
-        };
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-
-            if (micActive && analyser) {
-                analyser.getByteFrequencyData(dataArray);
-                micIntensity = dataArray.reduce((a,b)=>a+b,0) / dataArray.length / 255;
-
-                // Stars react
-                const pos = stars.geometry.attributes.position.array;
-                for (let i = 1; i < pos.length; i += 3) {
-                    pos[i] += Math.sin(Date.now() * 0.003 + i) * micIntensity * 0.8;
-                }
-                stars.geometry.attributes.position.needsUpdate = true;
-
-                // MIC ICON REACTS (no overlap — it's in header)
-                micBtn.style.transform = `scale(${1 + micIntensity * 0.35})`;
-                micBtn.style.boxShadow = `0 0 ${15 + micIntensity * 55}px #ffff00`;
-            } else {
-                micBtn.style.transform = 'scale(1)';
-            }
-
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // UI hide
-        const uiMaster = document.getElementById('ui-master');
-        document.getElementById('viewport').addEventListener('click', e => { if(e.target.id==='viewport') uiMaster.classList.add('ui-hidden'); });
-        document.getElementById('nav-header').addEventListener('click', e => { if(e.target.id==='nav-header') uiMaster.classList.add('ui-hidden'); });
-        document.getElementById('galaxy-canvas').addEventListener('click', () => uiMaster.classList.remove('ui-hidden'));
-    </script>
-
-    <script>
-        // ── CONFIG: CHANGE THESE TWO LINES ONLY IF YOU CHANGE REPO ─────────────────────
-        const REPO = "https://raw.githubusercontent.com/highland88999-commits/Olympus-code-test/main/";
-        const VIDEO_URL = "https://files.catbox.moe/qnb2fw.mp4";
-
-        // ── CATEGORY COLORS (add new ones here when you create new category) ───────────
-        const categoryColors = {
-            core: "#00ffff",
-            featured: "#bc13fe",
-            renewed: "#88ffaa",
-            afterlife: "#aa88ff",
-            abyssal: "#0066cc",
-            tech: "#00ff88"
-            // add more: newcat: "#ffaa00"
-        };
-
-        // ── DATA LOADING: UNIQUE FILE PER CATEGORY ───────────────────────────────────
-        // INSTRUCTIONS (do this once):
-        // 1. Upload categories.json to your repo root (example below)
-        // 2. For every category, upload links-CATEGORYID.json (e.g. links-core.json)
-        // 3. Refresh this page — it auto-pulls everything!
-        //
-        // EXAMPLE categories.json:
-        // [
-        //   {"id":"core","name":"Multiverse Core"},
-        //   {"id":"featured","name":"Olympus Featured"},
-        //   {"id":"renewed","name":"A Renewed World"},
-        //   {"id":"afterlife","name":"Afterlife & Beyond"},
-        //   {"id":"abyssal","name":"Abyssal & Aquatic"}
-        // ]
-        //
-        // EXAMPLE links-core.json:
-        // [
-        //   {"n":"Olympus Core","u":"https://nexusvortex.ca","i":"fa-solid fa-crown"},
-        //   {"n":"Artemis OS","u":"https://artemis-os.vercel.app/","i":"fa-solid fa-ghost"}
-        // ]
-
-        let categories = [];
-        let allLinksCache = {}; // { "core": [items], "featured": [...] }
-
-        async function loadAllData() {
-            try {
-                // 1. Load master categories list
-                const catRes = await fetch(`\( {REPO}categories.json?t= \){Date.now()}`);
-                categories = await catRes.json();
-
-                // 2. Build sidebar
-                const sidebar = document.getElementById('sidebar');
-                sidebar.innerHTML = '';
-                categories.forEach(cat => {
-                    const div = document.createElement('div');
-                    div.className = 'menu-link';
-                    div.id = `link-${cat.id}`;
-                    div.textContent = cat.name;
-                    div.onclick = () => showSection(cat.id);
-                    sidebar.appendChild(div);
-                });
-
-                // 3. Pre-load ALL links files in parallel (for fast search)
-                const linkPromises = categories.map(cat =>
-                    fetch(`\( {REPO}links- \){cat.id}.json?t=${Date.now()}`)
-                        .then(r => r.ok ? r.json() : [])
-                        .then(items => { allLinksCache[cat.id] = items; })
-                );
-                await Promise.all(linkPromises);
-
-                // Show first category
-                if (categories.length) showSection(categories[0].id);
-            } catch(e) {
-                document.getElementById('cat-indicator').innerText = "Upload categories.json + links-*.json to repo first";
-                console.error("Data load failed — create the files!", e);
-            }
-        }
-
-        // ── SHOW SECTION (realm color change + icons) ────────────────────────────────
-        async function showSection(id) {
-            const grid = document.getElementById('mallGrid');
-            const indicator = document.getElementById('cat-indicator');
-
-            // Active link highlight
-            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active-link'));
-            document.getElementById(`link-${id}`)?.classList.add('active-link');
-
-            const catName = categories.find(c => c.id === id)?.name || id;
-            indicator.innerText = catName;
-
-            // Realm color change
-            const color = categoryColors[id] || "#00ffff";
-            document.documentElement.style.setProperty('--neon-cyan', color);
-            indicator.style.color = color;
-
-            grid.innerHTML = '';
-
-            const items = allLinksCache[id] || [];
-            items.forEach(item => {
-                const iconHTML = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
-                grid.innerHTML += `
-                <a href="${item.u}" target="_blank" class="hologram-card">
-                    <div class="video-box">
-                        <video class="masked-video" muted loop playsinline autoplay>
-                            <source src="${VIDEO_URL}" type="video/mp4">
-                        </video>
-                        ${iconHTML}
-                    </div>
-                    <div class="label">${item.n}</div>
-                </a>`;
-            });
-
-            // Auto-close sidebar on mobile after selection
-            if (window.innerWidth < 1100) document.getElementById('sidebar').classList.remove('active');
-        }
-
-        // ── GLOBAL SEARCH (uses pre-cached links) ────────────────────────────────────
-        function searchMall() {
-            const query = document.getElementById('mallSearch').value.toLowerCase().trim();
-            const grid = document.getElementById('mallGrid');
-            const indicator = document.getElementById('cat-indicator');
-
-            if (!query) {
-                showSection(categories[0]?.id || 'core');
-                return;
-            }
-
-            indicator.innerText = "Global Search";
-            document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
-            grid.innerHTML = '';
-
-            // Search across ALL cached links
-            Object.values(allLinksCache).flat().forEach(item => {
-                if (item.n.toLowerCase().includes(query)) {
-                    const iconHTML = item.i ? `<div class="icon-overlay"><i class="${item.i}"></i></div>` : '';
-                    grid.innerHTML += `
-                    <a href="${item.u}" target="_blank" class="hologram-card">
-                        <div class="video-box">
-                            <video class="masked-video" muted loop playsinline autoplay>
-                                <source src="${VIDEO_URL}" type="video/mp4">
-                            </video>
-                            ${iconHTML}
-                        </div>
-                        <div class="label">${item.n}</div>
-                    </a>`;
-                }
-            });
-        }
-
-        // ── SIDEBAR OPEN/CLOSE + SWIPE / DRAG TO CLOSE (left swipe) ──────────────────
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        // Swipe / Drag logic
-        const sidebarEl = document.getElementById('sidebar');
-        let startX = 0;
-        let isDragging = false;
-
-        // TOUCH (mobile swipe left)
-        sidebarEl.addEventListener('touchstart', e => {
-            startX = e.touches[0].clientX;
-        });
-        sidebarEl.addEventListener('touchmove', e => {
-            if (!sidebarEl.classList.contains('active')) return;
-            const delta = e.touches[0].clientX - startX;
-            if (delta < -90) { // swiped left
-                sidebarEl.classList.remove('active');
-            }
-        });
-
-        // MOUSE (click-drag left)
-        sidebarEl.addEventListener('mousedown', e => {
-            startX = e.clientX;
-            isDragging = true;
-        });
-        document.addEventListener('mousemove', e => {
-            if (!isDragging || !sidebarEl.classList.contains('active')) return;
-            const delta = e.clientX - startX;
-            if (delta < -100) {
-                sidebarEl.classList.remove('active');
-                isDragging = false;
-            }
-        });
-        document.addEventListener('mouseup', () => { isDragging = false; });
-
-        // Click outside also closes (existing safety)
-        window.onclick = (e) => {
-            if (!sidebarEl.contains(e.target) && !document.querySelector('.menu-btn').contains(e.target)) {
-                sidebarEl.classList.remove('active');
-            }
-        };
-
-        // START
-        loadAllData();
-    </script>
 </body>
 </html>
