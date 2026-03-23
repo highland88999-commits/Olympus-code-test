@@ -14,16 +14,22 @@
             --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background: var(--black-bloom); font-family: 'Segoe UI', sans-serif; color: #fff; }
+        body, html { 
+            margin:0; padding:0; width:100%; height:100%; overflow:hidden; 
+            background: var(--black-bloom); font-family: 'Segoe UI', sans-serif; color: #fff; 
+        }
 
         /* GALAXY CANVAS */
         canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
 
         /* UI MASTER TOGGLE */
-        .ui-master { position: fixed; inset: 0; opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; display: flex; flex-direction: column; }
-        .ui-hidden { opacity: 0 !important; pointer-events: none !important; transform: scale(1.02); filter: blur(8px); }
+        .ui-master { 
+            position: fixed; inset: 0; opacity: 1; transition: var(--transition); 
+            pointer-events: all; z-index: 2; display: flex; flex-direction: column; 
+        }
+        .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.02); filter: blur(8px); }
 
-        /* NAVIGATION */
+        /* TOP NAVIGATION */
         .nav-header {
             padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 3000;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
@@ -43,6 +49,7 @@
             border-radius: 30px; color: #fff; outline: none; box-shadow: var(--glow);
             font-size: 0.9rem; box-sizing: border-box; transition: 0.3s;
         }
+        #mallSearch:focus { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(188, 19, 254, 0.5); }
 
         /* SIDEBAR */
         .sidebar {
@@ -51,17 +58,22 @@
             border-right: 1px solid var(--neon-cyan); z-index: 4000;
             transition: var(--transition); padding: 100px 0 50px 0; overflow-y: auto;
         }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--neon-cyan); }
         .sidebar.active { left: 0; }
         .menu-link {
             padding: 16px 30px; display: block; color: #aaa; text-decoration: none;
             text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem;
             border-bottom: 1px solid rgba(0,255,255,0.05); transition: 0.3s; cursor: pointer;
         }
-        .menu-link:hover, .menu-link.active-link { color: var(--neon-cyan); background: rgba(0,255,255,0.05); padding-left: 40px; border-left: 3px solid var(--neon-cyan); }
+        .menu-link:hover, .menu-link.active-link { 
+            color: var(--neon-cyan); background: rgba(0,255,255,0.05); 
+            padding-left: 40px; border-left: 3px solid var(--neon-cyan); 
+        }
 
         /* VIEWPORT & GRID */
         .viewport {
-            flex-grow: 1; overflow-y: auto; padding: 20px 20px 150px; /* Extra bottom padding for FAB overlap prevention */
+            flex-grow: 1; overflow-y: auto; padding: 20px 20px 180px; /* extra for FAB */
             display: flex; flex-direction: column; align-items: center;
             scrollbar-width: none; cursor: crosshair;
         }
@@ -84,20 +96,23 @@
             border: 1px solid rgba(0,255,255,0.15); border-radius: 15px;
             text-decoration: none; overflow: hidden; transition: 0.4s;
             display: flex; flex-direction: column; pointer-events: auto;
-            cursor: pointer; position: relative;
+            cursor: pointer; opacity: 1;
         }
         .hologram-card:hover {
             transform: translateY(-8px); border-color: var(--neon-cyan);
             box-shadow: 0 0 30px rgba(0,255,255,0.4);
         }
+        .hologram-card.hidden {
+            opacity: 0.25; pointer-events: none; transform: scale(0.95);
+        }
         .video-box { width: 100%; height: 110px; background: #000; position: relative; }
-        .masked-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .masked-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: hue-rotate(10deg); }
         .label {
             padding: 15px; color: #fff; font-size: 0.7rem; text-align: center;
             letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold;
         }
 
-        /* FLOATING SEARCH FAB - STEP 3 IMPLEMENTATION */
+        /* FLOATING FAB SEARCH */
         .fab-search-container {
             position: fixed; bottom: 30px; right: 30px;
             display: flex; align-items: center; gap: 10px; z-index: 6000;
@@ -110,20 +125,31 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; cursor: pointer; transition: 0.3s;
         }
-        .fab-trigger:hover { border-color: var(--neon-purple); box-shadow: 0 0 25px var(--neon-purple); color: var(--neon-purple); transform: scale(1.1); }
-        
+        .fab-trigger:hover { 
+            border-color: var(--neon-purple); box-shadow: 0 0 25px var(--neon-purple); 
+            color: var(--neon-purple); transform: scale(1.1); 
+        }
         .fab-input {
             width: 0; opacity: 0; height: 50px; border-radius: 25px;
             border: 1.5px solid var(--neon-cyan); background: rgba(0,0,0,0.9);
             color: white; padding: 0; transition: all 0.4s ease;
             outline: none; backdrop-filter: blur(10px);
         }
-        .fab-search-container.active .fab-input { width: 250px; opacity: 1; padding: 0 20px; }
+        .fab-search-container.active .fab-input { 
+            width: 280px; opacity: 1; padding: 0 20px; 
+        }
 
         #obs-hint {
             position: fixed; bottom: 10px; width: 100%; text-align: center;
             color: rgba(0,255,255,0.4); font-size: 0.6rem; letter-spacing: 3px;
             text-transform: uppercase; pointer-events: none; z-index: 5000;
+        }
+
+        @media (max-width: 768px) {
+            .fab-search-container { bottom: 20px; right: 20px; }
+            .fab-trigger { width: 50px; height: 50px; font-size: 1.3rem; }
+            .fab-search-container.active .fab-input { width: 220px; }
+            .viewport { padding-bottom: 140px; }
         }
     </style>
 </head>
@@ -133,6 +159,7 @@
 
     <canvas id="galaxy-canvas"></canvas>
 
+    <!-- Floating FAB Search -->
     <div class="fab-search-container" id="fabSearchCont">
         <input type="text" id="fabInput" class="fab-input" placeholder="SCAN THE MULTIVERSE..." onkeyup="syncSearch(this.value)">
         <div class="fab-trigger" onclick="toggleFabSearch()"><i class="fa-solid fa-magnifying-glass"></i></div>
@@ -169,22 +196,25 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.3;
+        controls.autoRotateSpeed = 0.2;
+        controls.enableZoom = true;
 
-        const starGeo = new THREE.BufferGeometry();
-        const starVerts = [];
-        for (let i = 0; i < 20000; i++) {
-            starVerts.push(THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000), THREE.MathUtils.randFloatSpread(5000));
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 25000; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
         }
-        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
-        const starMat = new THREE.PointsMaterial({ color: 0x00ffff, size: 1.5, transparent: true, opacity: 0.8 });
-        scene.add(new THREE.Points(starGeo, starMat));
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const material = new THREE.PointsMaterial({ color: 0x00ffff, size: 1.2, transparent: true, opacity: 0.7 });
+        scene.add(new THREE.Points(geometry, material));
 
-        const centralStar = new THREE.Mesh(new THREE.SphereGeometry(50, 32, 32), new THREE.MeshStandardMaterial({color: 0xbc13fe, emissive: 0xbc13fe, emissiveIntensity: 3}));
-        scene.add(centralStar);
-        scene.add(new THREE.PointLight(0xbc13fe, 5, 3000));
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(60, 64, 64), new THREE.MeshStandardMaterial({color: 0xbc13fe, emissive: 0xbc13fe, emissiveIntensity: 2}));
+        scene.add(sun);
         
-        camera.position.z = 1500;
+        scene.add(new THREE.PointLight(0x00ffff, 4, 4000));
+        scene.add(new THREE.AmbientLight(0x111111));
+
+        camera.position.z = 1200;
 
         function animate() {
             requestAnimationFrame(animate);
@@ -199,127 +229,440 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // IMMERSIVE TOGGLE
+        // IMMERSIVE TOGGLE LOGIC
         const uiMaster = document.getElementById('ui-master');
-        const fabSearch = document.getElementById('fabSearchCont');
         const viewport = document.getElementById('viewport');
         const canvas = document.getElementById('galaxy-canvas');
+        const navHeader = document.getElementById('nav-header');
 
-        viewport.addEventListener('click', (e) => { if (e.target === viewport) toggleUI(false); });
-        canvas.addEventListener('click', () => toggleUI(true));
+        viewport.addEventListener('click', (e) => {
+            if (e.target === viewport) uiMaster.classList.add('ui-hidden');
+        });
+        navHeader.addEventListener('click', (e) => {
+            if (e.target === navHeader) uiMaster.classList.add('ui-hidden');
+        });
 
-        function toggleUI(show) {
-            if(show) {
-                uiMaster.classList.remove('ui-hidden');
-                fabSearch.classList.remove('ui-hidden');
-            } else {
-                uiMaster.classList.add('ui-hidden');
-                fabSearch.classList.add('ui-hidden');
-            }
-        }
+        canvas.addEventListener('click', () => {
+            uiMaster.classList.remove('ui-hidden');
+        });
     </script>
 
     <script>
+        // ────────────────────────────────────────────────
+        // MASTER CATEGORIES & LINK DATABASE
+        // ────────────────────────────────────────────────
         const categories = [
             { id: 'core', name: 'Multiverse Core' },
             { id: 'featured', name: 'Olympus Featured Realms' },
             { id: 'renewed', name: 'A Renewed World' },
-            { id: 'mining', name: 'Industrial Mining & Oil' },
+            { id: 'afterlife', name: 'The Afterlife & Beyond' },
+            { id: 'abyssal', name: 'Abyssal & Aquatic Realms' },
             { id: 'tech', name: 'The Tech Stack' },
+            { id: 'hardware', name: 'Computers & Auctions' },
+            { id: 'mobile', name: 'Mobile & Comms' },
             { id: 'apparel', name: 'Elite Apparel' },
+            { id: 'shoes', name: 'Footwear & Kicks' },
+            { id: 'jewelry', name: 'Jewelry Vault' },
+            { id: 'watches', name: 'Horology & Watches' },
+            { id: 'beauty', name: 'Health & Aesthetics' },
+            { id: 'home', name: 'Home & Habitat' },
+            { id: 'leisure', name: 'Leisure & Attractions' },
+            { id: 'food', name: 'Global Food Ops' },
+            { id: 'travel', name: 'Global Atlas' },
             { id: 'finance', name: 'Crypto & Fintech' },
-            { id: 'kids', name: 'Kids Zone' }
+            { id: 'entertainment', name: 'Media & Entertainment' },
+            { id: 'kids', name: 'Kids Zone & Discovery' },
+            { id: 'knowledge', name: 'Knowledge Hub' },
+            { id: 'mining', name: 'Mining & Minerals' },
+            { id: 'oilgas', name: 'Oil, Gas & Energy' },
+            { id: 'markets', name: 'Financial Markets' },
+            { id: 'shipping', name: 'Global Logistics' },
+            { id: 'tracking', name: 'Live Manifests & Tracking' },
+            { id: 'news', name: 'News & Current Events' },
+            { id: 'health', name: 'Health & Wellness' },
+            { id: 'law', name: 'Law & Legal' },
+            { id: 'farming', name: 'Farming & Agriculture' },
+            { id: 'science', name: 'Science & Research' },
+            { id: 'education', name: 'Education & Academics' },
+            { id: 'boating', name: 'Boating & Sailing' },
+            { id: 'fishing', name: 'Fishing & Angling' },
+            { id: 'gardening', name: 'Gardening & Urban Farming' },
+            { id: 'outdoors', name: 'Hiking & Adventure' },
+            { id: 'music', name: 'Music & Soundscapes' },
+            { id: 'arts', name: 'Visual Arts' },
+            { id: 'gaming', name: 'Gaming & Esports' },
+            { id: 'photo', name: 'Photography' },
+            { id: 'culinary', name: 'Culinary Arts' },
+            { id: 'pets', name: 'Pet Care & Wildlife' },
+            { id: 'fitness', name: 'Fitness & Movement' },
+            { id: 'esoteric', name: 'Mythology & Esoteric' }
         ];
 
         const linkData = {
             core: [
                 {n: "Olympus Core", u: "https://nexusvortex.ca"},
                 {n: "Artemis OS", u: "https://artemis-os.vercel.app/"},
-                {n: "Save the Citizen", u: "https://save-the-citizen.vercel.app/"}
+                {n: "The Flying Dutchman", u: "https://the-flying-dutchman.vercel.app/"},
+                {n: "Nexus Symbiote", u: "https://nexus-symbiote.onrender.com/"}
             ],
             featured: [
                 {n: "REM-PSI Mauve", u: "https://rem-psi-mauve.vercel.app/"},
+                {n: "Olympus LAC", u: "https://olympus-lac.vercel.app/"},
+                {n: "Architect Artemis", u: "https://architect-artemis.vercel.app/"},
+                {n: "Hyperion Gravitas", u: "https://hyperion-gravitas.vercel.app/"},
+                {n: "Mega City Liard", u: "https://mega-city-liard.vercel.app/"},
+                {n: "Axiom Repository", u: "https://axiom-repository.vercel.app/"},
+                {n: "Grief Gully", u: "https://grief-gully.vercel.app/"},
+                {n: "Olympian Finances", u: "https://olympian-finances.vercel.app/"},
+                {n: "Magic Mirror Puce", u: "https://magic-mirror-puce.vercel.app/"},
+                {n: "The Glass Slipper", u: "https://the-glass-slipper.vercel.app/"},
                 {n: "Aethelgard Five", u: "https://aethelgard-five.vercel.app/"},
+                {n: "Hercules Nine", u: "https://hercules-nine.vercel.app/"},
                 {n: "Neon Racer Ecru", u: "https://neon-racer-ecru.vercel.app/"},
-                {n: "Grief Gully", u: "https://grief-gully.vercel.app/"}
+                {n: "Colossus XI", u: "https://colossus-xi.vercel.app/"},
+                {n: "Zeus v Hades", u: "https://zeus-v-hades.vercel.app/"},
+                {n: "Merlin Mandates", u: "https://merlin-mandates.vercel.app/"},
+                {n: "Convergence Murex", u: "https://convergence-murex.vercel.app/"},
+                {n: "Artemis Hub", u: "https://artemis-hub.vercel.app/"}
             ],
-            mining: [
-                {n: "Oil & Gas Portal", u: "#"},
-                {n: "BlockDAG Mining", u: "https://blockdag.network"},
-                {n: "Nexus Logistics", u: "#"}
+            renewed: [
+                {n: "Aetheris Business Model", u: "https://aetheris-business-model.vercel.app/"},
+                {n: "Olympus Aetheris", u: "https://olympus-aetheris.vercel.app/"}
+            ],
+            afterlife: [
+                {n: "The Afterlife", u: "https://the-afterlife.vercel.app/"}
+            ],
+            abyssal: [
+                {n: "Abyssal Voyage (Amusement Ride)", u: "https://abyssal-voyage-lemon.vercel.app/"},
+                {n: "Georgia Aquarium Experience", u: "https://georgia-aquarium.vercel.app/"}
             ],
             tech: [
+                {n: "Google Workspace", u: "https://workspace.google.com"},
+                {n: "Microsoft 365", u: "https://www.office.com"},
+                {n: "Apple iCloud", u: "https://www.icloud.com"},
                 {n: "GitHub", u: "https://github.com"},
+                {n: "Vercel", u: "https://vercel.com"},
                 {n: "Three.js Journey", u: "https://threejs-journey.com"},
-                {n: "Vercel Build", u: "https://vercel.com"}
+                {n: "Ask Artemis Tech Oracle", u: "https://architect-artemis.vercel.app/", note: "Code, stack & deployment advice"}
+            ],
+            hardware: [
+                {n: "eBay Computer Auctions", u: "https://www.ebay.com/b/Computers-Tablets-Network-Hardware/58058/bn_1865247"},
+                {n: "Memory Express", u: "https://www.memoryexpress.com"},
+                {n: "Canada Computers", u: "https://www.canadacomputers.com"},
+                {n: "Newegg", u: "https://www.newegg.ca"},
+                {n: "GovDeals Auctions", u: "https://www.govdeals.com"},
+                {n: "Dell Refurbished", u: "https://www.dellrefurbished.ca"},
+                {n: "B&H Photo Video", u: "https://www.bhphotovideo.com"}
+            ],
+            mobile: [
+                {n: "Telus Mobility", u: "https://www.telus.com"},
+                {n: "Bell Canada", u: "https://www.bell.ca"},
+                {n: "Rogers Wireless", u: "https://www.rogers.com"},
+                {n: "Freedom Mobile", u: "https://www.freedommobile.ca"},
+                {n: "Spigen Accessories", u: "https://www.spigen.com"},
+                {n: "Dbrand Skins", u: "https://dbrand.com"},
+                {n: "Best Buy Mobile", u: "https://www.bestbuy.ca"}
             ],
             apparel: [
-                {n: "Elite Apparel Store", u: "#"},
-                {n: "Cyberpunk Streetwear", u: "#"}
+                {n: "Shein", u: "https://www.shein.com"},
+                {n: "Nike", u: "https://www.nike.com"},
+                {n: "Adidas", u: "https://www.adidas.ca"},
+                {n: "Zara", u: "https://www.zara.com"},
+                {n: "H&M", u: "https://www2.hm.com"},
+                {n: "Lululemon", u: "https://shop.lululemon.com"}
+            ],
+            shoes: [
+                {n: "Foot Locker", u: "https://www.footlocker.ca"},
+                {n: "StockX", u: "https://stockx.com"},
+                {n: "GOAT", u: "https://www.goat.com"},
+                {n: "Nike SNKRS", u: "https://www.nike.com/launch"},
+                {n: "ALDO", u: "https://www.aldoshoes.com"},
+                {n: "DSW Designer Shoe Warehouse", u: "https://www.dsw.ca"}
+            ],
+            jewelry: [
+                {n: "Tiffany & Co.", u: "https://www.tiffany.ca"},
+                {n: "Cartier", u: "https://www.cartier.com"},
+                {n: "Swarovski", u: "https://www.swarovski.com"},
+                {n: "Mejuri", u: "https://mejuri.com"},
+                {n: "Peoples Jewellers", u: "https://www.peoplesjewellers.com"}
+            ],
+            watches: [
+                {n: "Chrono24 Auctions", u: "https://www.chrono24.ca"},
+                {n: "Rolex", u: "https://www.rolex.com"},
+                {n: "Omega", u: "https://www.omegawatches.com"},
+                {n: "Seiko", u: "https://www.seikowatches.com"},
+                {n: "G-Shock", u: "https://gshock.ca"},
+                {n: "Hodinkee Shop", u: "https://shop.hodinkee.com"}
+            ],
+            beauty: [
+                {n: "Sephora", u: "https://www.sephora.com"},
+                {n: "MAC Cosmetics", u: "https://www.maccosmetics.ca"},
+                {n: "Shoppers Drug Mart", u: "https://www.shoppersdrugmart.ca"},
+                {n: "Bath & Body Works", u: "https://www.bathandbodyworks.ca"}
+            ],
+            home: [
+                {n: "IKEA", u: "https://www.ikea.com"},
+                {n: "Wayfair", u: "https://www.wayfair.ca"},
+                {n: "HomeSense", u: "https://www.homesense.ca"},
+                {n: "Crate & Barrel", u: "https://www.crateandbarrel.ca"},
+                {n: "Pottery Barn", u: "https://www.potterybarn.ca"}
+            ],
+            leisure: [
+                {n: "Cineplex", u: "https://www.cineplex.com"},
+                {n: "Banff National Park", u: "https://www.pc.gc.ca/en/pn-np/ab/banff"},
+                {n: "West Edmonton Mall", u: "https://www.wem.ca"},
+                {n: "AllTrails Canada", u: "https://www.alltrails.com/canada"},
+                {n: "Trans Canada Trail", u: "https://tctrail.ca"}
+            ],
+            food: [
+                {n: "Instacart", u: "https://www.instacart.com"},
+                {n: "SkipTheDishes", u: "https://www.skipthedishes.com"},
+                {n: "HelloFresh", u: "https://www.hellofresh.ca"},
+                {n: "Uber Eats", u: "https://www.ubereats.com"},
+                {n: "DoorDash", u: "https://www.doordash.com"}
+            ],
+            travel: [
+                {n: "Atlas Obscura", u: "https://www.atlasobscura.com"},
+                {n: "Expedia", u: "https://www.expedia.ca"},
+                {n: "Airbnb", u: "https://www.airbnb.ca"},
+                {n: "Skyscanner", u: "https://www.skyscanner.ca"},
+                {n: "SpaceX", u: "https://www.spacex.com"}
             ],
             finance: [
+                {n: "BlockDAG Network", u: "https://blockdag.network"},
+                {n: "Binance", u: "https://www.binance.com"},
                 {n: "Wealthsimple", u: "https://www.wealthsimple.com"},
-                {n: "Binance Terminal", u: "https://www.binance.com"}
+                {n: "Coinbase", u: "https://www.coinbase.com"}
+            ],
+            entertainment: [
+                {n: "Netflix", u: "https://www.netflix.com"},
+                {n: "Twitch", u: "https://www.twitch.tv"},
+                {n: "Indigo / Chapters", u: "https://www.chapters.indigo.ca"},
+                {n: "GameStop", u: "https://www.gamestop.ca"},
+                {n: "Mastermind Toys", u: "https://www.mastermindtoys.com"}
             ],
             kids: [
-                {n: "Rock & Mineral Discovery", u: "https://kids.nationalgeographic.com/science/article/rocks-and-minerals"},
-                {n: "Peppa Pig Official", u: "https://peppapig.com"}
+                {n: "PBS Kids", u: "https://pbskids.org"},
+                {n: "National Geographic Kids", u: "https://kids.nationalgeographic.com"},
+                {n: "NatGeo: Rocks & Minerals", u: "https://kids.nationalgeographic.com/science/article/rocks-and-minerals"},
+                {n: "Peppa Pig Official", u: "https://peppapig.com"},
+                {n: "ABCmouse", u: "https://www.abcmouse.com"},
+                {n: "Cosmic Kids Yoga", u: "https://cosmickids.com"}
+            ],
+            knowledge: [
+                {n: "Wikipedia", u: "https://en.wikipedia.org", note: "The world’s encyclopedia"},
+                {n: "Wikidata", u: "https://www.wikidata.org", note: "Structured facts & queries"},
+                {n: "WikiHow", u: "https://www.wikihow.com", note: "Step-by-step guides for everything"},
+                {n: "Internet Archive", u: "https://archive.org", note: "Wayback Machine + books & media"},
+                {n: "OpenStreetMap", u: "https://www.openstreetmap.org", note: "Community-driven world maps"},
+                {n: "Ask Artemis Knowledge Oracle", u: "https://architect-artemis.vercel.app/", note: "Summarize or connect these sources"}
+            ],
+            mining: [
+                {n: "USGS Mineral Summaries", u: "https://pubs.usgs.gov/publication/mcs2026", note: "Official 2026 global production & reserves"},
+                {n: "Mining.com", u: "https://www.mining.com", note: "Daily industry news & jobs"},
+                {n: "Kitco Metals", u: "https://www.kitco.com", note: "Real-time precious metals prices"},
+                {n: "Artemis Mining Oracle", u: "https://architect-artemis.vercel.app/", note: "Yield forecasts & regulatory risk"}
+            ],
+            oilgas: [
+                {n: "EIA Energy Outlook", u: "https://www.eia.gov/outlooks/steo/", note: "2026 global production forecasts"},
+                {n: "Rigzone", u: "https://www.rigzone.com", note: "Upstream jobs & news"},
+                {n: "Artemis Energy Forecaster", u: "https://architect-artemis.vercel.app/", note: "Drilling viability & price predictions"}
+            ],
+            shipping: [
+                {n: "Maersk Global", u: "https://www.maersk.com", note: "Ocean freight & global routes"},
+                {n: "DHL Global", u: "https://www.dhl.com", note: "International express shipping"},
+                {n: "Artemis Logistics Oracle", u: "https://architect-artemis.vercel.app/", note: "Customs pulls & route optimization"}
+            ],
+            tracking: [
+                {n: "17TRACK", u: "https://www.17track.net", note: "Global parcel & container tracking"},
+                {n: "Flightradar24", u: "https://www.flightradar24.com", note: "Live flight paths & manifests"},
+                {n: "MarineTraffic", u: "https://www.marinetraffic.com", note: "Vessel tracking & boating manifests"},
+                {n: "Artemis Tracking Hub", u: "https://architect-artemis.vercel.app/", note: "Predictive delay analysis"}
+            ],
+            news: [
+                {n: "Google News", u: "https://news.google.com", note: "Location-aware hyper-local news"},
+                {n: "Reuters", u: "https://www.reuters.com", note: "Neutral global wire service"},
+                {n: "Positive News", u: "https://www.positive.news", note: "Solution-focused journalism"},
+                {n: "Artemis Balanced News", u: "https://architect-artemis.vercel.app/", note: "Pulls positive/negative balance by IP"}
+            ],
+            health: [
+                {n: "Mayo Clinic", u: "https://www.mayoclinic.org", note: "World-class medical database"},
+                {n: "WHO Global Health", u: "https://www.who.int", note: "International health data & alerts"},
+                {n: "Headspace", u: "https://www.headspace.com", note: "Mental health tools"},
+                {n: "Artemis Health Oracle", u: "https://architect-artemis.vercel.app/", note: "Personalized wellness plans"}
+            ],
+            law: [
+                {n: "Justia", u: "https://www.justia.com", note: "Free legal research & forms"},
+                {n: "Cornell LII", u: "https://www.law.cornell.edu", note: "Free legal encyclopedia"},
+                {n: "Artemis Legal Oracle", u: "https://architect-artemis.vercel.app/", note: "Draft contracts or predict outcomes"}
+            ],
+            farming: [
+                {n: "AgCareers", u: "https://www.agcareers.com", note: "Global agriculture jobs"},
+                {n: "Farmonaut", u: "https://farmonaut.com", note: "AI-powered satellite crop monitoring"},
+                {n: "Artemis Farm Forecaster", u: "https://architect-artemis.vercel.app/", note: "Weather & soil market predictions"}
+            ],
+            boating: [
+                {n: "YachtCharterFleet", u: "https://www.yachtcharterfleet.com", note: "Global yacht charters"},
+                {n: "Navionics", u: "https://www.navionics.com", note: "Marine charts & navigation"},
+                {n: "Artemis Boating Planner", u: "https://architect-artemis.vercel.app/", note: "Tide & route forecasting"}
+            ],
+            fishing: [
+                {n: "Fishbrain", u: "https://fishbrain.com", note: "Global catch logging & community"},
+                {n: "FishingBooker", u: "https://fishingbooker.com", note: "Book charters worldwide"},
+                {n: "Artemis Fishing Oracle", u: "https://architect-artemis.vercel.app/", note: "Solunar timing + location predictions"}
+            ],
+            gardening: [
+                {n: "Gardeners World", u: "https://www.gardenersworld.com", note: "Global plant guides"},
+                {n: "OpenFarm", u: "https://openfarm.cc", note: "Free sustainable gardening"},
+                {n: "Artemis Flora Oracle", u: "https://architect-artemis.vercel.app/", note: "Botany + climate-matched plans"}
+            ],
+            outdoors: [
+                {n: "AllTrails", u: "https://www.alltrails.com", note: "Global hiking trails"},
+                {n: "Hipcamp", u: "https://www.hipcamp.com", note: "Private campsites worldwide"},
+                {n: "Artemis Adventure Forecaster", u: "https://architect-artemis.vercel.app/", note: "Weather + safety predictions"}
+            ],
+            music: [
+                {n: "Bandcamp", u: "https://bandcamp.com", note: "Independent music discovery"},
+                {n: "Splice", u: "https://splice.com", note: "Sounds & production tools"},
+                {n: "Artemis Soundscape Creator", u: "https://architect-artemis.vercel.app/", note: "Custom playlists & mood matching"}
+            ],
+            arts: [
+                {n: "Skillshare", u: "https://www.skillshare.com", note: "Creative classes"},
+                {n: "DeviantArt", u: "https://www.deviantart.com", note: "Global artist community"},
+                {n: "Artemis Creative Muse", u: "https://architect-artemis.vercel.app/", note: "Idea generation & critique"}
+            ],
+            gaming: [
+                {n: "Steam", u: "https://store.steampowered.com"},
+                {n: "itch.io", u: "https://itch.io"},
+                {n: "Artemis Game Strategist", u: "https://architect-artemis.vercel.app/", note: "Strategy & esports forecasts"}
+            ],
+            photo: [
+                {n: "Unsplash", u: "https://unsplash.com"},
+                {n: "500px", u: "https://500px.com"},
+                {n: "Artemis Photo Coach", u: "https://architect-artemis.vercel.app/", note: "Composition & editing advice"}
+            ],
+            culinary: [
+                {n: "Serious Eats", u: "https://www.seriouseats.com"},
+                {n: "MasterClass", u: "https://www.masterclass.com"},
+                {n: "Artemis Recipe Oracle", u: "https://architect-artemis.vercel.app/", note: "Personalized recipes & pairings"}
+            ],
+            pets: [
+                {n: "Chewy", u: "https://www.chewy.com"},
+                {n: "Petfinder", u: "https://www.petfinder.com"},
+                {n: "Artemis Pet Matchmaker", u: "https://architect-artemis.vercel.app/", note: "Breed & care recommendations"}
+            ],
+            fitness: [
+                {n: "Strava", u: "https://www.strava.com"},
+                {n: "Peloton", u: "https://www.onepeloton.com"},
+                {n: "Artemis Workout Optimizer", u: "https://architect-artemis.vercel.app/", note: "Personalized fitness plans"}
+            ],
+            esoteric: [
+                {n: "Sacred Texts Archive", u: "https://www.sacred-texts.com", note: "All world scriptures & mythology"},
+                {n: "Theoi Greek Mythology", u: "https://www.theoi.com", note: "Definitive guide to Greek gods"},
+                {n: "Artemis Myth Weaver", u: "https://architect-artemis.vercel.app/", note: "Connect ancient myths to modern life"}
             ]
         };
 
         const vidUrl = "https://files.catbox.moe/qnb2fw.mp4";
 
-        function renderSidebar() {
-            const sb = document.getElementById('sidebar');
-            categories.forEach(cat => {
-                sb.innerHTML += `<a class="menu-link" id="link-${cat.id}" onclick="showSection('${cat.id}')">${cat.name}</a>`;
-            });
-        }
+        // ────────────────────────────────────────────────
+        // SIDEBAR GENERATION
+        // ────────────────────────────────────────────────
+        const sidebar = document.getElementById('sidebar');
+        categories.forEach(cat => {
+            sidebar.innerHTML += `<a class="menu-link" id="link-${cat.id}" onclick="showSection('${cat.id}')">${cat.name}</a>`;
+        });
 
+        // ────────────────────────────────────────────────
+        // SHOW CATEGORY
+        // ────────────────────────────────────────────────
         function showSection(id) {
             const grid = document.getElementById('mallGrid');
             const indicator = document.getElementById('cat-indicator');
+            
             document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
-            document.getElementById(`link-${id}`)?.classList.add('active-link');
+            const activeLink = document.getElementById(`link-${id}`);
+            if(activeLink) activeLink.classList.add('active-link');
 
-            indicator.innerText = categories.find(c => c.id === id)?.name || id;
+            const categoryName = categories.find(c => c.id === id)?.name || id;
+            indicator.innerText = categoryName;
+            
             grid.innerHTML = '';
             (linkData[id] || []).forEach(item => {
                 grid.innerHTML += `
                 <a href="${item.u}" target="_blank" class="hologram-card">
-                    <div class="video-box"><video class="masked-video" muted loop playsinline autoplay><source src="${vidUrl}" type="video/mp4"></video></div>
-                    <div class="label">${item.n}</div>
+                    <div class="video-box">
+                        <video class="masked-video" muted loop playsinline autoplay>
+                            <source src="${vidUrl}" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="label">${item.n}${item.note ? '<br><small style="opacity:0.7;">' + item.note + '</small>' : ''}</div>
                 </a>`;
             });
-            if(window.innerWidth < 1100) document.getElementById('sidebar').classList.remove('active');
+
+            if(window.innerWidth < 1100 && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
         }
 
+        // ────────────────────────────────────────────────
+        // SYNCED SEARCH (top bar + FAB)
+        // ────────────────────────────────────────────────
         function syncSearch(val) {
             const mainSearch = document.getElementById('mallSearch');
             const fabInput = document.getElementById('fabInput');
-            mainSearch.value = val;
-            fabInput.value = val;
+            if (mainSearch) mainSearch.value = val;
+            if (fabInput) fabInput.value = val;
             
-            const query = val.toLowerCase();
+            const query = (val || '').toLowerCase().trim();
             const grid = document.getElementById('mallGrid');
+
             if(query.length > 0) {
+                document.getElementById('cat-indicator').innerText = "Global Search";
+                document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
                 grid.innerHTML = '';
+                
                 Object.values(linkData).flat().forEach(item => {
-                    if(item.n.toLowerCase().includes(query)) {
+                    const text = (item.n + (item.note || '')).toLowerCase();
+                    if(text.includes(query)) {
                         grid.innerHTML += `
                         <a href="${item.u}" target="_blank" class="hologram-card">
                             <div class="video-box"><video class="masked-video" muted loop playsinline autoplay><source src="${vidUrl}" type="video/mp4"></video></div>
-                            <div class="label">${item.n}</div>
+                            <div class="label">${item.n}${item.note ? '<br><small style="opacity:0.7;">' + item.note + '</small>' : ''}</div>
                         </a>`;
                     }
                 });
-            } else { showSection('core'); }
+            } else {
+                showSection('core');
+            }
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function toggleFabSearch() { document.getElementById('fabSearchCont').classList.toggle('active'); if(document.getElementById('fabSearchCont').classList.contains('active')) document.getElementById('fabInput').focus(); }
+        // ────────────────────────────────────────────────
+        // SIDEBAR & FAB TOGGLES
+        // ────────────────────────────────────────────────
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('active'); 
+        }
 
-        window.onload = () => { renderSidebar(); showSection('core'); };
+        function toggleFabSearch() { 
+            const cont = document.getElementById('fabSearchCont');
+            cont.classList.toggle('active');
+            if (cont.classList.contains('active')) {
+                document.getElementById('fabInput').focus();
+            }
+        }
+
+        // Close FAB on outside click
+        document.addEventListener('click', e => {
+            const fab = document.getElementById('fabSearchCont');
+            if (fab && !fab.contains(e.target)) {
+                fab.classList.remove('active');
+            }
+        });
+
+        window.onload = () => { 
+            showSection('core'); 
+        };
     </script>
 </body>
 </html>
