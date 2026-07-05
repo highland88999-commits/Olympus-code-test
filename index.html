@@ -1,557 +1,507 @@
+Meet the gods og 
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OLYMPUS | GRAND MULTIVERSE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLYMPUS: MEET THE GODS | RENEWAL PLAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --neon-cyan: #00ffff;
-            --neon-purple: #bc13fe;
-            --black-bloom: #050505;
-            --glow: 0 0 20px rgba(0,255,255,0.4);
-            --transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #050014;
+            color: #00ff9f;
+            overflow-x: hidden;
         }
 
-        body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background: var(--black-bloom); font-family: 'Segoe UI', sans-serif; color: #fff; }
+        h1, h2, h3, .vt323 {
+            font-family: 'VT323', monospace;
+        }
+        
+        /* Neon & Glitch Effects */
+        .neon-text {
+            text-shadow: 0 0 5px #00ff9f, 0 0 10px #00ff9f, 0 0 20px #ff00ff, 0 0 40px #00ffff;
+        }
+        
+        .bloom-btn {
+            box-shadow: 0 0 15px rgba(0, 255, 159, 0.4);
+            transition: all 0.3s ease;
+        }
+        .bloom-btn:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.7), 0 0 50px rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
 
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; display:block; touch-action:none; }
+        /* Glassmorphism Holoframes */
+        .holoframe {
+            background: rgba(10, 10, 25, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .holoframe::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 159, 0.8), transparent);
+        }
 
-        .ui-master { position: fixed; inset: 0; opacity: 1; transition: var(--transition); pointer-events: all; z-index: 2; display: flex; flex-direction: column; }
-        .ui-hidden { opacity: 0; pointer-events: none; transform: scale(1.02); filter: blur(8px); }
+        /* Golden Thread for Zigzag */
+        .golden-thread-container {
+            position: relative;
+        }
+        .golden-thread {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: linear-gradient(to bottom, #ffd700, #ff8c00, #ffd700);
+            box-shadow: 0 0 15px #ffd700, 0 0 30px #ff8c00;
+            transform: translateX(-50%);
+            z-index: 0;
+            opacity: 0.6;
+        }
 
-        .nav-header { padding: 20px; display: flex; align-items: center; gap: 15px; z-index: 3000; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
+        /* Scanline Overlay */
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 159, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+        }
 
-        .menu-btn { width: 50px; height: 50px; flex-shrink: 0; background: rgba(0,0,0,0.8); border: 1.5px solid var(--neon-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--neon-cyan); font-size: 1.2rem; cursor: pointer; box-shadow: var(--glow); }
+        /* Viewport Transition */
+        #viewport-modal {
+            transition: opacity 0.3s ease;
+        }
+        .viewport-content {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-        .search-container { flex-grow: 1; max-width: 600px; margin: 0 auto; }
-        #mallSearch { width: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border: 1.5px solid rgba(0,255,255,0.3); padding: 12px 25px; border-radius: 30px; color: #fff; outline: none; box-shadow: var(--glow); font-size: 0.9rem; box-sizing: border-box; transition: 0.3s; }
-        #mallSearch:focus { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(188, 19, 254, 0.5); }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #00ff9f; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff00ff; }
 
-        .sidebar { position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: rgba(5,5,5,0.95); backdrop-filter: blur(30px); border-right: 1px solid var(--neon-cyan); z-index: 4000; transition: var(--transition); padding: 100px 0 50px 0; overflow-y: auto; }
-        .sidebar.active { left: 0; }
-        .menu-link { padding: 16px 30px; display: block; color: #aaa; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; border-bottom: 1px solid rgba(0,255,255,0.05); transition: 0.3s; cursor: pointer; }
-        .menu-link:hover, .menu-link.active-link { color: var(--neon-cyan); background: rgba(0,255,255,0.05); padding-left: 40px; border-left: 3px solid var(--neon-cyan); }
+        /* Infrastructure WebGL Grid Animation */
+        .webgl-grid::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: 0; left: -50%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.2) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 10s linear infinite;
+            z-index: 0;
+        }
 
-        .viewport { flex-grow: 1; overflow-y: auto; padding: 20px 20px 180px; display: flex; flex-direction: column; align-items: center; scrollbar-width: none; cursor: crosshair; }
-        .viewport::-webkit-scrollbar { display: none; }
-
-        .cat-banner { color: var(--neon-cyan); letter-spacing: 12px; font-weight: 900; text-transform: uppercase; margin-bottom: 50px; text-shadow: var(--glow); text-align: center; font-size: 1.5rem; pointer-events: none; }
-
-        .icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 25px; width: 100%; max-width: 1500px; pointer-events: none; }
-
-        .hologram-card { background: rgba(15,15,20,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0,255,255,0.15); border-radius: 15px; text-decoration: none; overflow: hidden; transition: 0.4s; display: flex; flex-direction: column; pointer-events: auto; cursor: pointer; opacity: 1; }
-        .hologram-card:hover { transform: translateY(-8px); border-color: var(--neon-cyan); box-shadow: 0 0 30px rgba(0,255,255,0.4); }
-        .hologram-card.hidden { opacity: 0.25; pointer-events: none; transform: scale(0.95); }
-        .video-box { width: 100%; height: 110px; background: #000; position: relative; }
-        .masked-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: hue-rotate(10deg); }
-        .label { padding: 15px; color: #fff; font-size: 0.7rem; text-align: center; letter-spacing: 1.5px; text-transform: uppercase; font-weight: bold; line-height: 1.4; }
-
-        .fab-search-container { position: fixed; bottom: 30px; right: 30px; display: flex; align-items: center; gap: 10px; z-index: 6000; transition: var(--transition); }
-        .fab-trigger { width: 60px; height: 60px; border-radius: 50%; background: var(--black-bloom); border: 2px solid var(--neon-cyan); box-shadow: var(--glow); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
-        .fab-trigger:hover { border-color: var(--neon-purple); box-shadow: 0 0 25px var(--neon-purple); color: var(--neon-purple); transform: scale(1.1); }
-        .fab-input { width: 0; opacity: 0; height: 50px; border-radius: 25px; border: 1.5px solid var(--neon-cyan); background: rgba(0,0,0,0.9); color: white; padding: 0; transition: all 0.4s ease; outline: none; backdrop-filter: blur(10px); }
-        .fab-search-container.active .fab-input { width: 280px; opacity: 1; padding: 0 20px; }
-
-        #obs-hint { position: fixed; bottom: 10px; width: 100%; text-align: center; color: rgba(0,255,255,0.4); font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; pointer-events: none; z-index: 5000; }
-
-        @media (max-width: 768px) {
-            .fab-search-container { bottom: 20px; right: 20px; }
-            .fab-trigger { width: 50px; height: 50px; font-size: 1.3rem; }
-            .fab-search-container.active .fab-input { width: 220px; }
-            .viewport { padding-bottom: 160px; }
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); }
         }
     </style>
 </head>
-<body>
-
-    <div id="obs-hint">Click background to toggle Observation Mode</div>
-
-    <canvas id="galaxy-canvas"></canvas>
-
-    <!-- FLOATING FAB SEARCH -->
-    <div class="fab-search-container" id="fabSearchCont">
-        <input type="text" id="fabInput" class="fab-input" placeholder="SCAN THE MULTIVERSE..." onkeyup="syncSearch(this.value)">
-        <div class="fab-trigger" onclick="toggleFabSearch()"><i class="fa-solid fa-magnifying-glass"></i></div>
-    </div>
-
-    <div id="ui-master" class="ui-master">
-        <header class="nav-header" id="nav-header">
-            <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-            <div class="search-container">
-                <input type="text" id="mallSearch" placeholder="SEARCH ENTIRE DIRECTORY..." onkeyup="syncSearch(this.value)">
+<body class="min-h-screen text-cyan-50">
+    <div class="scanline"></div>
+    
+    <nav class="border-b border-cyan-500/30 bg-black/50 backdrop-blur-md fixed w-full z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-full flex items-center justify-center text-black font-bold text-xl vt323">Ω</div>
+                <div>
+                    <span class="text-2xl tracking-widest neon-text vt323">OLYMPUS</span>
+                    <span class="text-xs text-purple-400 block -mt-1 uppercase">Meet The Gods • Renewal Plan</span>
+                </div>
             </div>
-        </header>
+            <div class="hidden md:flex gap-8 text-sm uppercase tracking-widest font-bold">
+                <a href="#mission" class="hover:text-cyan-400 transition text-shadow">MISSION</a>
+                <a href="#pillars" class="hover:text-cyan-400 transition text-shadow">PILLARS</a>
+                <a href="#infrastructure" class="hover:text-cyan-400 transition text-shadow">INFRASTRUCTURE</a>
+            </div>
+        </div>
+    </nav>
 
-        <nav class="sidebar" id="sidebar"></nav>
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <video autoplay loop muted playsinline class="absolute w-full h-full object-cover opacity-40 mix-blend-screen pointer-events-none">
+            <source src="https://files.catbox.moe/5dc4av.mov" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#050014]/50 to-[#050014]"></div>
 
-        <main class="viewport" id="viewport">
-            <div class="cat-banner" id="cat-indicator">Olympus Core</div>
-            <div class="icon-grid" id="mallGrid"></div>
-        </main>
+        <div class="relative z-10 text-center px-6">
+            <h1 class="text-7xl md:text-9xl leading-none font-bold neon-text mb-6">
+                OLYMPUS
+            </h1>
+            <h2 class="text-3xl md:text-5xl text-cyan-300 mb-8 max-w-4xl mx-auto uppercase tracking-widest">
+                MEET THE GODS
+            </h2>
+            <div class="inline-block px-8 py-3 border border-pink-500/50 text-pink-400 text-sm tracking-[4px] uppercase bg-black/30 backdrop-blur-sm">
+                85 NODES • ONE MOUNTAIN
+            </div>
+        </div>
+    </section>
+
+    <section id="mission" class="py-24 relative uppercase">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <h2 class="text-6xl neon-text text-center mb-20">THE MISSION PROTOCOL</h2>
+            
+            <div class="golden-thread-container">
+                <div class="golden-thread hidden md:block"></div>
+
+                <div class="flex flex-col md:flex-row justify-end items-center mb-24 relative z-10">
+                    <div class="holoframe p-6 w-full md:w-5/12 mr-0 md:-ml-8 group">
+                        <div class="relative pt-[56.25%] overflow-hidden rounded-lg mb-4 border border-zinc-700">
+                            <video autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover">
+                                <source src="https://files.catbox.moe/dwurko.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="text-center mt-6">
+                            <h3 class="text-2xl text-cyan-400 mb-2">INITIALIZATION</h3>
+                            <p class="text-sm text-zinc-300 mb-6">THE FOUNDATION OF THE OLYMPUS NETWORK BEGINS HERE.</p>
+                            <a href="#pillars" class="bloom-btn inline-block px-6 py-2 bg-black text-cyan-400 border border-cyan-400 rounded-sm">ACCESS NODE</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-start items-center mb-24 relative z-10">
+                    <div class="holoframe p-6 w-full md:w-5/12 ml-0 md:-mr-8 group">
+                        <div class="relative pt-[56.25%] overflow-hidden rounded-lg mb-4 border border-zinc-700">
+                            <video autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover">
+                                <source src="https://files.catbox.moe/9c64ot.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="text-center mt-6">
+                            <h3 class="text-2xl text-purple-400 mb-2">ARCHITECTURAL GRID</h3>
+                            <p class="text-sm text-zinc-300 mb-6">SCALING INFRASTRUCTURE ACROSS ALL DIGITAL PLANES.</p>
+                            <a href="#pillars" class="bloom-btn inline-block px-6 py-2 bg-black text-purple-400 border border-purple-400 rounded-sm">ACCESS NODE</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-end items-center mb-24 relative z-10">
+                    <div class="holoframe p-6 w-full md:w-5/12 mr-0 md:-ml-8 group">
+                        <div class="relative pt-[56.25%] overflow-hidden rounded-lg mb-4 border border-zinc-700">
+                            <video autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover">
+                                <source src="https://files.catbox.moe/xt9bwl.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="text-center mt-6">
+                            <h3 class="text-2xl text-pink-400 mb-2">SYSTEM AUTONOMY</h3>
+                            <p class="text-sm text-zinc-300 mb-6">NODES OPERATING INDEPENDENTLY YET IN PERFECT HARMONY.</p>
+                            <a href="#pillars" class="bloom-btn inline-block px-6 py-2 bg-black text-pink-400 border border-pink-400 rounded-sm">ACCESS NODE</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-start items-center mb-24 relative z-10">
+                    <div class="holoframe p-6 w-full md:w-5/12 ml-0 md:-mr-8 group">
+                        <div class="relative pt-[56.25%] overflow-hidden rounded-lg mb-4 border border-zinc-700">
+                            <video autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover">
+                                <source src="https://files.catbox.moe/nn50cs.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="text-center mt-6">
+                            <h3 class="text-2xl text-cyan-400 mb-2">NEURAL EXPANSION</h3>
+                            <p class="text-sm text-zinc-300 mb-6">PUSHING THE BOUNDARIES OF MACHINE CAPABILITY.</p>
+                            <a href="#pillars" class="bloom-btn inline-block px-6 py-2 bg-black text-cyan-400 border border-cyan-400 rounded-sm">ACCESS NODE</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-end items-center mb-10 relative z-10">
+                    <div class="holoframe p-6 w-full md:w-5/12 mr-0 md:-ml-8 group">
+                        <div class="relative pt-[56.25%] overflow-hidden rounded-lg mb-4 border border-zinc-700">
+                            <video autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover">
+                                <source src="https://files.catbox.moe/fudw8l.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="text-center mt-6">
+                            <h3 class="text-2xl text-purple-400 mb-2">THE APEX</h3>
+                            <p class="text-sm text-zinc-300 mb-6">COMPLETE UNIFICATION OF THE OLYMPUS PROTOCOL.</p>
+                            <a href="#pillars" class="bloom-btn inline-block px-6 py-2 bg-black text-purple-400 border border-purple-400 rounded-sm">ACCESS NODE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pillars" class="py-24 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-black to-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-6xl neon-text text-center mb-6">PILLARS OF OLYMPUS</h2>
+            <p class="text-center text-cyan-400/70 mb-16 uppercase tracking-widest">Select a Node to open holographic viewport</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-center" id="node-grid">
+                </div>
+        </div>
+    </section>
+
+    <section id="infrastructure" class="py-24 border-t border-cyan-500/20 bg-[radial-gradient(circle_at_50%_0%,_#1a1a24_0%,_transparent_70%)] relative">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            
+            <div class="holoframe p-10 text-center mb-16 border-cyan-500/50">
+                <div class="text-3xl md:text-4xl text-white mb-6 font-bold" style="text-shadow: 0 0 15px #00ff9f;">
+                    "To raise $8 Billion Dollars, one need only raise $8 from 1/8th of the planet."
+                </div>
+                <div class="text-xl text-pink-500 vt323 tracking-widest" style="text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);">
+                    - Merlin<br>Founder of Olympus
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-10 mb-16">
+                <div class="holoframe webgl-grid h-[500px] flex items-center justify-center border-pink-500/50 overflow-hidden relative">
+                    <div class="relative z-10 text-center p-6 bg-black/60 backdrop-blur-sm border border-pink-500/30 rounded">
+                        <h3 class="text-2xl text-pink-500 mb-4 vt323 tracking-widest">[ INTERACTIVE 3D ROADMAP ]</h3>
+                        <p class="text-cyan-100 mb-2 uppercase">Aetheris &rarr; Mordor Smelting &rarr; Atlantis</p>
+                        <p class="text-xs text-zinc-500 uppercase tracking-widest">(Three.js Canvas Mount Point)</p>
+                    </div>
+                </div>
+
+                <div class="holoframe p-8">
+                    <h2 class="text-4xl vt323 text-cyan-400 border-b border-cyan-500/30 pb-4 mb-6">FINANCIAL GOAL: $8,000,000,000</h2>
+                    <p class="text-zinc-300 mb-8 text-lg">
+                        A global infrastructure shift requires economic and ecological synchronization. This project creates unprecedented job volume while neutralizing global waste.
+                    </p>
+                    
+                    <div class="mb-8">
+                        <h3 class="text-2xl text-white mb-2 uppercase tracking-wide">Phase 1: Aetheris</h3>
+                        <p class="text-zinc-400">Deploying a global air purification model. Securing the atmosphere is the mandatory prerequisite before ocean extraction begins.</p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-2xl text-white mb-2 uppercase tracking-wide">Phase 2: Mordor & The Great Pacific</h3>
+                        <p class="text-zinc-400">Extraction of the Great Pacific Garbage Patch. Sea life is washed natively and safely relocated. The extracted waste is smelted in the 'Mordor' industrial facilities, forged into a buoyant foundation.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl text-white mb-2 uppercase tracking-wide">Phase 3: Atlantis</h3>
+                        <p class="text-zinc-400">The floating forest, resort, and storm dome. Built entirely on the foundation of our repurposed waste, placed at the exact coordinates the garbage patch once rested.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="holoframe p-12 text-center mb-16 border-zinc-700 border-dashed bg-black/50">
+                <button class="bg-zinc-900 text-zinc-600 border-2 border-zinc-700 px-8 py-4 text-2xl vt323 tracking-[2px] uppercase cursor-not-allowed mb-4 w-full md:w-auto" disabled>
+                    Donate To Infrastructure
+                </button>
+                <div class="text-zinc-500 text-sm italic">
+                    Donation Gateway Will Open after Legal Compliance has completed.
+                </div>
+            </div>
+
+            <div class="mb-16">
+                <h2 class="text-5xl neon-text text-center mb-10">GLOBAL REGISTRY: ONBOARD STATUS</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[400px] overflow-y-auto p-4 holoframe bg-black/30 border-cyan-500/20" id="registryGrid">
+                    </div>
+            </div>
+
+            <div class="text-center">
+                <a href="mailto:stakeme10000@gmail.com" class="inline-block px-8 py-4 border border-pink-500 text-pink-500 hover:bg-pink-500/10 hover:shadow-[0_0_20px_rgba(255,0,255,0.4)] transition-all text-xl vt323 tracking-widest uppercase">
+                    Email Us Your Concerns or Interest
+                </a>
+            </div>
+            
+        </div>
+    </section>
+
+    <div id="viewport-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="viewport-content" class="holoframe w-11/12 h-5/6 flex flex-col relative viewport-content shadow-[0_0_50px_rgba(0,255,255,0.3)]">
+            <div class="bg-black/60 border-b border-cyan-500/50 p-3 flex justify-between items-center backdrop-blur-md">
+                <div class="flex items-center gap-3">
+                    <div class="animate-pulse w-3 h-3 bg-cyan-400 rounded-full"></div>
+                    <span id="viewport-title" class="uppercase tracking-widest text-cyan-300 font-bold vt323 text-xl">NODE NAME</span>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="toggleMaximize()" class="text-zinc-400 hover:text-cyan-400 transition" title="Minimize/Maximize">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
+                    <button onclick="closeViewport()" class="text-zinc-400 hover:text-pink-500 transition" title="Close Terminal">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-grow relative bg-black/40">
+                <div class="absolute inset-0 flex items-center justify-center -z-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-cyan-500/50"></i>
+                </div>
+                <iframe id="viewport-iframe" class="w-full h-full border-none rounded-b-xl" src="" allowfullscreen></iframe>
+            </div>
+        </div>
     </div>
 
-    <script type="importmap">
-        {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
-    </script>
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 1, 10000);
-        const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('galaxy-canvas'), antialias:true, alpha:true});
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.2;
-        controls.enableZoom = true;
-
-        const geometry = new THREE.BufferGeometry();
-        const vertices = [];
-        for (let i = 0; i < 25000; i++) {
-            vertices.push(THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000), THREE.MathUtils.randFloatSpread(6000));
-        }
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-        const material = new THREE.PointsMaterial({ color: 0x00ffff, size: 1.2, transparent: true, opacity: 0.7 });
-        scene.add(new THREE.Points(geometry, material));
-
-        const sun = new THREE.Mesh(new THREE.SphereGeometry(60, 64, 64), new THREE.MeshStandardMaterial({color: 0xbc13fe, emissive: 0xbc13fe, emissiveIntensity: 2}));
-        scene.add(sun);
-        
-        scene.add(new THREE.PointLight(0x00ffff, 4, 4000));
-        scene.add(new THREE.AmbientLight(0x111111));
-
-        camera.position.z = 1200;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        const uiMaster = document.getElementById('ui-master');
-        const viewport = document.getElementById('viewport');
-        const canvas = document.getElementById('galaxy-canvas');
-        const navHeader = document.getElementById('nav-header');
-
-        viewport.addEventListener('click', (e) => { if (e.target === viewport) uiMaster.classList.add('ui-hidden'); });
-        navHeader.addEventListener('click', (e) => { if (e.target === navHeader) uiMaster.classList.add('ui-hidden'); });
-        canvas.addEventListener('click', () => { uiMaster.classList.remove('ui-hidden'); });
-    </script>
+    <footer class="py-12 border-t border-cyan-900/50 bg-black text-center relative z-10">
+        <div class="text-sm opacity-50 uppercase tracking-[4px]">
+            OLYMPUS • 85 NODES • RENEWAL PLAN ACTIVE<br>
+            <span class="vt323 text-lg text-cyan-500 mt-2 block">v1.1.0 // SYSTEM ONLINE</span>
+        </div>
+    </footer>
 
     <script>
-        // ────────────────────────────────────────────────
-        // COMPLETE CATEGORY LIST
-        // ────────────────────────────────────────────────
-        const categories = [
-            { id: 'core', name: 'Multiverse Core' },
-            { id: 'featured', name: 'Olympus Featured Realms' },
-            { id: 'renewed', name: 'A Renewed World' },
-            { id: 'afterlife', name: 'The Afterlife & Beyond' },
-            { id: 'abyssal', name: 'Abyssal & Aquatic Realms' },
-            { id: 'tech', name: 'The Tech Stack' },
-            { id: 'hardware', name: 'Computers & Auctions' },
-            { id: 'mobile', name: 'Mobile & Comms' },
-            { id: 'apparel', name: 'Elite Apparel' },
-            { id: 'shoes', name: 'Footwear & Kicks' },
-            { id: 'jewelry', name: 'Jewelry Vault' },
-            { id: 'watches', name: 'Horology & Watches' },
-            { id: 'beauty', name: 'Health & Aesthetics' },
-            { id: 'home', name: 'Home & Habitat' },
-            { id: 'leisure', name: 'Leisure & Attractions' },
-            { id: 'food', name: 'Global Food Ops' },
-            { id: 'travel', name: 'Global Atlas' },
-            { id: 'finance', name: 'Crypto & Fintech' },
-            { id: 'entertainment', name: 'Media & Entertainment' },
-            { id: 'kids', name: 'Kids Zone & Discovery' },
-            { id: 'knowledge', name: 'Knowledge Hub' },
-            { id: 'mining', name: 'Mining & Minerals' },
-            { id: 'oilgas', name: 'Oil, Gas & Energy' },
-            { id: 'markets', name: 'Financial Markets' },
-            { id: 'shipping', name: 'Global Logistics' },
-            { id: 'tracking', name: 'Live Manifests & Tracking' },
-            { id: 'news', name: 'News & Current Events' },
-            { id: 'health', name: 'Health & Wellness' },
-            { id: 'law', name: 'Law & Legal' },
-            { id: 'farming', name: 'Farming & Agriculture' },
-            { id: 'science', name: 'Science & Research' },
-            { id: 'education', name: 'Education & Academics' },
-            { id: 'botanical', name: 'Botanical & Plant Shops' },
-            { id: 'gaming', name: 'Gaming & Esports' },
-            { id: 'boxstores', name: 'Box Stores & Budget Shopping' },
-            { id: 'banking', name: 'Banking & Financial Institutions' }
+        // Node Data for Pillars
+        const nodes = [
+            { name: "Aquarium", url: "georgia-aquarium.vercel.app" },
+            { name: "Architect A-Node", url: "architect-artemis.vercel.app" },
+            { name: "Olympus LAC", url: "olympus-lac.vercel.app" },
+            { name: "Starblood", url: "starblood.vercel.app" },
+            { name: "Biological Warfare", url: "biological-warfare.vercel.app" },
+            { name: "Persymphony", url: "persymphony.vercel.app" },
+            { name: "Ares Gamma", url: "ares-gamma.vercel.app" },
+            { name: "Olympus Social", url: "olympus-social.vercel.app" },
+            { name: "Fortress of Solitude", url: "fortress-of-solitude.vercel.app" },
+            { name: "Valkyries of Olympus", url: "valkyries-of-olympus.vercel.app" },
+            { name: "Aetheris Business Model", url: "aetheris-business-model.vercel.app" },
+            { name: "Convergence Murex", url: "convergence-murex.vercel.app" },
+            { name: "Medusas Lair", url: "medusas-lair.vercel.app" },
+            { name: "Colossus Xi", url: "colossus-xi.vercel.app" },
+            { name: "Underworld Gaming", url: "underworld-gaming.vercel.app" },
+            { name: "Venus Wi-Fi", url: "venus-wi-fi.vercel.app" },
+            { name: "Neon Racer Ecru", url: "neon-racer-ecru.vercel.app" },
+            { name: "Vortex Generator Delta", url: "vortex-generator-delta.vercel.app" },
+            { name: "A-Node OS", url: "artemis-os.vercel.app" },
+            { name: "Hermes Landing Nu", url: "hermes-landing-nu.vercel.app" },
+            { name: "Olympian Chess", url: "olympian-chess.vercel.app" },
+            { name: "Rem Psi Mauve", url: "rem-psi-mauve.vercel.app" },
+            { name: "The Flying Dutchman", url: "the-flying-dutchman.vercel.app" },
+            { name: "Light Particle Engine", url: "light-particle-engine.vercel.app" },
+            { name: "Raptor Rush", url: "raptor-rush.vercel.app" },
+            { name: "Set Air Hockey", url: "set-air-hockey.vercel.app" },
+            { name: "Multiverse Tracker API", url: "multiverse-tracker-api.vercel.app" },
+            { name: "A-Node Hub", url: "artemis-hub.vercel.app" },
+            { name: "Tornado Two", url: "tornado-two.vercel.app" },
+            { name: "Project Khaos", url: "project-khaos.vercel.app" },
+            { name: "Abyssal Voyage Lemon", url: "abyssal-voyage-lemon.vercel.app" },
+            { name: "The Big Bang Teal", url: "the-big-bang-teal.vercel.app" },
+            { name: "BC 1 Nine", url: "bc-1-nine.vercel.app" },
+            { name: "The Afterlife", url: "the-afterlife.vercel.app" },
+            { name: "NV 2 Video Library", url: "nv-2-video-library.vercel.app" },
+            { name: "Olympus Eclipse", url: "olympus-eclipse.vercel.app" },
+            { name: "Zeus v Hades", url: "zeus-v-hades.vercel.app" },
+            { name: "Olympus Blueprint Protocol", url: "olympus-blueprint-protocol.vercel.app" },
+            { name: "Hercules Nine", url: "hercules-nine.vercel.app" },
+            { name: "Ferry Token", url: "ferry-token.vercel.app" },
+            { name: "Hyperion Gravitas", url: "hyperion-gravitas.vercel.app" },
+            { name: "Olympus Map Node", url: "olympus-map-node.vercel.app" },
+            { name: "Mega City Liard", url: "mega-city-liard.vercel.app" },
+            { name: "Olympus X Gym Equipment", url: "olympus-x-gym-equipment.vercel.app" },
+            { name: "Olympus B2B", url: "olympus-b2-b.vercel.app" },
+            { name: "Magic Mirror Puce", url: "magic-mirror-puce.vercel.app" },
+            { name: "Merlin Mandates", url: "merlin-mandates.vercel.app" },
+            { name: "The Hive Vert", url: "the-hive-vert.vercel.app" },
+            { name: "Aethelgard Five", url: "aethelgard-five.vercel.app" },
+            { name: "Aura Genesis", url: "aura-genesis.vercel.app" },
+            { name: "Olympus Aetheris", url: "olympus-aetheris.vercel.app" },
+            { name: "Air Filter Model", url: "air-filter-model.vercel.app" },
+            { name: "Architectural Legacy", url: "architectural-legacy.vercel.app" },
+            { name: "Zeus Protocol Deep Space Defence", url: "zeus-protocol-deep-space-defence.vercel.app" },
+            { name: "Vortex Generation Portal", url: "vortex-generation-portal.vercel.app" },
+            { name: "Nexus Vortex", url: "nexus-vortex.vercel.app" },
+            { name: "Axiom Repository", url: "axiom-repository.vercel.app" },
+            { name: "Liquid Gold", url: "liquid-gold.vercel.app" },
+            { name: "The Glass Slipper", url: "the-glass-slipper.vercel.app" },
+            { name: "Alexandria Gules Seven", url: "alexandria-gules-seven.vercel.app" },
+            { name: "Nexus Codex Eta", url: "nexus-codex-eta.vercel.app" },
+            { name: "Loki Kappa Seven", url: "loki-kappa-seven.vercel.app" },
+            { name: "Underworld Awakening", url: "underworld-awakening.vercel.app" },
+            { name: "Beekeeper Chi", url: "beekeeper-chi.vercel.app" },
+            { name: "Olympian Finances", url: "olympian-finances.vercel.app" },
+            { name: "Aetheris Weld Eight", url: "aetheris-weld-eight.vercel.app" },
+            { name: "Pan S Labrynth", url: "pan-s-labrynth.vercel.app" },
+            { name: "Prometheus Iota Livid", url: "prometheus-iota-livid.vercel.app" },
+            { name: "Grief Gully", url: "grief-gully.vercel.app" },
+            { name: "Mount Olympus Eight", url: "mount-olympus-eight.vercel.app" },
+            { name: "Olympian Education", url: "olympian-education-rrcu.vercel.app" }
         ];
 
-        // ────────────────────────────────────────────────
-        // COMPLETE LINK DATABASE (no placeholders, no omissions)
-        // ────────────────────────────────────────────────
-        const linkData = {
-            core: [
-                {n: "Olympus Core", u: "https://nexusvortex.ca"},
-                {n: "Artemis OS", u: "https://artemis-os.vercel.app/"},
-                {n: "The Flying Dutchman", u: "https://the-flying-dutchman.vercel.app/"},
-                {n: "Nexus Symbiote", u: "https://nexus-symbiote.onrender.com/"}
-            ],
-            featured: [
-                {n: "REM-PSI Mauve", u: "https://rem-psi-mauve.vercel.app/"},
-                {n: "Olympus LAC", u: "https://olympus-lac.vercel.app/"},
-                {n: "Architect Artemis", u: "https://architect-artemis.vercel.app/"},
-                {n: "Hyperion Gravitas", u: "https://hyperion-gravitas.vercel.app/"},
-                {n: "Mega City Liard", u: "https://mega-city-liard.vercel.app/"},
-                {n: "Axiom Repository", u: "https://axiom-repository.vercel.app/"},
-                {n: "Grief Gully", u: "https://grief-gully.vercel.app/"},
-                {n: "Olympian Finances", u: "https://olympian-finances.vercel.app/"},
-                {n: "Magic Mirror Puce", u: "https://magic-mirror-puce.vercel.app/"},
-                {n: "The Glass Slipper", u: "https://the-glass-slipper.vercel.app/"},
-                {n: "Aethelgard Five", u: "https://aethelgard-five.vercel.app/"},
-                {n: "Hercules Nine", u: "https://hercules-nine.vercel.app/"},
-                {n: "Neon Racer Ecru", u: "https://neon-racer-ecru.vercel.app/"},
-                {n: "Colossus XI", u: "https://colossus-xi.vercel.app/"},
-                {n: "Zeus v Hades", u: "https://zeus-v-hades.vercel.app/"},
-                {n: "Merlin Mandates", u: "https://merlin-mandates.vercel.app/"},
-                {n: "Convergence Murex", u: "https://convergence-murex.vercel.app/"},
-                {n: "Artemis Hub", u: "https://artemis-hub.vercel.app/"}
-            ],
-            renewed: [
-                {n: "Aetheris Business Model", u: "https://aetheris-business-model.vercel.app/"},
-                {n: "Olympus Aetheris", u: "https://olympus-aetheris.vercel.app/"}
-            ],
-            afterlife: [
-                {n: "The Afterlife", u: "https://the-afterlife.vercel.app/"}
-            ],
-            abyssal: [
-                {n: "Abyssal Voyage (Amusement Ride)", u: "https://abyssal-voyage-lemon.vercel.app/"},
-                {n: "Georgia Aquarium Experience", u: "https://georgia-aquarium.vercel.app/"}
-            ],
-            tech: [
-                {n: "Google Workspace", u: "https://workspace.google.com"},
-                {n: "Microsoft 365", u: "https://www.office.com"},
-                {n: "Apple iCloud", u: "https://www.icloud.com"},
-                {n: "GitHub", u: "https://github.com"},
-                {n: "Vercel", u: "https://vercel.com"},
-                {n: "Three.js Journey", u: "https://threejs-journey.com"},
-                {n: "Ask Artemis Tech Oracle", u: "https://architect-artemis.vercel.app/", note: "Code, stack & deployment advice"}
-            ],
-            hardware: [
-                {n: "eBay Computer Auctions", u: "https://www.ebay.com/b/Computers-Tablets-Network-Hardware/58058/bn_1865247"},
-                {n: "Memory Express", u: "https://www.memoryexpress.com"},
-                {n: "Canada Computers", u: "https://www.canadacomputers.com"},
-                {n: "Newegg", u: "https://www.newegg.ca"},
-                {n: "GovDeals Auctions", u: "https://www.govdeals.com"},
-                {n: "Dell Refurbished", u: "https://www.dellrefurbished.ca"},
-                {n: "B&H Photo Video", u: "https://www.bhphotovideo.com"}
-            ],
-            mobile: [
-                {n: "Telus Mobility", u: "https://www.telus.com"},
-                {n: "Bell Canada", u: "https://www.bell.ca"},
-                {n: "Rogers Wireless", u: "https://www.rogers.com"},
-                {n: "Freedom Mobile", u: "https://www.freedommobile.ca"},
-                {n: "Spigen Accessories", u: "https://www.spigen.com"},
-                {n: "Dbrand Skins", u: "https://dbrand.com"},
-                {n: "Best Buy Mobile", u: "https://www.bestbuy.ca"}
-            ],
-            apparel: [
-                {n: "Shein", u: "https://www.shein.com"},
-                {n: "Nike", u: "https://www.nike.com"},
-                {n: "Adidas", u: "https://www.adidas.ca"},
-                {n: "Zara", u: "https://www.zara.com"},
-                {n: "H&M", u: "https://www2.hm.com"},
-                {n: "Lululemon", u: "https://shop.lululemon.com"}
-            ],
-            shoes: [
-                {n: "Foot Locker", u: "https://www.footlocker.ca"},
-                {n: "StockX", u: "https://stockx.com"},
-                {n: "GOAT", u: "https://www.goat.com"},
-                {n: "Nike SNKRS", u: "https://www.nike.com/launch"},
-                {n: "ALDO", u: "https://www.aldoshoes.com"},
-                {n: "DSW Designer Shoe Warehouse", u: "https://www.dsw.ca"}
-            ],
-            jewelry: [
-                {n: "Tiffany & Co.", u: "https://www.tiffany.ca"},
-                {n: "Cartier", u: "https://www.cartier.com"},
-                {n: "Swarovski", u: "https://www.swarovski.com"},
-                {n: "Mejuri", u: "https://mejuri.com"},
-                {n: "Peoples Jewellers", u: "https://www.peoplesjewellers.com"}
-            ],
-            watches: [
-                {n: "Chrono24 Auctions", u: "https://www.chrono24.ca"},
-                {n: "Rolex", u: "https://www.rolex.com"},
-                {n: "Omega", u: "https://www.omegawatches.com"},
-                {n: "Seiko", u: "https://www.seikowatches.com"},
-                {n: "G-Shock", u: "https://gshock.ca"},
-                {n: "Hodinkee Shop", u: "https://shop.hodinkee.com"}
-            ],
-            beauty: [
-                {n: "Sephora", u: "https://www.sephora.com"},
-                {n: "MAC Cosmetics", u: "https://www.maccosmetics.ca"},
-                {n: "Shoppers Drug Mart", u: "https://www.shoppersdrugmart.ca"},
-                {n: "Bath & Body Works", u: "https://www.bathandbodyworks.ca"}
-            ],
-            home: [
-                {n: "IKEA", u: "https://www.ikea.com"},
-                {n: "Wayfair", u: "https://www.wayfair.ca"},
-                {n: "HomeSense", u: "https://www.homesense.ca"},
-                {n: "Crate & Barrel", u: "https://www.crateandbarrel.ca"},
-                {n: "Pottery Barn", u: "https://www.potterybarn.ca"}
-            ],
-            leisure: [
-                {n: "Cineplex", u: "https://www.cineplex.com"},
-                {n: "Banff National Park", u: "https://www.pc.gc.ca/en/pn-np/ab/banff"},
-                {n: "West Edmonton Mall", u: "https://www.wem.ca"},
-                {n: "AllTrails Canada", u: "https://www.alltrails.com/canada"},
-                {n: "Trans Canada Trail", u: "https://tctrail.ca"}
-            ],
-            food: [
-                {n: "Instacart", u: "https://www.instacart.com"},
-                {n: "SkipTheDishes", u: "https://www.skipthedishes.com"},
-                {n: "HelloFresh", u: "https://www.hellofresh.ca"},
-                {n: "Uber Eats", u: "https://www.ubereats.com"},
-                {n: "DoorDash", u: "https://www.doordash.com"}
-            ],
-            travel: [
-                {n: "Atlas Obscura", u: "https://www.atlasobscura.com"},
-                {n: "Expedia", u: "https://www.expedia.ca"},
-                {n: "Airbnb", u: "https://www.airbnb.ca"},
-                {n: "Skyscanner", u: "https://www.skyscanner.ca"},
-                {n: "SpaceX", u: "https://www.spacex.com"}
-            ],
-            finance: [
-                {n: "BlockDAG Network", u: "https://blockdag.network"},
-                {n: "Binance", u: "https://www.binance.com"},
-                {n: "Wealthsimple", u: "https://www.wealthsimple.com"},
-                {n: "Coinbase", u: "https://www.coinbase.com"}
-            ],
-            entertainment: [
-                {n: "Netflix", u: "https://www.netflix.com"},
-                {n: "Twitch", u: "https://www.twitch.tv"},
-                {n: "Indigo / Chapters", u: "https://www.chapters.indigo.ca"},
-                {n: "GameStop", u: "https://www.gamestop.ca"},
-                {n: "Mastermind Toys", u: "https://www.mastermindtoys.com"}
-            ],
-            kids: [
-                {n: "PBS Kids", u: "https://pbskids.org"},
-                {n: "National Geographic Kids", u: "https://kids.nationalgeographic.com"},
-                {n: "NatGeo: Rocks & Minerals", u: "https://kids.nationalgeographic.com/science/article/rocks-and-minerals"},
-                {n: "Peppa Pig Official", u: "https://peppapig.com"},
-                {n: "ABCmouse", u: "https://www.abcmouse.com"},
-                {n: "Cosmic Kids Yoga", u: "https://cosmickids.com"}
-            ],
-            knowledge: [
-                {n: "Wikipedia", u: "https://en.wikipedia.org", note: "The world’s encyclopedia"},
-                {n: "Wikidata", u: "https://www.wikidata.org", note: "Structured facts & queries"},
-                {n: "WikiHow", u: "https://www.wikihow.com", note: "Step-by-step guides for everything"},
-                {n: "Internet Archive", u: "https://archive.org", note: "Wayback Machine + books & media"},
-                {n: "OpenStreetMap", u: "https://www.openstreetmap.org", note: "Community-driven world maps"},
-                {n: "Ask Artemis Knowledge Oracle", u: "https://architect-artemis.vercel.app/", note: "Summarize or connect these sources"}
-            ],
-            mining: [
-                {n: "USGS Mineral Summaries", u: "https://pubs.usgs.gov/publication/mcs2026", note: "Official 2026 global production & reserves"},
-                {n: "Mining.com", u: "https://www.mining.com", note: "Daily industry news & jobs"},
-                {n: "Kitco Metals", u: "https://www.kitco.com", note: "Real-time precious metals prices"},
-                {n: "Artemis Mining Oracle", u: "https://architect-artemis.vercel.app/", note: "Yield forecasts & regulatory risk"}
-            ],
-            oilgas: [
-                {n: "EIA Energy Outlook", u: "https://www.eia.gov/outlooks/steo/", note: "2026 global production forecasts"},
-                {n: "Rigzone", u: "https://www.rigzone.com", note: "Upstream jobs & news"},
-                {n: "Artemis Energy Forecaster", u: "https://architect-artemis.vercel.app/", note: "Drilling viability & price predictions"}
-            ],
-            shipping: [
-                {n: "Maersk Global", u: "https://www.maersk.com", note: "Ocean freight & global routes"},
-                {n: "DHL Global", u: "https://www.dhl.com", note: "International express shipping"},
-                {n: "Artemis Logistics Oracle", u: "https://architect-artemis.vercel.app/", note: "Customs pulls & route optimization"}
-            ],
-            tracking: [
-                {n: "17TRACK", u: "https://www.17track.net", note: "Global parcel & container tracking"},
-                {n: "Flightradar24", u: "https://www.flightradar24.com", note: "Live flight paths & manifests"},
-                {n: "MarineTraffic", u: "https://www.marinetraffic.com", note: "Vessel tracking & boating manifests"},
-                {n: "Artemis Tracking Hub", u: "https://architect-artemis.vercel.app/", note: "Predictive delay analysis"}
-            ],
-            news: [
-                {n: "Google News", u: "https://news.google.com", note: "Location-aware hyper-local news"},
-                {n: "Reuters", u: "https://www.reuters.com", note: "Neutral global wire service"},
-                {n: "Positive News", u: "https://www.positive.news", note: "Solution-focused journalism"},
-                {n: "Artemis Balanced News", u: "https://architect-artemis.vercel.app/", note: "Pulls positive/negative balance by IP"}
-            ],
-            health: [
-                {n: "Mayo Clinic", u: "https://www.mayoclinic.org", note: "World-class medical database"},
-                {n: "WHO Global Health", u: "https://www.who.int", note: "International health data & alerts"},
-                {n: "Headspace", u: "https://www.headspace.com", note: "Mental health tools"},
-                {n: "Artemis Health Oracle", u: "https://architect-artemis.vercel.app/", note: "Personalized wellness plans"}
-            ],
-            law: [
-                {n: "Justia", u: "https://www.justia.com", note: "Free legal research & forms"},
-                {n: "Cornell LII", u: "https://www.law.cornell.edu", note: "Free legal encyclopedia"},
-                {n: "Artemis Legal Oracle", u: "https://architect-artemis.vercel.app/", note: "Draft contracts or predict outcomes"}
-            ],
-            farming: [
-                {n: "AgCareers", u: "https://www.agcareers.com", note: "Global agriculture jobs"},
-                {n: "Farmonaut", u: "https://farmonaut.com", note: "AI-powered satellite crop monitoring"},
-                {n: "Artemis Farm Forecaster", u: "https://architect-artemis.vercel.app/", note: "Weather & soil market predictions"}
-            ],
-            botanical: [
-                {n: "Botaniful (Edmonton Hidden Gem)", u: "https://www.instagram.com/botanifulyeg/", note: "Your Shangri-La above Lucky Supermarket — the one you took your son to"},
-                {n: "Salisbury Greenhouse", u: "https://salisburygreenhouse.com/", note: "Edmonton/Sherwood Park legend"},
-                {n: "Kuhlmann's Greenhouse", u: "https://kuhlmanns.com/", note: "Family-owned since 1962"},
-                {n: "OpenFarm", u: "https://openfarm.cc", note: "Sustainable gardening database"},
-                {n: "Artemis Flora Oracle", u: "https://architect-artemis.vercel.app/", note: "Botany plans, climate matching & Thrival advice"}
-            ],
-            gaming: [
-                {n: "Steam", u: "https://store.steampowered.com", note: "PC Gaming Platform"},
-                {n: "PlayStation Store", u: "https://store.playstation.com", note: "PS5 / PS4"},
-                {n: "Xbox Store", u: "https://www.xbox.com", note: "Xbox Series X/S"},
-                {n: "Nintendo eShop", u: "https://www.nintendo.com", note: "Switch & legacy"},
-                {n: "Epic Games Store", u: "https://store.epicgames.com", note: "PC & Unreal Engine"},
-                {n: "Roblox", u: "https://www.roblox.com", note: "All-ages platform"},
-                {n: "GameStop", u: "https://www.gamestop.com", note: "Physical consoles & games"},
-                {n: "Best Buy Gaming", u: "https://www.bestbuy.ca/en-ca/category/gaming/20352", note: "All consoles + PC hardware"},
-                {n: "Amazon Gaming", u: "https://www.amazon.com/gaming", note: "Digital & physical"},
-                {n: "Artemis Game Oracle", u: "https://architect-artemis.vercel.app/", note: "Strategy, build advice & career forecasts"}
-            ],
-            boxstores: [
-                {n: "Walmart", u: "https://www.walmart.com", note: "Everyday budget essentials"},
-                {n: "Amazon", u: "https://www.amazon.com", note: "Global fast shipping"},
-                {n: "Costco", u: "https://www.costco.com", note: "Bulk warehouse shopping"},
-                {n: "Best Buy", u: "https://www.bestbuy.com", note: "Tech & electronics"},
-                {n: "Target", u: "https://www.target.com", note: "Affordable lifestyle"},
-                {n: "Temu", u: "https://www.temu.com", note: "Ultra-budget global finds"},
-                {n: "Artemis Budget Optimizer", u: "https://architect-artemis.vercel.app/", note: "Smart shopping plans & deal forecasts"}
-            ],
-            banking: [
-                // Canada
-                {n: "RBC Royal Bank", u: "https://www.rbc.com"},
-                {n: "TD Canada Trust", u: "https://www.td.com/ca/en/personal-banking"},
-                {n: "Scotiabank", u: "https://www.scotiabank.com"},
-                {n: "BMO Bank of Montreal", u: "https://www.bmo.com"},
-                {n: "CIBC", u: "https://www.cibc.com"},
-                {n: "National Bank of Canada", u: "https://www.nbc.ca"},
-                // USA
-                {n: "JPMorgan Chase", u: "https://www.chase.com"},
-                {n: "Bank of America", u: "https://www.bankofamerica.com"},
-                {n: "Wells Fargo", u: "https://www.wellsfargo.com"},
-                {n: "Citibank", u: "https://www.citibank.com"},
-                {n: "U.S. Bank", u: "https://www.usbank.com"},
-                // UK
-                {n: "HSBC UK", u: "https://www.hsbc.co.uk"},
-                {n: "Barclays", u: "https://www.barclays.co.uk"},
-                {n: "Lloyds Bank", u: "https://www.lloydsbank.com"},
-                {n: "NatWest", u: "https://www.natwest.com"},
-                // International / Global
-                {n: "ING (Europe)", u: "https://www.ing.com"},
-                {n: "DBS (Singapore)", u: "https://www.dbs.com"},
-                {n: "Artemis Banking Oracle", u: "https://architect-artemis.vercel.app/", note: "Compare accounts, international transfers & Thrival finance plans"}
-            ]
-        };
-
-        const vidUrl = "https://files.catbox.moe/qnb2fw.mp4";
-
-        // ────────────────────────────────────────────────
-        // SIDEBAR GENERATION
-        // ────────────────────────────────────────────────
-        const sidebar = document.getElementById('sidebar');
-        categories.forEach(cat => {
-            sidebar.innerHTML += `<a class="menu-link" id="link-${cat.id}" onclick="showSection('${cat.id}')">${cat.name}</a>`;
+        // Populate Pillars Grid
+        const gridContainer = document.getElementById('node-grid');
+        nodes.forEach(node => {
+            const buttonHtml = `
+                <button onclick="openViewport('${node.url}', '${node.name}')" 
+                        class="holoframe bloom-btn p-4 flex flex-col items-center justify-center gap-2 group w-full h-full hover:bg-cyan-900/30">
+                    <span class="uppercase font-bold text-lg text-white group-hover:text-cyan-300 transition vt323 text-2xl tracking-wide">${node.name}</span>
+                    <span class="text-xs text-zinc-500 group-hover:text-pink-400 transition">${node.url}</span>
+                </button>
+            `;
+            gridContainer.innerHTML += buttonHtml;
         });
 
-        // ────────────────────────────────────────────────
-        // SHOW CATEGORY
-        // ────────────────────────────────────────────────
-        function showSection(id) {
-            const grid = document.getElementById('mallGrid');
-            const indicator = document.getElementById('cat-indicator');
-            
-            document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
-            const activeLink = document.getElementById(`link-${id}`);
-            if(activeLink) activeLink.classList.add('active-link');
+        // Viewport Logic
+        const modal = document.getElementById('viewport-modal');
+        const iframe = document.getElementById('viewport-iframe');
+        const titleText = document.getElementById('viewport-title');
+        const contentBox = document.getElementById('viewport-content');
+        
+        let isMaximized = false;
 
-            const categoryName = categories.find(c => c.id === id)?.name || id;
-            indicator.innerText = categoryName;
-            
-            grid.innerHTML = '';
-            (linkData[id] || []).forEach(item => {
-                grid.innerHTML += `
-                <a href="${item.u}" target="_blank" class="hologram-card">
-                    <div class="video-box">
-                        <video class="masked-video" muted loop playsinline autoplay>
-                            <source src="${vidUrl}" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="label">${item.n}${item.note ? '<br><small style="opacity:0.7; font-size:0.6rem;">' + item.note + '</small>' : ''}</div>
-                </a>`;
-            });
-
-            if(window.innerWidth < 1100 && sidebar.classList.contains('active')) {
-                toggleSidebar();
-            }
+        function openViewport(url, title) {
+            const finalUrl = url.startsWith('http') ? url : 'https://' + url;
+            iframe.src = finalUrl;
+            titleText.innerText = `// ${title}`;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
-        // ────────────────────────────────────────────────
-        // SYNCED SEARCH (top bar + FAB)
-        // ────────────────────────────────────────────────
-        function syncSearch(val) {
-            const mainSearch = document.getElementById('mallSearch');
-            const fabInput = document.getElementById('fabInput');
-            if (mainSearch) mainSearch.value = val;
-            if (fabInput) fabInput.value = val;
-            
-            const query = (val || '').toLowerCase().trim();
-            const grid = document.getElementById('mallGrid');
+        function closeViewport() {
+            modal.classList.add('hidden');
+            iframe.src = '';
+            document.body.style.overflow = '';
+            if (isMaximized) toggleMaximize();
+        }
 
-            if(query.length > 0) {
-                document.getElementById('cat-indicator').innerText = "Global Search";
-                document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active-link'));
-                grid.innerHTML = '';
-                
-                Object.values(linkData).flat().forEach(item => {
-                    const text = (item.n + (item.note || '')).toLowerCase();
-                    if(text.includes(query)) {
-                        grid.innerHTML += `
-                        <a href="${item.u}" target="_blank" class="hologram-card">
-                            <div class="video-box"><video class="masked-video" muted loop playsinline autoplay><source src="${vidUrl}" type="video/mp4"></video></div>
-                            <div class="label">${item.n}${item.note ? '<br><small style="opacity:0.7; font-size:0.6rem;">' + item.note + '</small>' : ''}</div>
-                        </a>`;
-                    }
-                });
+        function toggleMaximize() {
+            isMaximized = !isMaximized;
+            if (isMaximized) {
+                contentBox.classList.remove('w-11/12', 'h-5/6', 'rounded-xl');
+                contentBox.classList.add('w-full', 'h-full', 'rounded-none');
             } else {
-                showSection('core');
+                contentBox.classList.add('w-11/12', 'h-5/6', 'rounded-xl');
+                contentBox.classList.remove('w-full', 'h-full', 'rounded-none');
             }
         }
 
-        // ────────────────────────────────────────────────
-        // SIDEBAR & FAB TOGGLES
-        // ────────────────────────────────────────────────
-        function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('active'); 
-        }
-
-        function toggleFabSearch() { 
-            const cont = document.getElementById('fabSearchCont');
-            cont.classList.toggle('active');
-            if (cont.classList.contains('active')) {
-                document.getElementById('fabInput').focus();
-            }
-        }
-
-        document.addEventListener('click', e => {
-            const fab = document.getElementById('fabSearchCont');
-            if (fab && !fab.contains(e.target)) {
-                fab.classList.remove('active');
-            }
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) closeViewport();
         });
 
-        window.onload = () => { 
-            showSection('core'); 
-        };
+        // Populate Global Registry (Infrastructure)
+        const countries = [
+            "Canada", "United States", "Mexico", "United Kingdom", "France", 
+            "Germany", "Japan", "South Korea", "Australia", "New Zealand", 
+            "Brazil", "India", "South Africa", "Norway", "Sweden", "Iceland"
+        ];
+        
+        const registryGrid = document.getElementById('registryGrid');
+        
+        countries.sort().forEach(country => {
+            const status = country === "Canada" ? "YES" : "NO"; 
+            const statusClass = status === "YES" ? "text-cyan-400 font-bold" : "text-red-500";
+            
+            const row = document.createElement('div');
+            row.className = 'flex justify-between items-center p-3 bg-zinc-900/50 border-l-2 border-cyan-500/50 hover:bg-zinc-800/50 transition';
+            row.innerHTML = `
+                <span class="text-zinc-300 uppercase tracking-wide text-sm">${country}</span>
+                <span class="${statusClass} vt323 text-lg tracking-widest">• ${status}</span>
+            `;
+            registryGrid.appendChild(row);
+        });
     </script>
 </body>
 </html>
